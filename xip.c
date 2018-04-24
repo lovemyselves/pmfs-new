@@ -18,6 +18,8 @@
 #include <asm/pgtable.h>
 #include "pmfs.h"
 #include "xip.h"
+/*new add include*/
+#include <linux/kernel.h>
 
 static ssize_t
 do_xip_mapping_read(struct address_space *mapping,
@@ -418,6 +420,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* now zero out the edge blocks which will be partially written */
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
+	
+	/* dedup start */
+	printk("Hello World!");
+	/* dedup end */
 
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	if (written < 0 || written != count)
