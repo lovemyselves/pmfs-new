@@ -424,6 +424,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* dedup start */
 	printk("Hello World!\n");
 	printk("buf:%s\n",buf);
+	printk("buf length:%d\n",(int)sizeof(buf));
 	/* dedup end */
 
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
