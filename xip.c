@@ -20,7 +20,7 @@
 #include "xip.h"
 /*dedup new add include*/
 #include <linux/kernel.h>
-#include <string.h>
+#include <linux/string.h>
 
 static ssize_t
 do_xip_mapping_read(struct address_space *mapping,
