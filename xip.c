@@ -18,8 +18,9 @@
 #include <asm/pgtable.h>
 #include "pmfs.h"
 #include "xip.h"
-/*new add include*/
+/*dedup new add include*/
 #include <linux/kernel.h>
+#include <string.h>
 
 static ssize_t
 do_xip_mapping_read(struct address_space *mapping,
@@ -425,11 +426,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("Hello World!\n");
 	printk("buf:%s\n",buf);
 	printk("buf length:%d\n",(int)sizeof(buf));
-	/* use % create fingerprint1 and division create fingerprint2 */
-	unsigned fingerprint1 = (unsigned)buf % 512;
-	unsigned fingerprint2 = (unsigned)buf / 512;
-	printk("fingerprint1:%d\n",fingerprint1);
-	printk("fingerprint2:%d\n",fingerprint2);
+	/* use strncpy create fingerprint */
+    char fingerprint[128];
+	memcpy(fingerprint,buf+3968,128);
+    printk("fingerprint:%s\n",fingerprint);
 	/* dedup end */
 
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
