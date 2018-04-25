@@ -428,8 +428,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("buf length:%d\n",(int)sizeof(buf));
 	/* use strncpy create fingerprint */
 	char fingerprint[128];
-	// memcpy(fingerprint,buf+3968,128);
-	// printk("fingerprint:%s\n",fingerprint);
+	memcpy(fingerprint,buf+3968,128);
+	printk("fingerprint:%s\n",fingerprint);
 	/* dedup end */
 
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
