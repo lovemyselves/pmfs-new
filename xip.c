@@ -21,7 +21,7 @@
 /*dedup new add include*/
 #include <linux/kernel.h>
 #include <linux/string.h>
-#include <linux/crypto/md5.c>
+//#include <linux/crypto/md5.c>
 
 static ssize_t
 do_xip_mapping_read(struct address_space *mapping,
