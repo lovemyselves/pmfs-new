@@ -214,6 +214,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 
+		/* dedup start */
+		printk("xmem:%s\n",(char *)xmem);
+		/* dedup end */
+
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
 	 	 * (instead of movnti) to write. So flush those cachelines. */
@@ -427,13 +431,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 	
 	/* dedup start */
-	printk("Hello World!\n");
-	printk("buf:%s\n",buf);
+	// printk("buf:%s\n",buf);
 	printk("buf length:%d\n",(int)sizeof(buf));
 	/* use strncpy create fingerprint */
-	char fingerprint[128];
-	memcpy(fingerprint,buf+3968,128);
-	printk("fingerprint:%s\n",fingerprint);
+	// char fingerprint[128];
+	// memcpy(fingerprint,buf+3968,128);
+	// printk("fingerprint:%s\n",fingerprint);
 	/* dedup end */
 
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
