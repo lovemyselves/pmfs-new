@@ -23,6 +23,17 @@
 #include <linux/string.h>
 //#include <linux/crypto/md5.c>
 
+/* dedup function start */
+static size_t strlen(const char *s)  
+{  
+    const char *sc;  
+  
+    for (sc = s; *sc != '\0'; ++sc)  
+        /* nothing */;  
+    return sc - s;  
+} 
+/* dedup function end */
+
 static ssize_t
 do_xip_mapping_read(struct address_space *mapping,
 		    struct file_ra_state *_ra,
@@ -171,9 +182,9 @@ static inline size_t memcpy_to_nvmm(char *kmem, loff_t offset,
 						offset, buf, bytes);
 	}
 	/* dedup start */
-	printk("kmem+offset length:%d",(int)sizeof(*(kmem+offset)));
+	printk("kmem+offset length:%d",strlen(kmem+offset));
 	printk("kmem+offset:%s\n",kmem+offset);
-	printk("kmem length:%d",(int)sizeof(*kmem));
+	printk("kmem length:%d",strlen(kmem));
 	printk("kmem:%s\n",kmem);
 	/* dedup end */
 	return copied;
@@ -434,7 +445,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	/* dedup start */
 	// printk("buf:%s\n",buf);
-	printk("buf length:%d\n",(int)sizeof(*buf));
+	printk("buf length:%d\n",strlen(buf));
 	/* use strncpy create fingerprint */
 	// char fingerprint[128];
 	// memcpy(fingerprint,buf+3968,128);
