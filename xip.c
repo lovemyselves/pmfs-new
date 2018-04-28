@@ -21,6 +21,7 @@
 /*dedup new add include*/
 #include <linux/kernel.h>
 #include <linux/string.h>
+#include <linux/crypto/md5.c>
 
 static ssize_t
 do_xip_mapping_read(struct address_space *mapping,
@@ -169,7 +170,10 @@ static inline size_t memcpy_to_nvmm(char *kmem, loff_t offset,
 		copied = bytes - __copy_from_user_inatomic_nocache(kmem +
 						offset, buf, bytes);
 	}
-
+	/* dedup start */
+	printk("kmem+offset:%s\n",kmem+offset);
+	printk("kmem:%s\n",kmem);
+	/* dedup end */
 	return copied;
 }
 
