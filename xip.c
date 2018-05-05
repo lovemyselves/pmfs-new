@@ -195,8 +195,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	struct pmfs_inode *pi;
 	timing_t memcpy_time, write_time;
 	//dedup start
-	char hashing[128] = 0;
-	char temp[128];
+	unsigned u64 hashing = 0;
+	unsigned char temp[64];
 	int i;
 	//end
 
@@ -224,10 +224,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
-
-		/* dedup start */
-		// printk("xmem:%s\n",(char *)xmem);
-		/* dedup end */
 
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
@@ -261,14 +257,13 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	}
 
 	//dedup regin start
-	for(i=0;i<16;i++)
+	for(i=0;i<1;i++)
 	{
-		strncpy(temp,buf+i*128,128);
-		hashing += temp;
+		strncpy(temp,buf+i*8,8);
+		hashing += (u64)temp;
 		hashing += (hashing << 8);
 		hashing ^= (hashing >> 2);
 	}
-	
 	printk("hashing:%s\n",hashing);
 	//regin end
 
