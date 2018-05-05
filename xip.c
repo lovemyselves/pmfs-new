@@ -196,14 +196,14 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	timing_t memcpy_time, write_time;
 	//dedup start
 	unsigned long long hashing = 0;
-	unsigned long long temp;
+	unsigned long long *temp;
 	int i;
 
 	printk("buf:%s\n",buf);
-	for(i=0;i<128;i++)
+	for(i=0;i<256;i++)
 	{
-		memcpy(&temp,buf+i*16,16);
-		hashing += temp;
+		memcpy(temp,buf+i*8,8);
+		hashing += *temp;
 		hashing += (hashing << 8);
 		hashing ^= (hashing >> 2);
 	}
