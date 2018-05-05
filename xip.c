@@ -24,8 +24,7 @@
 #include "dedup.c"
 
 /* dedup claim start */
-static char[128] hashing, temp = 0;
-static int i;
+
 /* claim end */
 
 static ssize_t
