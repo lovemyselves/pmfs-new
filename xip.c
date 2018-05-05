@@ -198,7 +198,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	unsigned long long hashing = 0;
 	unsigned char temp[16];
 	int i;
+
+	printk("buf:%s\n",buf);
 	//end
+
+
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
