@@ -21,6 +21,7 @@
 /*dedup new add include*/
 #include <linux/kernel.h>
 #include <linux/string.h>
+#include <linux/gfp.h>
 #include "dedup.c"
 
 /* dedup claim start */
@@ -195,20 +196,20 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	struct pmfs_inode *pi;
 	timing_t memcpy_time, write_time;
 	//dedup start
-	unsigned long long hashing,tempvalue = 0;
-	unsigned long long *temp = &tempvalue;
+	unsigned long hashing = 0;
+	unsigned long *temp = kmalloc(sizeof(unsigned long), __NOFALL );
 	int i;
 
 	printk("buf:%s\n",buf);
 	for(i=0;i<256;i++)
 	{
-		memcpy(temp,buf+i*8,8);
+		memcpy(temp,buf+i*sizeof(unsigned long),sizeof(unsigned long));
 		hashing += *temp;
 		hashing += (hashing << 8);
 		hashing ^= (hashing >> 2);
 	}
 	printk("hashing:%s\n",temp);printk("hashing:%s\n",temp);
-	printk("hashing:%llu\n",hashing);
+	printk("hashing:%lu\n",hashing);
 	//end
 
 
