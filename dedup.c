@@ -11,6 +11,6 @@ struct hash_map_ppn{
 
 struct lpn_map_ppn{
     unsigned char* lpn;
-    struct *hash_map_ppn ppn_state;
+    struct hash_map_ppn* ppn_state;
 };
 
