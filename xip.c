@@ -24,7 +24,8 @@
 #include "dedup.c"
 
 /* dedup claim start */
-char[128] hashing, temp = 0;
+static char[128] hashing, temp = 0;
+static int i;
 /* claim end */
 
 static ssize_t
@@ -260,8 +261,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	{
 		strncpy(temp,buf+i*128,128);
 		hashing += temp;
-		hashing += (hash << 8);
-		hashing ^= (hash >> 2);
+		hashing += (hashing << 8);
+		hashing ^= (hashing >> 2);
 	}
 	
 	printk("hashing:%s\n",hashing);

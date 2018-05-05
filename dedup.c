@@ -5,7 +5,7 @@
 struct hash_map_ppn{
     unsigned char* hashing;
     unsigned char* ppn;
-    unsigned u16 count;
+    unsigned short int count;
     struct list_head list; 
 };
 
