@@ -198,10 +198,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	unsigned long long hashing = 0;
 	unsigned char temp[16];
 	int i;
-	
+
 	strncpy(temp,buf,16);
 	printk("buf:%s\n",buf);
-	printk("hashing:%s\n",temp);
+	printk("hashing:%s\n",temp);printk("hashing:%s\n",temp);
 	printk("hashing:%llu\n",temp);
 	//end
 
