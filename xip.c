@@ -195,7 +195,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	struct pmfs_inode *pi;
 	timing_t memcpy_time, write_time;
 	//dedup start
-	unsigned u64 hashing = 0;
+	unsigned long long hashing = 0;
 	unsigned char temp[64];
 	int i;
 	//end
@@ -257,10 +257,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	}
 
 	//dedup regin start
-	for(i=0;i<1;i++)
+	for(i=0;i<128;i++)
 	{
-		strncpy(temp,buf+i*8,8);
-		hashing += (u64)temp;
+		strncpy(temp,buf+i*16,16);
+		hashing += (unsign long long)temp;
 		hashing += (hashing << 8);
 		hashing ^= (hashing >> 2);
 	}
