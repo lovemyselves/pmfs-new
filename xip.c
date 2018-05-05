@@ -23,9 +23,9 @@
 #include <linux/string.h>
 #include "dedup.c"
 
-/* dedup function start */
-
-/* dedup function end */
+/* dedup claim start */
+char[128] hashing, temp = 0;
+/* claim end */
 
 static ssize_t
 do_xip_mapping_read(struct address_space *mapping,
@@ -175,11 +175,11 @@ static inline size_t memcpy_to_nvmm(char *kmem, loff_t offset,
 						offset, buf, bytes);
 	}
 	/* dedup start */
-	printk("kmem+offset length:%d",(int)strlen(kmem+offset));
-	printk("kmem+offset:%s\n",kmem+offset);
-	printk("kmem length:%d",(int)strlen(kmem));
-	printk("kmem:%s\n",kmem);
-	/* dedup end */
+	// printk("kmem+offset length:%d",(int)strlen(kmem+offset));
+	// printk("kmem+offset:%s\n",kmem+offset);
+	// printk("kmem length:%d",(int)strlen(kmem));
+	// printk("kmem:%s\n",kmem);
+	/* end */
 	return copied;
 }
 
@@ -254,6 +254,18 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		i_size_write(inode, pos);
 		pmfs_update_isize(inode, pi);
 	}
+
+	//dedup regin start
+	for(i=0;i<16;i++)
+	{
+		strncpy(temp,buf+i*128,128);
+		hashing += temp;
+		hashing += (hash << 8);
+		hashing ^= (hash >> 2);
+	}
+	
+	printk("hashing:%s\n",hashing);
+	//regin end
 
 	PMFS_END_TIMING(internal_write_t, write_time);
 	return written ? written : status;
@@ -438,7 +450,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	/* dedup start */
 	// printk("buf:%s\n",buf);
-	printk("buf length:%d\n",(int)strlen(buf));
+	// printk("buf length:%d\n",(int)strlen(buf));
 	/* use strncpy create fingerprint */
 	// char fingerprint[128];
 	// memcpy(fingerprint,buf+3968,128);
