@@ -271,7 +271,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	// 	hashing += (hashing << 8);
 	// 	hashing ^= (hashing >> 2);
 	// }
-	strncpy(temp,buf,16);
+	strncpy(temp,buf+16,16);
 	printk("buf:%s\n",buf);
 	printk("hashing:%s\n",temp);
 	printk("hashing:%llu\n",temp);
