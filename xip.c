@@ -21,7 +21,7 @@
 /*dedup new add include*/
 #include <linux/kernel.h>
 #include <linux/string.h>
-//#include <linux/crypto/md5.c>
+#include "dedup.c"
 
 /* dedup function start */
 
