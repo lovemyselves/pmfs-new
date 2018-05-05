@@ -197,7 +197,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	timing_t memcpy_time, write_time;
 	//dedup start
 	unsigned long hashing = 0;
-	unsigned long *temp = kmalloc(sizeof(unsigned long), __NOFALL );
+	unsigned long *temp = kmalloc(sizeof(unsigned long), __GEP_NOFALL );
 	int i;
 
 	printk("buf:%s\n",buf);
