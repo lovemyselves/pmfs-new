@@ -23,30 +23,12 @@
 #include <linux/string.h>
 #include <linux/slab.h>
 #include <linux/list.h>
-// #include "dedup.c"
+#include "dedup.c"
 
 /* dedup claim start */
-struct hash_map_ppn{
-    unsigned long hashing;
-    char ppn[6];
-    unsigned int count;
-    struct list_head list; 
-};
-
-struct lpn_map_ppn{
-    char lpn[6];
-    struct hash_map_ppn *pnode;
-};
-
-struct hash_map_ppn h_map_p_head = {
-	.hashing = 0,
-	.count = 0,
-	.ppn = {0,0,0,0,0,0},
-	.list = LIST_HEAD_INIT(h_map_p_head.list),
-};
 // struct lpn_map_ppn *l_map_p;
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
-
+static LIST_HEAD(lpn_map_ppn_list);
 
 /* claim end */
 
@@ -233,6 +215,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	// printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
 	// printk("sizeof buf:%d\n",(int)strlen(buf));
 	printk("hashing:%lu\n",hashing);
+	struct hash_map_ppn h_map_p_head = {
+		.hashing = 0,
+		.count = 0,
+		.ppn = {0,0,0,0,0,0},
+		.list = LIST_HEAD_INIT(h_map_p_head.list),
+	};
 	//end
 
 
