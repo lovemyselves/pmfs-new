@@ -25,6 +25,18 @@
 #include "dedup.c"
 
 /* dedup claim start */
+struct hash_map_ppn{
+    unsigned long hashing;
+    char ppn[6];
+    unsigned int count;
+    struct list_head list; 
+};
+
+struct lpn_map_ppn{
+    char lpn[6];
+    struct hash_map_ppn *pnode;
+};
+
 struct hash_map_ppn *h_map_p;
 struct lpn_map_ppn *l_map_p;
 h_map_p = kmalloc(sizeof(*h_map_p), GFP_KERNEL);
