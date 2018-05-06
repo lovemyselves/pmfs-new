@@ -22,6 +22,7 @@
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/slab.h>
+#include <linux/list.h>
 // #include "dedup.c"
 
 /* dedup claim start */
@@ -37,10 +38,14 @@ struct lpn_map_ppn{
     struct hash_map_ppn *pnode;
 };
 
-struct hash_map_ppn *h_map_p;
-struct lpn_map_ppn *l_map_p;
-h_map_p = kmalloc(sizeof(struct hash_map_ppn), GFP_KERNEL);
-l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
+struct hash_map_ppn h_map_p_head = {
+	.hashing = 0,
+	.count = 0,
+	.ppn = {0,0,0,0,0,0},
+	.list = LIST_HEAD_INIT(h_map_p_head),
+};
+// struct lpn_map_ppn *l_map_p;
+// l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 
 
 /* claim end */
