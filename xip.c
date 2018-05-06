@@ -22,7 +22,7 @@
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/slab.h>
-#include "dedup.h"
+#include "dedup.c"
 
 /* dedup claim start */
 struct hash_map_ppn *h_map_p;
