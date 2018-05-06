@@ -3,14 +3,14 @@
 #include <linux/rbtree.h>
 
 struct hash_map_ppn{
-    unsigned char* hashing;
-    unsigned char* ppn;
-    unsigned short int count;
+    unsigned unsigned long hashing;
+    unsigned char ppn[6];
+    unsigned int count;
     struct list_head list; 
 };
 
 struct lpn_map_ppn{
-    unsigned char* lpn;
-    struct hash_map_ppn* ppn_state;
+    unsigned char lpn[6];
+    struct hash_map_ppn *pnode;
 };
 

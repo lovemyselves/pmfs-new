@@ -25,6 +25,11 @@
 #include "dedup.c"
 
 /* dedup claim start */
+static struct hash_map_ppn *h_map_p;
+static struct lpn_map_ppn *l_map_p;
+h_map_p = kmalloc(sizeof(hash_map_ppn), GEP_KERNEL);
+l_map_p = kmalloc(sizeof(lpn_map_ppn), GEP_KERNEL);
+
 
 /* claim end */
 
@@ -197,19 +202,19 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	timing_t memcpy_time, write_time;
 	//dedup start
 	unsigned long hashing = 0;
-	unsigned long *temp = kmalloc(sizeof(unsigned long), __GFP_NOFAIL);
+	unsigned long *temp = kmalloc(sizeof(unsigned long long), __GFP_NOFAIL);
 	int i;
 
 	printk("buf:%s\n",buf);
-	for(i=0;i<32;i++)
+	for(i=0;i<128;i++)
 	{
-		memcpy(temp,buf+i*sizeof(unsigned long),sizeof(unsigned long));
+		memcpy(temp,buf+i*8,8);
 		hashing += *temp;
 		hashing += (hashing << 8);
 		hashing ^= (hashing >> 2);
 	}
-	printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
-	printk("sizeof buf:%d\n",(int)strlen(buf));
+	// printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
+	// printk("sizeof buf:%d\n",(int)strlen(buf));
 	printk("hashing:%lu\n",hashing);
 	//end
 
