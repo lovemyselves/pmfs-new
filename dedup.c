@@ -3,9 +3,9 @@
 #include <linux/rbtree.h>
 
 struct hash_map_ppn{
-    unsigned long hashing;
+    unsigned long hashing = 0;
     unsigned char ppn[6];
-    unsigned int count;
+    unsigned int count = 0;
     struct list_head list; 
 };
 
