@@ -22,7 +22,7 @@
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/slab.h>
-#include "dedup.c"
+// #include "dedup.c"
 
 /* dedup claim start */
 struct hash_map_ppn{
@@ -39,8 +39,8 @@ struct lpn_map_ppn{
 
 struct hash_map_ppn *h_map_p;
 struct lpn_map_ppn *l_map_p;
-h_map_p = kmalloc(sizeof(*h_map_p), GFP_KERNEL);
-l_map_p = kmalloc(sizeof(*l_map_p), GFP_KERNEL);
+h_map_p = kmalloc(sizeof(hash_map_ppn), GFP_KERNEL);
+l_map_p = kmalloc(sizeof(hash_map_ppn), GFP_KERNEL);
 
 
 /* claim end */
