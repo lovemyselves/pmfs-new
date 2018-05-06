@@ -201,17 +201,15 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	int i;
 
 	printk("buf:%s\n",buf);
-	for(i=0;i<128;i++)
+	for(i=0;i<32;i++)
 	{
 		memcpy(temp,buf+i*sizeof(unsigned long),sizeof(unsigned long));
 		hashing += *temp;
 		hashing += (hashing << 8);
 		hashing ^= (hashing >> 2);
 	}
-	printk("sizeof long:%d\n",(int)strlen((char*)temp));
-	printk("sizeof int:%d\n",(int)sizeof(int));
+	printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
 	printk("sizeof buf:%d\n",(int)strlen(buf));
-	printk("temp:%s\n",(char*)temp);
 	printk("hashing:%lu\n",hashing);
 	//end
 
