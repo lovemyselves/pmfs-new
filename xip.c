@@ -27,8 +27,8 @@
 /* dedup claim start */
 static struct hash_map_ppn *h_map_p;
 static struct lpn_map_ppn *l_map_p;
-h_map_p = kmalloc(sizeof(hash_map_ppn), GEP_KERNEL);
-l_map_p = kmalloc(sizeof(lpn_map_ppn), GEP_KERNEL);
+h_map_p = kmalloc(sizeof(*h_map_p), GEP_KERNEL);
+l_map_p = kmalloc(sizeof(*l_map_p), GEP_KERNEL);
 
 
 /* claim end */
