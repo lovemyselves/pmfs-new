@@ -42,7 +42,7 @@ struct hash_map_ppn h_map_p_head = {
 	.hashing = 0,
 	.count = 0,
 	.ppn = {0,0,0,0,0,0},
-	.list = LIST_HEAD_INIT(h_map_p_head),
+	.list = LIST_HEAD_INIT(h_map_p_head.list),
 };
 // struct lpn_map_ppn *l_map_p;
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
