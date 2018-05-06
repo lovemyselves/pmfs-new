@@ -208,7 +208,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		hashing += (hashing << 8);
 		hashing ^= (hashing >> 2);
 	}
-	printk("sizeof long long:%d",sizeof(unsigned long long));
+	printk("sizeof long long:%d\n",sizeof(unsigned long long));
+	printk("sizeof buf:%d\n",sizeof(buf));
 	printk("temp:%s\n",(char*)temp);
 	printk("hashing:%lu\n",hashing);
 	//end
