@@ -22,11 +22,11 @@
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/slab.h>
-#include "dedup.c"
+#include "dedup.h"
 
 /* dedup claim start */
-static struct hash_map_ppn *h_map_p;
-static struct lpn_map_ppn *l_map_p;
+struct hash_map_ppn *h_map_p;
+struct lpn_map_ppn *l_map_p;
 h_map_p = kmalloc(sizeof(*h_map_p), GFP_KERNEL);
 l_map_p = kmalloc(sizeof(*l_map_p), GFP_KERNEL);
 
