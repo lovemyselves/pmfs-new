@@ -221,7 +221,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		.ppn = {0,0,0,0,0,0},
 		.list = LIST_HEAD_INIT(h_map_p_current.list),
 	};
-	list_add(&h_map_p_current->list, &hash_map_ppn_list);
+	list_add((&h_map_p_current)->list, &hash_map_ppn_list);
 	//end
 
 
