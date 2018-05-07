@@ -216,8 +216,16 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		hashing += (hashing << 8);
 		hashing ^= (hashing >> 2);
 	}
-	/* hash_map_ppn_entry ponit reuse for traverse */
+	
+	// printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
+	// printk("sizeof buf:%d\n",(int)strlen(buf));
+	// printk("hashing:%lu\n",hashing);
+	hash_map_ppn_entry->hashing = hashing;
+	hash_map_ppn_entry->count = 1;
+	hash_map_ppn_entry->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
 	INIT_LIST_HEAD(&hash_map_ppn_entry->list);
+	list_add_tail(&hash_map_ppn_entry->list, &hash_map_ppn_list);
+	/* hash_map_ppn_entry ponit reuse for traverse */
 	list_for_each_entry(hash_map_ppn_entry,&hash_map_ppn_list,list)
 	{	
 		if(unlikely(hash_map_ppn_entry->hashing == hashing))
@@ -225,17 +233,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		printk("hashing in this map:%lu\n",hash_map_ppn_entry->hashing);
 		printk("count in this map:%u\n",hash_map_ppn_entry->count);
 	}
-	// printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
-	// printk("sizeof buf:%d\n",(int)strlen(buf));
-	// printk("hashing:%lu\n",hashing);
-	hash_map_ppn_entry->hashing = hashing;
-	hash_map_ppn_entry->count = 1;
-	hash_map_ppn_entry->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
-	// INIT_LIST_HEAD(&hash_map_ppn_entry->list);
-	list_add_tail(&hash_map_ppn_entry->list, &hash_map_ppn_list);
-	/* hash_map_ppn_entry ponit reuse for traverse */
-	
-	
 	//end
 
 
