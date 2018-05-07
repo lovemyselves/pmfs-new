@@ -228,17 +228,21 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	{	
 		if(unlikely(hash_map_ppn_entry->hashing == hashing))
 		{
+			hash_map_ppn_entry->count++;
 			printk("find the hashing!\n");
-			printk("hashing in this map:%lu\n",hash_map_ppn_entry->hashing);
+			printk("hashing in this map entry:%lu\n",hash_map_ppn_entry->hashing);
+			printk("count in this map entry:%u\n",hash_map_ppn_entry->count);
+		}
+		else
+		{
+			hash_map_ppn_temp->hashing = hashing;
+			hash_map_ppn_temp->count = 1;
+			hash_map_ppn_temp->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
+			INIT_LIST_HEAD(&hash_map_ppn_temp->list);
+			list_add_tail(&hash_map_ppn_temp->list, &hash_map_ppn_list);
 		}
 		// printk("count in this map:%u\n",hash_map_ppn_entry->count);
 	}
-
-	hash_map_ppn_temp->hashing = hashing;
-	hash_map_ppn_temp->count = 1;
-	hash_map_ppn_temp->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
-	INIT_LIST_HEAD(&hash_map_ppn_temp->list);
-	list_add_tail(&hash_map_ppn_temp->list, &hash_map_ppn_list);
 	//end
 
 
