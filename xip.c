@@ -206,7 +206,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	struct hash_map_ppn *hash_map_ppn_entry;
 	hash_map_ppn_entry = kmalloc(sizeof(*hash_map_ppn_entry), GFP_KERNEL);
 
-	printk("buf:%s\n",buf);
+	// printk("buf:%s\n",buf);
 
 	/* 2 and 8 is randomly setting,  */
 	for(i=0;i<128;i++)
