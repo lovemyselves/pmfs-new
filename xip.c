@@ -201,15 +201,17 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	timing_t memcpy_time, write_time;
 	//dedup start
 	unsigned long hashing = 0;
-	unsigned long *temp = kmalloc(sizeof(unsigned long long), __GFP_NOFAIL);
+	unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 	int i;
 	struct hash_map_ppn *hash_map_ppn_entry;
 	hash_map_ppn_entry = kmalloc(sizeof(*hash_map_ppn_entry), GFP_KERNEL);
 
 	printk("buf:%s\n",buf);
+
+	/* 2 and 8 is randomly setting,  */
 	for(i=0;i<128;i++)
 	{
-		memcpy(temp,buf+i*8,8);
+		memcpy(temp,buf+i*sizeof(unsigned long),sizeof(unsigned long));
 		hashing += *temp;
 		hashing += (hashing << 8);
 		hashing ^= (hashing >> 2);
@@ -217,16 +219,17 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	// printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
 	// printk("sizeof buf:%d\n",(int)strlen(buf));
 	printk("hashing:%lu\n",hashing);
-	// struct hash_map_ppn h_map_p_current = {
-	// 	.hashing = hashing,
-	// 	.count = 1,
-	// 	.ppn = {0,0,0,0,0,0},
-	// 	.list = LIST_HEAD_INIT(h_map_p_current.list),
-	// };
 	hash_map_ppn_entry->hashing = hashing;
 	hash_map_ppn_entry->count = 1;
 	hash_map_ppn_entry->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
-	list_add(&hash_map_ppn_entry->list, &hash_map_ppn_list);
+	list_add_tail(&hash_map_ppn_entry->list, &hash_map_ppn_list);
+	/* hash_map_ppn_entry ponit reuse for traverse */
+	list_for_each_entry(hash_map_ppn_entry,&hash_map_ppn_list,i_list)
+	{
+		printk("hashing in this map:%lu\n",hash_map_ppn_entry->hashing);
+		printk("count in this map:%lu\n",hash_map_ppn_entry->count);
+	}
+	
 	//end
 
 
