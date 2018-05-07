@@ -225,6 +225,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	hash_map_ppn_entry->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
 	INIT_LIST_HEAD(&hash_map_ppn_entry->list);
 	list_add_tail(&hash_map_ppn_entry->list, &hash_map_ppn_list);
+	hash_map_ppn_entry->hashing = 0;
 	/* hash_map_ppn_entry ponit reuse for traverse */
 	list_for_each_entry(hash_map_ppn_entry,&hash_map_ppn_list,list)
 	{	
