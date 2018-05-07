@@ -203,6 +203,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	unsigned long hashing = 0;
 	unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 	int i;
+	bool find_flag = false;
 	struct hash_map_ppn *hash_map_ppn_entry, *hash_map_ppn_temp;
 	hash_map_ppn_entry = kmalloc(sizeof(*hash_map_ppn_entry), GFP_KERNEL);
 	hash_map_ppn_temp = kmalloc(sizeof(*hash_map_ppn_temp), GFP_KERNEL);
@@ -232,16 +233,17 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			printk("find the hashing!\n");
 			printk("hashing in this map entry:%lu\n",hash_map_ppn_entry->hashing);
 			printk("count in this map entry:%u\n",hash_map_ppn_entry->count);
-		}
-		else
-		{
-			hash_map_ppn_temp->hashing = hashing;
-			hash_map_ppn_temp->count = 1;
-			hash_map_ppn_temp->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
-			INIT_LIST_HEAD(&hash_map_ppn_temp->list);
-			list_add_tail(&hash_map_ppn_temp->list, &hash_map_ppn_list);
+			find_flag = true;
 		}
 		// printk("count in this map:%u\n",hash_map_ppn_entry->count);
+	}
+	if(likely(find_flag == false))
+	{
+		hash_map_ppn_temp->hashing = hashing;
+		hash_map_ppn_temp->count = 1;
+		hash_map_ppn_temp->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
+		INIT_LIST_HEAD(&hash_map_ppn_temp->list);
+		list_add_tail(&hash_map_ppn_temp->list, &hash_map_ppn_list);
 	}
 	//end
 
