@@ -23,6 +23,7 @@
 #include <linux/string.h>
 #include <linux/slab.h>
 #include <linux/list.h>
+#include <crypto/md5.c>
 #include "dedup.c"
 
 /* dedup claim start */
