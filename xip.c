@@ -220,8 +220,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	{	
 		if(unlikely(hash_map_ppn_entry->hashing == hashing))
 			printk("find the hashing!\n");
-		// printk("hashing in this map:%lu\n",hash_map_ppn_entry->hashing);
-		// printk("count in this map:%u\n",hash_map_ppn_entry->count);
+		printk("hashing in this map:%lu\n",hash_map_ppn_entry->hashing);
+		printk("count in this map:%u\n",hash_map_ppn_entry->count);
 	}
 	// printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
 	// printk("sizeof buf:%d\n",(int)strlen(buf));
