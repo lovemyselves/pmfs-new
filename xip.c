@@ -225,7 +225,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	// };
 	hash_map_ppn_entry->hashing = hashing;
 	hash_map_ppn_entry->count = 1;
-	hash_map_ppn_entry->ppn = {0,0,0,0,0,0};
+	hash_map_ppn_entry->ppn = kmalloc(sizof(char*6), GFP_KERNEL);
 	list_add(&hash_map_ppn_entry->list, &hash_map_ppn_list);
 	//end
 
