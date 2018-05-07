@@ -5,13 +5,13 @@
 
 struct hash_map_ppn{
     unsigned long hashing;
-    char ppn[6];
+    void *ppn;
     unsigned int count;
     struct list_head list; 
 };
 
 struct lpn_map_ppn{
-    char lpn[6];
+    void *lpn;
     struct hash_map_ppn *pnode;
 };
 
