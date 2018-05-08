@@ -23,7 +23,6 @@
 #include <linux/string.h>
 #include <linux/slab.h>
 #include <linux/list.h>
-#include <linux/types.h>
 #include "dedup.c"
 
 /* dedup claim start */
