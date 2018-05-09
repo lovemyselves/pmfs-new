@@ -186,10 +186,10 @@ static inline size_t memcpy_to_nvmm(char *kmem, loff_t offset,
 	// printk("kmem length:%d",(int)strlen(kmem));
 	// printk("kmem:%s\n",kmem);
 	// printk("kmem+offset:%lu\n",kmem);
-	printk("bytes value:%zu",bytes);
-	printk("copied value:%zu",copied);
-	printk("buf:%s",buf);
-	printk("kmem+offset:%s",kmem+offset);
+	// printk("bytes value:%zu",bytes);
+	// printk("copied value:%zu",copied);
+	// printk("buf:%s",buf);
+	// printk("kmem+offset:%s",kmem+offset);
 	/* end */
 	return copied;
 }
@@ -213,7 +213,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	struct hash_map_ppn *hash_map_ppn_entry, *hash_map_ppn_temp;
 	hash_map_ppn_entry = kmalloc(sizeof(*hash_map_ppn_entry), GFP_KERNEL);
 	hash_map_ppn_temp = kmalloc(sizeof(*hash_map_ppn_temp), GFP_KERNEL);
-	// printk("buf:%s\n",buf);
+	printk("buf:%s\n",buf);
 
 	/* 2 and 8 is randomly setting,  */
 	for(i=0;i<128;i++)
@@ -300,6 +300,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				status = -EFAULT;
 		if (status < 0)
 			break;
+		/* dedup start */
+			printk("count:%u\n",count);
+		/* end */	
 	} while (count);
 	*ppos = pos;
 	/*
@@ -311,13 +314,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		pmfs_update_isize(inode, pi);
 	}
 
-	//dedup regin start
-
-	// strncpy(temp,buf+16,16);
-	// printk("buf:%s\n",buf);
-	// printk("hashing:%s\n",temp);
-	// printk("hashing:%llu\n",temp);
-	//regin end
+	/*dedup start */
+	printk("%s",kmem+offset);
+	/* end */
 
 	PMFS_END_TIMING(internal_write_t, write_time);
 	return written ? written : status;
