@@ -188,6 +188,8 @@ static inline size_t memcpy_to_nvmm(char *kmem, loff_t offset,
 	// printk("kmem+offset:%lu\n",kmem);
 	printk("bytes value:%zu",bytes);
 	printk("copied value:%zu",copied);
+	printk("buf:%s",buf);
+	printk("kmem+offset:%s",kmem+offset);
 	/* end */
 	return copied;
 }
@@ -234,9 +236,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(unlikely(hash_map_ppn_entry->hashing == hashing))
 		{
 			hash_map_ppn_entry->count++;
-			printk("find the hashing!\n");
-			printk("hashing in this map entry:%lu\n",hash_map_ppn_entry->hashing);
-			printk("count in this map entry:%u\n",hash_map_ppn_entry->count);
+			// printk("find the hashing!\n");
+			// printk("hashing in this map entry:%lu\n",hash_map_ppn_entry->hashing);
+			// printk("count in this map entry:%u\n",hash_map_ppn_entry->count);
 			find_flag = true;
 		}
 		// printk("count in this map:%u\n",hash_map_ppn_entry->count);
