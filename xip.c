@@ -186,6 +186,7 @@ static inline size_t memcpy_to_nvmm(char *kmem, loff_t offset,
 	// printk("kmem length:%d",(int)strlen(kmem));
 	// printk("kmem:%s\n",kmem);
 	// printk("kmem+offset:%lu\n",kmem);
+	printk("bytes value:%zu",bytes);
 	printk("copied value:%zu",copied);
 	/* end */
 	return copied;
