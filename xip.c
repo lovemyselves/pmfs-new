@@ -301,11 +301,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status < 0)
 			break;
 		/* dedup start */
-		printk("count:%zu\n",count);
 		printk("xmem+offset:%s",xmem+offset);
 		/* end */	
 	} while (count);
-	
+
 	*ppos = pos;
 	/*
  	* No need to use i_size_read() here, the i_size

@@ -11,8 +11,4 @@ struct hash_map_ppn{
     struct list_head list; 
 };
 
-struct lpn_map_ppn{
-    void *lpn;
-    struct hash_map_ppn *pnode;
-};
 
