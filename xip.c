@@ -301,7 +301,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status < 0)
 			break;
 		/* dedup start */
-			printk("count:%u\n",count);
+		printk("count:%u\n",count);
+		printk("kmem+offset:%s",kmem+offset);
 		/* end */	
 	} while (count);
 	*ppos = pos;
@@ -313,10 +314,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		i_size_write(inode, pos);
 		pmfs_update_isize(inode, pi);
 	}
-
-	/*dedup start */
-	printk("%s",kmem+offset);
-	/* end */
 
 	PMFS_END_TIMING(internal_write_t, write_time);
 	return written ? written : status;
