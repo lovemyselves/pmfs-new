@@ -180,10 +180,12 @@ static inline size_t memcpy_to_nvmm(char *kmem, loff_t offset,
 						offset, buf, bytes);
 	}
 	/* dedup start */
-	// printk("kmem+offset length:%d",(int)strlen(kmem+offset));
-	// printk("kmem+offset:%s\n",kmem+offset);
-	// printk("kmem length:%d",(int)strlen(kmem));
-	// printk("kmem:%s\n",kmem);
+	printk("kmem+offset length:%d",(int)strlen(kmem+offset));
+	printk("kmem+offset:%s\n",kmem+offset);
+	printk("kmem+offset:%lu\n",kmmem+offset);
+	printk("kmem length:%d",(int)strlen(kmem));
+	printk("kmem:%s\n",kmem);
+	printk("kmem+offset:%lu\n",kmmem);
 	/* end */
 	return copied;
 }
