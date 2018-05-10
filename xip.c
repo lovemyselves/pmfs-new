@@ -214,7 +214,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
 	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 	
-
 	/* 2 and 8 is randomly setting,  */
 	for(i=0;i<128;i++)
 	{
@@ -675,6 +674,10 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 			block, pgoff, create, *pfn);
 		return rc;
 	}
+
+	/* dedup start */
+	printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
+	/* end */
 
 	*kmem = pmfs_get_block(inode->i_sb, block);
 	*pfn = pmfs_get_pfn(inode->i_sb, block);
