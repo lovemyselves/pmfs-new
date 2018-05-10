@@ -676,21 +676,22 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 		return rc;
 	}
 
-	/* dedup start */
-	printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
-	printk("block:%lu\n",block);
-	printk("block:%lu\n",block>>17);
-	printk("block value:");
-	for(i = 0;i<4096;i++) printk("%c",*(block+i));
-	printk("\n");
-	/* end */
-
 	*kmem = pmfs_get_block(inode->i_sb, block);
 	*pfn = pmfs_get_pfn(inode->i_sb, block);
 
 	pmfs_dbg_mmapvv("[%s:%d] sb->physaddr(0x%llx), block(0x%lx),"
 		" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__, __LINE__,
 		PMFS_SB(inode->i_sb)->phys_addr, block, pgoff, create, *pfn);
+
+	/* dedup start */
+	printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
+	printk("block:%lu\n",block);
+	printk("block:%lu\n",block>>17);
+	printk("block value:");
+	for(i = 0;i<4096;i++) printk("%c",*(&block+i));
+	printk("\n");
+	/* end */
+
 	return 0;
 }
 
