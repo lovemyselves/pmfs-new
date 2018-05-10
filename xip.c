@@ -213,7 +213,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 	hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
 	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-	printk("buf:%s\n",buf);
+	
 
 	/* 2 and 8 is randomly setting,  */
 	for(i=0;i<128;i++)
@@ -224,9 +224,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		hashing ^= (hashing >> 2);
 	}
 	
-	// printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
-	// printk("sizeof buf:%d\n",(int)strlen(buf));
-	// printk("hashing:%lu\n",hashing);
 	hash_map_addr_entry->hashing = 0;
 	INIT_LIST_HEAD(&hash_map_addr_entry->list);
 	
@@ -241,7 +238,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
 			find_flag = true;
 		}
-		// printk("count in this map:%u\n",hash_map_addr_entry->count);
 	}
 	if(likely(find_flag == false))
 	{
@@ -496,12 +492,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 	
 	/* dedup start */
-	// printk("buf:%s\n",buf);
-	// printk("buf length:%d\n",(int)strlen(buf));
-	/* use strncpy create fingerprint */
-	// char fingerprint[128];
-	// memcpy(fingerprint,buf+3968,128);
-	// printk("fingerprint:%s\n",fingerprint);
+	
 	/* dedup end */
 
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
