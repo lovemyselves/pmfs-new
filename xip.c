@@ -440,12 +440,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	//dedup insert start
 	printk("ino:%lu\n",inode->i_ino);
-	printk("offset:%lu\n",offset);
-	printk("pos:%llu\n",pos);
-	printk("blocksize:%u",sb->s_blocksize_bits);
-	printk("start_blk:%lu\n",start_blk);
-	printk("end_blk:%lu\n",end_blk);
-	printk("block:%llu\n",block);
+	// printk("offset:%lu\n",offset);
+	// printk("pos:%llu\n",pos);
+	// printk("blocksize:%u",sb->s_blocksize_bits);
+	// printk("start_blk:%lu\n",start_blk);
+	// printk("end_blk:%lu\n",end_blk);
+	// printk("block:%llu\n",block);
 	printk("start_blk>>5:%lu\n",start_blk>>5);
 	//end
 
@@ -677,6 +677,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 
 	/* dedup start */
 	printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
+	printk("block:%llu\n",block);
 	/* end */
 
 	*kmem = pmfs_get_block(inode->i_sb, block);
