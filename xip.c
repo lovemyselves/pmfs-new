@@ -447,6 +447,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("start_blk:%lu\n",start_blk);
 	printk("end_blk:%lu\n",end_blk);
 	printk("block:%llu\n",block);
+	printk("start_blk<<5:%lu\n",start_blk<<5);
 	//end
 
 	/* Referring to the inode's block size, not 4K */
