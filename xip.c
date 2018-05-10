@@ -243,17 +243,15 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		}
 		// printk("count in this map:%u\n",hash_map_ppn_entry->count);
 	}
-	if(likely(find_flag == false))
-	{
-		hash_map_ppn_temp->hashing = hashing;
-		hash_map_ppn_temp->count = 1;
-		hash_map_ppn_temp->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
-		INIT_LIST_HEAD(&hash_map_ppn_temp->list);
-		list_add_tail(&hash_map_ppn_temp->list, &hash_map_ppn_list);
-	}
+	// if(likely(find_flag == false))
+	// {
+	// 	hash_map_ppn_temp->hashing = hashing;
+	// 	hash_map_ppn_temp->count = 1;
+	// 	hash_map_ppn_temp->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
+	// 	INIT_LIST_HEAD(&hash_map_ppn_temp->list);
+	// 	list_add_tail(&hash_map_ppn_temp->list, &hash_map_ppn_list);
+	// }
 	//end
-
-
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
@@ -302,6 +300,15 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			break;
 		/* dedup start */
 		printk("xmem+offset:%s",xmem+offset);
+		printk("xmem%s",xmem);
+		if(likely(find_flag == false))
+		{	
+			hash_map_ppn_temp->hashing = hashing;
+			hash_map_ppn_temp->count = 1;
+			hash_map_ppn_temp->xmem = xmem;
+			INIT_LIST_HEAD(&hash_map_ppn_temp->list);
+			list_add_tail(&hash_map_ppn_temp->list, &hash_map_ppn_list);
+		}
 		/* end */	
 	} while (count);
 

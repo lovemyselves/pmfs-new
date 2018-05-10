@@ -6,7 +6,7 @@
 struct hash_map_ppn{
     unsigned long hashing;
     void *hashing_md5;
-    void *ppn;
+    void *xmem;
     unsigned int count;
     struct list_head list; 
 };
