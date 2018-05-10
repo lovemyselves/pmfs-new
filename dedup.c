@@ -3,10 +3,10 @@
 #include <linux/rbtree.h>
 #include <linux/kernel.h>
 
-struct hash_map_ppn{
+struct hash_map_addr{
     unsigned long hashing;
     void *hashing_md5;
-    void *xmem;
+    void *addr;
     unsigned int count;
     struct list_head list; 
 };
