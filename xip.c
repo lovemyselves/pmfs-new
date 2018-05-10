@@ -685,7 +685,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	/* dedup start */
 	printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
 	printk("block:%lu\n",block);
-	printk("block:%lu\n",block>>17);
+	printk("block:%lu\n",block>>12);
 	printk("pfn:%lu\n",pfn);
 	/* end */
 
