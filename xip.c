@@ -440,8 +440,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	block = pmfs_find_data_block(inode, start_blk);
 
 	//dedup insert start
-	printk("start_blk%lu\n",start_blk);
-	printk("end_blk%lu\n",end_blk);
+	printk("pos:%lu\n",pos);
+	printk("blocksize:%lu",sb->blocksize_bits);
+	printk("start_blk:%lu\n",start_blk);
+	printk("end_blk:%lu\n",end_blk);
 	printk("block:%llu\n",block);
 	//end
 
