@@ -444,7 +444,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	block = pmfs_find_data_block(inode, start_blk);
 
 	//dedup insert start
-	printk("block:%lu\n");
+	printk("block:%lu\n",block);
 	//end
 
 	/* Referring to the inode's block size, not 4K */
