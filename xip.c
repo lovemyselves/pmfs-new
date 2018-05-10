@@ -28,7 +28,7 @@
 /* dedup claim start */
 // struct lpn_map_ppn *l_map_p;
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
-static LIST_HEAD(hash_map_ppn_list);
+static LIST_HEAD(hash_map_addr_list);
 
 /* claim end */
 
@@ -210,9 +210,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 	int i;
 	bool find_flag = false;
-	struct hash_map_ppn *hash_map_ppn_entry, *hash_map_ppn_temp;
-	hash_map_ppn_entry = kmalloc(sizeof(*hash_map_ppn_entry), GFP_KERNEL);
-	hash_map_ppn_temp = kmalloc(sizeof(*hash_map_ppn_temp), GFP_KERNEL);
+	struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
+	hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
+	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 	printk("buf:%s\n",buf);
 
 	/* 2 and 8 is randomly setting,  */
@@ -227,29 +227,29 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	// printk("sizeof int:%d\n",(int)sizeof(int)/sizeof(char));
 	// printk("sizeof buf:%d\n",(int)strlen(buf));
 	// printk("hashing:%lu\n",hashing);
-	hash_map_ppn_entry->hashing = 0;
-	INIT_LIST_HEAD(&hash_map_ppn_entry->list);
+	hash_map_addr_entry->hashing = 0;
+	INIT_LIST_HEAD(&hash_map_addr_entry->list);
 	
-	/* hash_map_ppn_entry ponit reuse for traverse */
-	list_for_each_entry(hash_map_ppn_entry,&hash_map_ppn_list,list)
+	/* hash_map_addr_entry ponit reuse for traverse */
+	list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
 	{	
-		if(unlikely(hash_map_ppn_entry->hashing == hashing))
+		if(unlikely(hash_map_addr_entry->hashing == hashing))
 		{
-			hash_map_ppn_entry->count++;
+			hash_map_addr_entry->count++;
 			// printk("find the hashing!\n");
-			// printk("hashing in this map entry:%lu\n",hash_map_ppn_entry->hashing);
-			// printk("count in this map entry:%u\n",hash_map_ppn_entry->count);
+			// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+			// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
 			find_flag = true;
 		}
-		// printk("count in this map:%u\n",hash_map_ppn_entry->count);
+		// printk("count in this map:%u\n",hash_map_addr_entry->count);
 	}
 	if(likely(find_flag == false))
 	{
-		hash_map_ppn_temp->hashing = hashing;
-		hash_map_ppn_temp->count = 1;
-		hash_map_ppn_temp->ppn = kmalloc(6*sizeof(char), GFP_KERNEL);
-		INIT_LIST_HEAD(&hash_map_ppn_temp->list);
-		list_add_tail(&hash_map_ppn_temp->list, &hash_map_ppn_list);
+		hash_map_addr_temp->hashing = hashing;
+		hash_map_addr_temp->count = 1;
+		hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
+		INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 	}
 	//end
 
@@ -442,6 +442,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	end_blk = start_blk + num_blocks - 1;
 
 	block = pmfs_find_data_block(inode, start_blk);
+
+	//dedup insert start
+	printk("block:%llu");
+	//end
 
 	/* Referring to the inode's block size, not 4K */
 	same_block = (((count + offset - 1) >>
