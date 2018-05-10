@@ -213,7 +213,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	struct hash_map_ppn *hash_map_ppn_entry, *hash_map_ppn_temp;
 	hash_map_ppn_entry = kmalloc(sizeof(*hash_map_ppn_entry), GFP_KERNEL);
 	hash_map_ppn_temp = kmalloc(sizeof(*hash_map_ppn_temp), GFP_KERNEL);
-	printk("buf:%s\n",buf);
+	// printk("buf:%s\n",buf);
 
 	/* 2 and 8 is randomly setting,  */
 	for(i=0;i<128;i++)
@@ -299,8 +299,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status < 0)
 			break;
 		/* dedup start */
-		printk("xmem+offset:%s",xmem+offset);
-		printk("xmem%s",xmem);
+		printk("%u\n",offset);
+		printk("xmem+offset:%s\n",xmem+offset);
+		printk("xmem:%s\n",xmem);
 		if(likely(find_flag == false))
 		{	
 			hash_map_ppn_temp->hashing = hashing;
