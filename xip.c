@@ -299,9 +299,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status < 0)
 			break;
 		/* dedup start */
-		printk("%u\n",offset);
-		printk("xmem+offset:%s\n",xmem+offset);
-		printk("xmem:%s\n",xmem);
+		printk("%lu\n",offset);
+		printk("xmem+offset:%s\n",(char*)xmem+offset);
+		printk("xmem:%s\n",(char*)xmem);
 		if(likely(find_flag == false))
 		{	
 			hash_map_ppn_temp->hashing = hashing;
