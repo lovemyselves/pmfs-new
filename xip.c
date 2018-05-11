@@ -260,9 +260,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			if(unlikely(hash_map_addr_entry->hashing == hashing))
 			{		
 				hash_map_addr_entry->count++;
-				printk("find the hashing!\n");
-				printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-				printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+				// printk("find the hashing!\n");
+				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
 				find_flag = true;
 			}
 		}
@@ -443,7 +443,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	block = pmfs_find_data_block(inode, start_blk);
 
 	//dedup insert start
-	printk("ino:%lu\n",inode->i_ino);
+	// printk("ino:%lu\n",inode->i_ino);
 	// printk("offset:%lu\n",offset);
 	// printk("pos:%llu\n",pos);
 	// printk("blocksize:%u",sb->s_blocksize_bits);
