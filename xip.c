@@ -267,7 +267,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 		// dedup start
 		kmem = &xmem;
-		printk("kmem:%s\n",*kmem);
+		
 		// end	
 		if (status)
 			break;
@@ -452,8 +452,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// printk("start_blk:%lu\n",start_blk);
 	// printk("end_blk:%lu\n",end_blk);
 	// printk("block:%llu\n",block);
-	printk("start_blk>>5:%lu\n",start_blk>>5);
-	printk("buf:%s\n",buf);
+	// printk("start_blk>>5:%lu\n",start_blk>>5);
 	//end
 
 	/* Referring to the inode's block size, not 4K */
@@ -691,9 +690,9 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 
 	/* dedup start */
 	// printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
-	printk("block:%lu\n",block);
+	// printk("block:%lu\n",block);
 	// printk("block value:%lu\n",block>>12);
-	printk("pfn:%lu\n",*pfn);
+	// printk("pfn:%lu\n",*pfn);
 	printk("kmem:%lu\n",(unsigned long)*kmem);
 	/* end */
 
