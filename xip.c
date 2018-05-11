@@ -205,49 +205,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	ssize_t     written = 0;
 	struct pmfs_inode *pi;
 	timing_t memcpy_time, write_time;
-	//dedup start
-	unsigned long hashing = 0;
-	unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
-	int i;
-	bool find_flag = false;
-	void **kmem;
-	struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
-	hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
-	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-	
-	/* 2 and 8 is randomly setting,  */
-	for(i=0;i<128;i++)
-	{
-		memcpy(temp,buf+i*sizeof(unsigned long),sizeof(unsigned long));
-		hashing += *temp;
-		hashing += (hashing << 8);
-		hashing ^= (hashing >> 2);
-	}
-	
-	hash_map_addr_entry->hashing = 0;
-	INIT_LIST_HEAD(&hash_map_addr_entry->list);
-	
-	/* hash_map_addr_entry ponit reuse for traverse */
-	list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-	{	
-		if(unlikely(hash_map_addr_entry->hashing == hashing))
-		{
-			hash_map_addr_entry->count++;
-			printk("find the hashing!\n");
-			// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-			// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-			find_flag = true;
-		}
-	}
-	if(likely(find_flag == false))
-	{
-		hash_map_addr_temp->hashing = hashing;
-		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
-		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-	}
-	//end
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
@@ -257,6 +214,16 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		size_t copied;
 		void *xmem;
 		unsigned long xpfn;
+		//dedup claiming start
+		unsigned long hashing = 0;
+		unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
+		int i;
+		bool find_flag = false;
+		void **kmem;
+		struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
+		hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
+		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+		//end
 
 		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 		index = pos >> sb->s_blocksize_bits;
@@ -277,6 +244,41 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+		
+		/* dedup hashing compute and store */
+		/* 2 and 3 is randomly setting */
+		for(i=0;i<128;i++)
+		{
+			memcpy(temp,char(*)xmem+i*sizeof(unsigned long),sizeof(unsigned long));
+			hashing += *temp;
+			hashing += (hashing << 3);
+			hashing ^= (hashing >> 2);
+		}
+	
+		hash_map_addr_entry->hashing = 0;
+		INIT_LIST_HEAD(&hash_map_addr_entry->list);
+	
+		/* hash_map_addr_entry ponit reuse for traverse */
+		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+		{	
+			if(unlikely(hash_map_addr_entry->hashing == hashing))
+			{		
+				hash_map_addr_entry->count++;
+				printk("find the hashing!\n");
+				printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+				printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+				find_flag = true;
+			}
+		}
+		if(likely(find_flag == false))
+		{
+			hash_map_addr_temp->hashing = hashing;
+			hash_map_addr_temp->count = 1;
+			hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
+			INIT_LIST_HEAD(&hash_map_addr_temp->list);
+			list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		}
+		/* end */
 
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
@@ -692,8 +694,8 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	// printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
 	// printk("block:%lu\n",block);
 	// printk("block value:%lu\n",block>>12);
-	printk("pfn:%lu\n",*pfn);
-	printk("kmem:%lu\n",(unsigned long)*kmem);
+	// printk("pfn:%lu\n",*pfn);
+	// printk("kmem:%lu\n",(unsigned long)*kmem);
 	/* end */
 
 	return 0;
