@@ -689,7 +689,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	printk("block value:%lu\n",block>>12);
 	printk("pfn:%lu\n",*pfn);
 	printk("kmem:%lu\n",(unsigned long)*kmem);
-	printk("%s",(char*)*kmem);
+	printk("kmem value:%s\n",(char*)*kmem);
 	/* end */
 
 	return 0;
