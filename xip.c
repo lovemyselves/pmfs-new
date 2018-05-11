@@ -255,17 +255,17 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_entry->list);
 	
 		/* hash_map_addr_entry ponit reuse for traverse */
-		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-		{	
-			if(unlikely(hash_map_addr_entry->hashing == hashing))
-			{		
-				hash_map_addr_entry->count++;
-				// printk("find the hashing!\n");
-				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-				find_flag = true;
-			}
-		}
+		// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+		// {	
+		// 	if(unlikely(hash_map_addr_entry->hashing == hashing))
+		// 	{		
+		// 		hash_map_addr_entry->count++;
+		// 		// printk("find the hashing!\n");
+		// 		// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+		// 		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+		// 		find_flag = true;
+		// 	}
+		// }
 		if(likely(find_flag == false))
 		{
 			hash_map_addr_temp->hashing = hashing;
@@ -442,6 +442,17 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	block = pmfs_find_data_block(inode, start_blk);
 
+	//dedup insert start
+	// printk("ino:%lu\n",inode->i_ino);
+	// printk("offset:%lu\n",offset);
+	// printk("pos:%llu\n",pos);
+	// printk("blocksize:%u",sb->s_blocksize_bits);
+	// printk("start_blk:%lu\n",start_blk);
+	// printk("end_blk:%lu\n",end_blk);
+	// printk("block:%llu\n",block);
+	// printk("start_blk>>5:%lu\n",start_blk>>5);
+	//end
+
 	/* Referring to the inode's block size, not 4K */
 	same_block = (((count + offset - 1) >>
 			pmfs_inode_blk_shift(pi)) == 0) ? 1 : 0;
@@ -489,6 +500,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* now zero out the edge blocks which will be partially written */
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
+	
+	/* dedup start */
+	
+	/* dedup end */
 
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	if (written < 0 || written != count)
@@ -670,6 +685,14 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	pmfs_dbg_mmapvv("[%s:%d] sb->physaddr(0x%llx), block(0x%lx),"
 		" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__, __LINE__,
 		PMFS_SB(inode->i_sb)->phys_addr, block, pgoff, create, *pfn);
+
+	/* dedup start */
+	// printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
+	// printk("block:%lu\n",block);
+	// printk("block value:%lu\n",block>>12);
+	// printk("pfn:%lu\n",*pfn);
+	// printk("kmem:%lu\n",(unsigned long)*kmem);
+	/* end */
 
 	return 0;
 }
