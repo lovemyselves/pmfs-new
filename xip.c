@@ -265,6 +265,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			bytes = count;
 
 		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+		// dedup start
+		kmem = &xmem;
+		printk("kmem:%s\n",*kmem);
+		// end	
 		if (status)
 			break;
 
@@ -293,12 +297,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			if (status >= 0)
 				status = -EFAULT;
 		if (status < 0)
-			break;
-
-	// dedup start
-	kmem = &xmem;
-	
-	// end		
+			break;	
 
 	} while (count);
 
