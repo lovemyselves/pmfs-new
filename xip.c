@@ -297,7 +297,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 	// dedup start
 		kmem = &xmem;
-		printk("kmem value:%s\n",(char*)*kmem);
 	// end		
 
 	} while (count);
@@ -311,6 +310,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		i_size_write(inode, pos);
 		pmfs_update_isize(inode, pi);
 	}
+
+	/* dedup start */
+	printk("kmem value:%s\n",(char*)*kmem);
+	/* end */
 
 	PMFS_END_TIMING(internal_write_t, write_time);
 	return written ? written : status;
