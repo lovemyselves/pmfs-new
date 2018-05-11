@@ -233,7 +233,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(unlikely(hash_map_addr_entry->hashing == hashing))
 		{
 			hash_map_addr_entry->count++;
-			// printk("find the hashing!\n");
+			printk("find the hashing!\n");
 			// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
 			// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
 			find_flag = true;
@@ -296,7 +296,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			break;
 
 	// dedup start
-		kmem = &xmem;
+	kmem = &xmem;
+	
 	// end		
 
 	} while (count);
@@ -310,10 +311,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		i_size_write(inode, pos);
 		pmfs_update_isize(inode, pi);
 	}
-
-	/* dedup start */
-	printk("kmem value:%s\n",(char*)*kmem);
-	/* end */
 
 	PMFS_END_TIMING(internal_write_t, write_time);
 	return written ? written : status;
@@ -694,9 +691,9 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 		PMFS_SB(inode->i_sb)->phys_addr, block, pgoff, create, *pfn);
 
 	/* dedup start */
-	printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
+	// printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
 	printk("block:%lu\n",block);
-	printk("block value:%lu\n",block>>12);
+	// printk("block value:%lu\n",block>>12);
 	printk("pfn:%lu\n",*pfn);
 	printk("kmem:%lu\n",(unsigned long)*kmem);
 	/* end */
