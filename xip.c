@@ -665,6 +665,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	int rc;
 	sector_t block = 0;
 	struct inode *inode = mapping->host;
+	int i;
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
 	if (rc) {
@@ -685,8 +686,10 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	/* dedup start */
 	printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
 	printk("block:%lu\n",block);
-	printk("block:%lu\n",block>>12);
+	printk("block value:%lu\n",block>>12);
 	printk("pfn:%lu\n",pfn);
+	printk("kmem:%lu\n",kmem);
+	for(i=0;i<64;i++) printk("%c",**(kmem+i));
 	/* end */
 
 	return 0;
