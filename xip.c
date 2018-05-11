@@ -219,7 +219,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 		int i;
 		bool find_flag = false;
-		void **kmem;
 		struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 		hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -232,10 +231,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			bytes = count;
 
 		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
-		// dedup start
-		kmem = &xmem;
 		
-		// end	
 		if (status)
 			break;
 
@@ -249,7 +245,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		/* 2 and 3 is randomly setting */
 		for(i=0;i<128;i++)
 		{
-			memcpy(temp,char(*)xmem+i*sizeof(unsigned long),sizeof(unsigned long));
+			memcpy(temp,(char*)xmem+i*sizeof(unsigned long),sizeof(unsigned long));
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
