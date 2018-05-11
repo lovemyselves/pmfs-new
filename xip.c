@@ -260,9 +260,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			if(unlikely(hash_map_addr_entry->hashing == hashing))
 			{		
 				hash_map_addr_entry->count++;
-				printk("find the hashing!\n");
-				printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-				printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+				// printk("find the hashing!\n");
+				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
 				find_flag = true;
 			}
 		}
