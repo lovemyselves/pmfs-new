@@ -29,7 +29,7 @@
 // struct lpn_map_ppn *l_map_p;
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
-struct list_head *last_hit;
+struct list_head last_hit;
 bool find_flag = false;
 /* claim end */
 
