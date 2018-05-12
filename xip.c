@@ -241,7 +241,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		
-		/* dedup hashing compute and store */
+		/* page data hashing compute */
 		/* 2 and 3 is randomly setting */
 		for(i=0;i<128;i++)
 		{
@@ -255,22 +255,24 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_entry->list);
 	
 		/* hash_map_addr_entry ponit reuse for traverse */
-		// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-		// {	
-		// 	if(unlikely(hash_map_addr_entry->hashing == hashing))
-		// 	{		
-		// 		hash_map_addr_entry->count++;
-		// 		// printk("find the hashing!\n");
-		// 		// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-		// 		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-		// 		find_flag = true;
-		// 	}
-		// }
+		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+		{	
+			if(unlikely(hash_map_addr_entry->hashing == hashing))
+			{		
+				hash_map_addr_entry->count++;
+				// printk("find the hashing!\n");
+				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+				find_flag = true;
+			}
+		}
+		// not dup, insert new index
 		if(likely(find_flag == false))
 		{
 			hash_map_addr_temp->hashing = hashing;
 			hash_map_addr_temp->count = 1;
-			hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
+			// hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
+			hash_map_addr_temp->addr = xmem;
 			INIT_LIST_HEAD(&hash_map_addr_temp->list);
 			list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		}
