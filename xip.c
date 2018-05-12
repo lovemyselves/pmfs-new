@@ -29,7 +29,8 @@
 // struct lpn_map_ppn *l_map_p;
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
-
+struct hash_map_addr *last_hit;
+bool find_flag = false;
 /* claim end */
 
 static ssize_t
@@ -218,7 +219,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		unsigned long hashing = 0;
 		unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 		int i;
-		bool find_flag = false;
 		struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 		hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -253,19 +253,25 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	
 		hash_map_addr_entry->hashing = 0;
 		INIT_LIST_HEAD(&hash_map_addr_entry->list);
-	
+
+		// find from last hit point
+		// if(find_flag == true && hashing == last_hit->list.next->hashing)
+		// {}
+		*(&find_flag) = false;
 		/* hash_map_addr_entry ponit reuse for traverse */
-		// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-		// {	
-		// 	if(unlikely(hash_map_addr_entry->hashing == hashing))
-		// 	{		
-		// 		hash_map_addr_entry->count++;
-		// 		// printk("find the hashing!\n");
-		// 		// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-		// 		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-		// 		find_flag = true;
-		// 	}
-		// }
+		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+		{	
+			if(unlikely(hash_map_addr_entry->hashing == hashing))
+			{		
+				hash_map_addr_entry->count++;
+				// printk("find the hashing!\n");
+				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+				*(&find_flag) = true;
+				last_hit = hash_map_addr_entry;
+				break;
+			}
+		}
 		// not dup, insert new index
 		if(likely(find_flag == false))
 		{
