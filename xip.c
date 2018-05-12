@@ -255,7 +255,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_entry->list);
 
 		// find from last hit point
-		if(find_flag == true && hashing == list_entry(last_hit.next,hash_map_addr,list)->hashing)
+		if(find_flag == true && hashing == list_entry(last_hit.next,struct hash_map_addr,list)->hashing)
 		{
 			last_hit = last_hit.next;
 			list_entry(last_hit.next,hash_map_addr,list)->count++;
