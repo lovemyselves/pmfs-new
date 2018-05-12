@@ -255,8 +255,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_entry->list);
 
 		// find from last hit point
-		// if(find_flag == true && hashing == last_hit->list.next->hashing)
-		// {}
+		if(find_flag == true && hashing == last_hit->list.next->hashing)
+		{
+			last_hit = last_hit->list.next;
+			last_hit->count++;
+			goto find;
+		}
 		*(&find_flag) = false;
 		/* hash_map_addr_entry ponit reuse for traverse */
 		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
@@ -282,6 +286,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			INIT_LIST_HEAD(&hash_map_addr_temp->list);
 			list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		}
+		find:
 		/* end */
 
 		/* if start or end dest address is not 8 byte aligned, 
