@@ -29,7 +29,7 @@
 // struct lpn_map_ppn *l_map_p;
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
-struct list_head last_hit;
+struct list_head *last_hit;
 bool find_flag = false;
 /* claim end */
 
@@ -272,7 +272,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
 				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
 				*(&find_flag) = true;
-				last_hit = hash_map_addr_entry->list;
+				*last_hit = hash_map_addr_entry->list;
 				break;
 			}
 		}
