@@ -217,7 +217,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		void *xmem;
 		unsigned long xpfn;
 		//dedup claiming start
-		unsigned long hashing = 0;
+		unsigned hashing = 0;
 		unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 		int i;
 		
@@ -247,7 +247,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		/* 2 and 3 is randomly setting */
 		for(i=0;i<128;i++)
 		{
-			memcpy(temp,(char*)xmem+i*sizeof(unsigned long),sizeof(unsigned long));
+			memcpy(temp,(char*)xmem+i*sizeof(unsigned),sizeof(unsigned));
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);

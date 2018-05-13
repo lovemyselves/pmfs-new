@@ -4,7 +4,7 @@
 #include <linux/kernel.h>
 
 struct hash_map_addr{
-    unsigned long hashing;
+    unsigned hashing;
     unsigned long hashing_md5;
     void *addr;
     unsigned int count;
