@@ -257,7 +257,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		/* find from last hit point */
  		// if(find_flag == true)
-		printk("find_flag:%d\n",find_flag);
 		// {
 		// 	// if(hashing == list_entry(last_hit->next, struct hash_map_addr, list)->hashing)
 		// 	// ;
@@ -281,6 +280,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				break;
 			}
 		}
+		printk("find_flag:%d\n",find_flag);
 		// not dup, insert new index
 		if(likely(find_flag == false))
 		{
