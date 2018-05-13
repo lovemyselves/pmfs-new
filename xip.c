@@ -277,7 +277,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// find_flag = 1;
 				last_hit.next = hash_map_addr_entry->list.next;
 				find_flag = true;
-				printk("fast hit,reference count:%u\n",hash_map_addr_entry->count);
+				printk("general hit, reference count:%u\n",hash_map_addr_entry->count);
 				goto find;
 			}	
 		}
