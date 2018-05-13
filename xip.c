@@ -30,6 +30,7 @@
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
 static LIST_HEAD(last_hit);
+bool find_flag = 0;
 
 /* claim end */
 
@@ -219,7 +220,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		unsigned long hashing = 0;
 		unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 		int i;
-		bool find_flag = 0;
+		
 		struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 		hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -256,15 +257,17 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_entry->list);
 
 		/* find from last hit point */
- 		// if(find_flag == true)
-		// {
-		// 	// if(hashing == list_entry(last_hit->next, struct hash_map_addr, list)->hashing)
-		// 	// ;
-		// // 	last_hit = last_hit->next;
-		// // 	list_entry(last_hit->next,struct hash_map_addr,list)->count++;
-		// // 	goto find;
+ 		if(find_flag == true)
+		{
+			if(hashing == list_entry(last_hit->next, struct hash_map_addr, list)->hashing)
+			{;
+				// last_hit = last_hit->next;
+				// list_entry(last_hit->next,struct hash_map_addr,list)->count++;
+				printk("fast hit!\n");
+				goto find;
+			}
 		// 	find_flag = false;
-		// }
+		}
 		
 		/* hash_map_addr_entry ponit reuse for traverse */
 		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
