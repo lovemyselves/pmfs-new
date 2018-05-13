@@ -277,20 +277,19 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
 				find_flag = true;
 				*last_hit = hash_map_addr_entry->list;
-				break;
+				printk("find_flag:%d\n",find_flag);
+				goto find;
 			}
 		}
-		printk("find_flag:%d\n",find_flag);
+		
 		// not dup, insert new index
-		if(likely(find_flag == false))
-		{
-			hash_map_addr_temp->hashing = hashing;
-			hash_map_addr_temp->count = 1;
-			// hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
-			hash_map_addr_temp->addr = xmem;
-			INIT_LIST_HEAD(&hash_map_addr_temp->list);
-			list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		}
+		
+		hash_map_addr_temp->hashing = hashing;
+		hash_map_addr_temp->count = 1;
+		// hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
+		hash_map_addr_temp->addr = xmem;
+		INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		find:
 		/* end */
 
