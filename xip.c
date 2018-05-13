@@ -259,9 +259,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		/* find from last hit point */
  		if(find_flag == true && hashing == list_entry(last_hit.next, struct hash_map_addr, list)->hashing)
 		{
-			list_entry(last_hit.next,struct hash_map_addr,list)->count++;
+			unsigned count = ++ list_entry(last_hit.next,struct hash_map_addr,list)->count;
 			last_hit.next = last_hit.next->next;
-			printk("fast hit, reference count:%u\n",hash_map_addr_entry->count);
+			printk("fast hit, reference count:%u\n", count);
 			goto find;
 		}
 		
@@ -277,7 +277,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// find_flag = 1;
 				last_hit.next = hash_map_addr_entry->list.next;
 				find_flag = true;
-				printk("general hit, reference count:%u\n",hash_map_addr_entry->count);
+				printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
 				goto find;
 			}	
 		}
