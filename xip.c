@@ -31,7 +31,7 @@
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
 bool *find_flag;
-find_flag = kmalloc(sizeof(*find_flag),GFP_KERNEL);
+find_flag = kmalloc(sizeof(bool),GFP_KERNEL);
 /* claim end */
 
 static ssize_t
