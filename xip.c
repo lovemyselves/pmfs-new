@@ -206,7 +206,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	ssize_t     written = 0;
 	struct pmfs_inode *pi;
 	timing_t memcpy_time, write_time;
-	bool find_flag = false;
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
@@ -220,6 +219,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		unsigned long hashing = 0;
 		unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 		int i;
+		bool find_flag = false;
 		struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 		hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
