@@ -30,7 +30,8 @@
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
-static bool find_flag = false;
+bool *find_flag;
+find_flag = kmalloc(sizeof(*find_flag),GFP_KERNEL);
 /* claim end */
 
 static ssize_t
