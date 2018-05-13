@@ -268,19 +268,19 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// }
 		
 		/* hash_map_addr_entry ponit reuse for traverse */
-		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-		{	
-			if(unlikely(hash_map_addr_entry->hashing == hashing))
-			{		
-				hash_map_addr_entry->count++;
-				// printk("find the hashing!\n");
-				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-				find_flag = true;
-				// *last_hit = hash_map_addr_entry->list;
-				break;
-			}
-		}
+		// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+		// {	
+		// 	if(unlikely(hash_map_addr_entry->hashing == hashing))
+		// 	{		
+		// 		hash_map_addr_entry->count++;
+		// 		// printk("find the hashing!\n");
+		// 		// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+		// 		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+		// 		find_flag = true;
+		// 		// *last_hit = hash_map_addr_entry->list;
+		// 		break;
+		// 	}
+		// }
 		// not dup, insert new index
 		if(likely(find_flag == false))
 		{
