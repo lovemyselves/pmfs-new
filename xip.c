@@ -257,16 +257,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_entry->list);
 
 		/* find from last hit point */
- 		if(find_flag == true)
+ 		if(find_flag == true && hashing == list_entry(last_hit.next, struct hash_map_addr, list)->hashing)
 		{
-			if(hashing == list_entry(last_hit.next, struct hash_map_addr, list)->hashing)
-			{
-				list_entry(last_hit.next,struct hash_map_addr,list)->count++;
-				last_hit.next = last_hit.next->next;
-				printk("fast hit!\n");
-				goto find;
-			}
-		// 	find_flag = false;
+			list_entry(last_hit.next,struct hash_map_addr,list)->count++;
+			last_hit.next = last_hit.next->next;
+			printk("fast hit!\n");
+			goto find;
 		}
 		
 		/* hash_map_addr_entry ponit reuse for traverse */
@@ -286,9 +282,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			}	
 		}
 		
-		printk("not hash hit\n");
 		// not dup, insert new index
-		
+		find_flag = false;
+		printk("not hash hit\n");
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
 		// hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
