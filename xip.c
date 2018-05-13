@@ -276,7 +276,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
 				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
 				// find_flag = 1;
-				last_hit.next = hash_map_addr_entry->list->next;
+				last_hit.next = hash_map_addr_entry->list.next;
 				find_flag = true;
 				printk("find_flag:%d\n",find_flag);
 				goto find;
