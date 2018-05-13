@@ -30,7 +30,8 @@
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
-bool find_flag = false;
+bool *find_flag = kmalloc(sizeof(bool),GFP_KERNEL);
+*find_flag = false;
 /* claim end */
 
 static ssize_t
@@ -273,13 +274,13 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("find the hashing!\n");
 				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
 				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-				*(&find_flag) = true;
+				*find_flag = true;
 				*last_hit = hash_map_addr_entry->list;
 				break;
 			}
 		}
 		// not dup, insert new index
-		if(likely(find_flag == false))
+		if(likely(*find_flag == false))
 		{
 			hash_map_addr_temp->hashing = hashing;
 			hash_map_addr_temp->count = 1;
