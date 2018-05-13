@@ -261,8 +261,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		{
 			if(hashing == list_entry(last_hit.next, struct hash_map_addr, list)->hashing)
 			{
-				// last_hit = last_hit->next;
-				// list_entry(last_hit->next,struct hash_map_addr,list)->count++;
+				list_entry(last_hit.next,struct hash_map_addr,list)->count++;
+				last_hit.next = last_hit.next->next;
 				printk("fast hit!\n");
 				goto find;
 			}
