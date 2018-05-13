@@ -256,14 +256,15 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		/* find from last hit point */
  		if(find_flag == true)
-		{
-			// if(hashing == list_entry(last_hit->next, struct hash_map_addr, list)->hashing)
-			// ;
-		// 	last_hit = last_hit->next;
-		// 	list_entry(last_hit->next,struct hash_map_addr,list)->count++;
-		// 	goto find;
-			find_flag = false;
-		}
+		 printk("find_flag == true!\n");
+		// {
+		// 	// if(hashing == list_entry(last_hit->next, struct hash_map_addr, list)->hashing)
+		// 	// ;
+		// // 	last_hit = last_hit->next;
+		// // 	list_entry(last_hit->next,struct hash_map_addr,list)->count++;
+		// // 	goto find;
+		// 	find_flag = false;
+		// }
 		
 		/* hash_map_addr_entry ponit reuse for traverse */
 		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
