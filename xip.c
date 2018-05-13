@@ -279,7 +279,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			}
 		}
 		// not dup, insert new index
-		if(likely(*find_flag == false))
+		if(likely(find_flag == false))
 		{
 			hash_map_addr_temp->hashing = hashing;
 			hash_map_addr_temp->count = 1;
