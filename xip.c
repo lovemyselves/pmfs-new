@@ -219,7 +219,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		unsigned long hashing = 0;
 		unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 		int i;
-		int find_flag = 0;
+		bool find_flag = 0;
 		struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 		hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -276,8 +276,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
 				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
 				// find_flag = 1;
-				*last_hit = hash_map_addr_entry->list;
-				// printk("find_flag:%d\n",find_flag);
+				// *last_hit = hash_map_addr_entry->list;
+				find_flag = true;
+				printk("find_flag:%d\n",find_flag);
 				goto find;
 			}
 			printk("a no hit search\n");
