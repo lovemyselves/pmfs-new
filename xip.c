@@ -280,6 +280,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("find_flag:%d\n",find_flag);
 				goto find;
 			}
+			printk("a no hit search\n");
 		}
 		
 		// not dup, insert new index
