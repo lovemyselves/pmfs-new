@@ -267,23 +267,21 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		}
 		
 		/* hash_map_addr_entry ponit reuse for traverse */
-		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-		{	
-			if(hash_map_addr_entry->hashing == hashing)
-			{		
-				hash_map_addr_entry->count++;
-				printk("find the hashing!\n");
-				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-				// find_flag = 1;
-				last_hit.next = hash_map_addr_entry->list.next;
-				find_flag = true;
-				// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
-				goto find;
-			}
-			else
-				printk("not find in this node!\n");	
-		}
+		// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+		// {	
+		// 	if(hash_map_addr_entry->hashing == hashing)
+		// 	{		
+		// 		hash_map_addr_entry->count++;
+		// 		// printk("find the hashing!\n");
+		// 		// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+		// 		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+		// 		// find_flag = 1;
+		// 		last_hit.next = hash_map_addr_entry->list.next;
+		// 		find_flag = true;
+		// 		// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
+		// 		goto find;
+		// 	}
+		// }
 		
 		// not dup, insert new index
 		find_flag = false;
