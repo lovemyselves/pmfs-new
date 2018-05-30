@@ -245,7 +245,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		
 		/* page data hashing compute */
 		/* 2 and 3 is randomly setting */
-		for(i=0;i<128;i++)
+		for(i=0;i<1;i++)
 		{
 			memcpy(temp,(char*)xmem+i*sizeof(unsigned),sizeof(unsigned));
 			hashing += *temp;
