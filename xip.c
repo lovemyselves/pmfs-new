@@ -280,7 +280,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				find_flag = true;
 				// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
 				goto find;
-			}	
+			}
+			else
+				printk("not find in this node!\n");	
 		}
 		
 		// not dup, insert new index
