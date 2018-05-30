@@ -29,10 +29,9 @@
 // struct lpn_map_ppn *l_map_p;
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
-static LIST_HEAD(last_hit);
+// static LIST_HEAD(last_hit);
 bool find_flag = 0;
-
-last_hit = hash_map_addr_list;
+struct list_head last_hit = hash_map_addr_list;
 /* claim end */
 
 static ssize_t
@@ -263,7 +262,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		{
 			hash_map_addr_entry->count++;
 			last_hit.next = last_hit.next->next;
-			printk("fast hit");
+			// printk("fast hit");
 			goto find;
 		}
 		
@@ -471,6 +470,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// printk("end_blk:%lu\n",end_blk);
 	// printk("block:%llu\n",block);
 	// printk("start_blk>>5:%lu\n",start_blk>>5);
+	
 	//end
 
 	/* Referring to the inode's block size, not 4K */
