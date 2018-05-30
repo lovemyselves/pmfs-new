@@ -256,31 +256,31 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		hash_map_addr_entry->hashing = 0;
 		INIT_LIST_HEAD(&hash_map_addr_entry->list);
 
-		// /* find from last hit point */
- 		// if(find_flag == true && hashing == list_entry(last_hit.next, struct hash_map_addr, list)->hashing)
-		// {
-		// 	unsigned count = ++ list_entry(last_hit.next,struct hash_map_addr,list)->count;
-		// 	last_hit.next = last_hit.next->next;
-		// 	// printk("fast hit, reference count:%u\n", count);
-		// 	goto find;
-		// }
+		/* find from last hit point */
+ 		if(find_flag == true && hashing == list_entry(last_hit.next, struct hash_map_addr, list)->hashing)
+		{
+			unsigned count = ++ list_entry(last_hit.next,struct hash_map_addr,list)->count;
+			last_hit.next = last_hit.next->next;
+			// printk("fast hit, reference count:%u\n", count);
+			goto find;
+		}
 		
-		// /* hash_map_addr_entry ponit reuse for traverse */
-		// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-		// {	
-		// 	if(unlikely(hash_map_addr_entry->hashing == hashing))
-		// 	{		
-		// 		hash_map_addr_entry->count++;
-		// 		// printk("find the hashing!\n");
-		// 		// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-		// 		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-		// 		// find_flag = 1;
-		// 		last_hit.next = hash_map_addr_entry->list.next;
-		// 		find_flag = true;
-		// 		// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
-		// 		goto find;
-		// 	}	
-		// }
+		/* hash_map_addr_entry ponit reuse for traverse */
+		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+		{	
+			if(unlikely(hash_map_addr_entry->hashing == hashing))
+			{		
+				hash_map_addr_entry->count++;
+				// printk("find the hashing!\n");
+				// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+				// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+				// find_flag = 1;
+				last_hit.next = hash_map_addr_entry->list.next;
+				find_flag = true;
+				// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
+				goto find;
+			}	
+		}
 		
 		// not dup, insert new index
 		find_flag = false;
