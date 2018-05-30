@@ -32,6 +32,7 @@ static LIST_HEAD(hash_map_addr_list);
 static LIST_HEAD(last_hit);
 bool find_flag = 0;
 
+last_hit = hash_map_addr_list;
 /* claim end */
 
 static ssize_t
