@@ -18,21 +18,21 @@ struct __hash_map_addr{
     struct rb_node node;     
 };
 
-struct __hash_map_addr *search_node(struct rb_root *root, unsigned hashing)
+struct __hash_map_addr * search_node(struct rb_root *root, unsigned hashing)
 {
-	struct rb_node *node = root->rb_node;
+	struct rb_node *entry_node = root->rb_node;
 	int result;
 	struct __hash_map_addr *hash_map_addr_entry;
 	
 	while(node){
-		hash_map_addr_entry = rb_entry(node, struct __hash_map_addr, node);
-		result = hash_map_addr_entry->hashing - hashing;
-		if(result < 0)
-			node = node->rb_left;
-		else if(result > 0)
-			node = node->rb_right;
-		else
-			return hash_map_addr_entry;
+		// hash_map_addr_entry = rb_entry(entry_node, struct __hash_map_addr, node);
+		// result = hash_map_addr_entry->hashing - hashing;
+		// if(result < 0)
+		// 	entry_node = entry_node->rb_left;
+		// else if(result > 0)
+		// 	entry_node = entry_node->rb_right;
+		// else
+		// 	return hash_map_addr_entry;
 	}
 	return NULL;
 }
