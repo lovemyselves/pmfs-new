@@ -21,8 +21,7 @@
 /*dedup new add include*/
 #include <linux/kernel.h>
 #include <linux/string.h>
-#include <linux/list.h>
-#include <linux/rbtree.h>
+
 #include "dedup.c"
 
 /* dedup claim start */
@@ -737,4 +736,23 @@ int pmfs_xip_file_mmap(struct file *file, struct vm_area_struct *vma)
 			vma->vm_flags, pgprot_val(vma->vm_page_prot));
 
 	return 0;
+}
+
+struct __hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
+{
+	struct rb_node *entry_node = root->rb_node;
+	int result;
+	struct __hash_map_addr *hash_map_addr_entry;
+	
+	while(entry_node){
+		hash_map_addr_entry = rb_entry(entry_node, struct __hash_map_addr, node);
+		result = hash_map_addr_entry->hashing - hashing;
+		if(result < 0)
+			entry_node = entry_node->rb_left;
+		else if(result > 0)
+			entry_node = entry_node->rb_right;
+		else
+			return hash_map_addr_entry;
+	}
+	return NULL;
 }
