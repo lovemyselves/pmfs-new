@@ -760,7 +760,7 @@ struct __hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
 	return NULL;
 }
 
-bool rb_insert_node(struct rb_root *root, struct __hash_map_addr hash_map_addr_entry)
+void rb_insert_node(struct rb_root *root, struct __hash_map_addr hash_map_addr_entry)
 {
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
@@ -778,6 +778,4 @@ bool rb_insert_node(struct rb_root *root, struct __hash_map_addr hash_map_addr_e
 	}
 	rb_link_node(&hash_map_addr_entry->node, parent, entry_node);
 	rb_insert_color(&hash_map_addr_entry->node, root);
-
-	return true;
 }
