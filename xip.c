@@ -776,6 +776,6 @@ void rb_insert_node(struct rb_root *root, struct __hash_map_addr hash_map_addr_e
 		else
 			entry_node = &(*entry_node)->rb_right;
 	}
-	rb_link_node(&hash_map_addr_entry->node, parent, entry_node);
-	rb_insert_color(&hash_map_addr_entry->node, root);
+	rb_link_node(hash_map_addr_entry.node, parent, entry_node);
+	rb_insert_color(hash_map_addr_entry).node, root);
 }
