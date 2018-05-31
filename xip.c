@@ -769,7 +769,7 @@ void rb_insert_node(struct rb_root *root, struct __hash_map_addr *hash_map_addr_
 
 	while(*entry_node){
 		parent = *entry_node;
-		hash_map_addr_temp = rb_entry(*entry_node, struct __hash_map_addr, rb_node);
+		hash_map_addr_temp = rb_entry(*entry_node, struct __hash_map_addr, node);
 		result = hash_map_addr_entry->hashing - hash_map_addr_temp->hashing;
 		if(result < 0)
 			entry_node = &(*entry_node)->rb_left;
