@@ -11,9 +11,9 @@ struct hash_map_addr{
 
 struct __hash_map_addr{
     unsigned hashing;
-    unsigned long hashing_md5;
+    void *hashing_md5;
     void *addr;
     unsigned int count;
-    struct rb_node *rb_left;
-    struct rb_node *rb_right;  
+    struct list_head list;
+    struct rb_node node;     
 };
