@@ -738,6 +738,9 @@ int pmfs_xip_file_mmap(struct file *file, struct vm_area_struct *vma)
 	return 0;
 }
 
+/*
+	dedup rbtree function
+*/
 struct __hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
 {
 	struct rb_node *entry_node = root->rb_node;
@@ -746,7 +749,7 @@ struct __hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
 	
 	while(entry_node){
 		hash_map_addr_entry = rb_entry(entry_node, struct __hash_map_addr, node);
-		result = hash_map_addr_entry->hashing - hashing;
+		result = hashing - hash_map_addr_entry->hashing; 
 		if(result < 0)
 			entry_node = entry_node->rb_left;
 		else if(result > 0)
@@ -755,4 +758,26 @@ struct __hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
 			return hash_map_addr_entry;
 	}
 	return NULL;
+}
+
+int __hash_map_addr *rb_insert_node(struct rb_root *root, struct __hash_map_addr hash_map_addr_entry)
+{
+	struct rb_node **entry_node = &(root->rb_node);
+	struct rb_node *parent = NULL;
+	struct __hash_map_addr hash_map_addr_temp;
+	int result;
+
+	while(*entry_node){
+		parent = *entry_node;
+		hash_map_addr_temp = rb_entry(*entry_node, struct __hash_map_addr, rb_node);
+		result = hash_map_addr_entry - hash_map_addr_temp;
+		if(result < 0)
+			entry_node = &(*entry_node)->rb_left;
+		else
+			entry_node = &(*entry_node)->rb_right;
+	}
+	rb_link_node(&hash_map_addr_entry->node, parent, entry_node);
+	rb_insert_color(&hash_map_addr_entry->node, root);
+
+	return 1;
 }
