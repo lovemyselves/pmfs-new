@@ -28,7 +28,7 @@ struct __hash_map_addr *search_node(struct rb_root *root, unsigned hashing)
 		hash_map_addr_entry = rb_entry(node, struct __hash_map_addr, node);
 		result = map_addr_entry->hashing - hashing;
 		if(result < 0)
-			node = node->rb-left;
+			node = node->rb_left;
 		else if(result > 0)
 			node = node->rb_right;
 		else
