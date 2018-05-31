@@ -21,8 +21,8 @@
 /*dedup new add include*/
 #include <linux/kernel.h>
 #include <linux/string.h>
-#include <linux/slab.h>
 #include <linux/list.h>
+#include <linux/rbtree.h>
 #include "dedup.c"
 
 /* dedup claim start */
@@ -261,10 +261,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		{
 			hash_map_addr_entry->count++;
 			last_hit.next = last_hit.next->next;
-			printk("fast hit!\n");
+			// printk("fast hit!\n");
 			goto find;
 		}
-		printk("reset!\n");
+		// printk("reset!\n");
 		last_hit.next = hash_map_addr_list.next;
 
 		/* hash_map_addr_entry ponit reuse for traverse */
