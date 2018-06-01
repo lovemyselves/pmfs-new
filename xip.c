@@ -263,7 +263,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		int i;
 		
 		struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
-		// hash_map_addr_entry = kmalloc(sizeof(*hash_map_addr_entry), GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		//end
 
@@ -293,22 +292,26 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
-		// hash_map_addr_entry->hashing = 0;
-		// INIT_LIST_HEAD(&hash_map_addr_entry->list);
 
 		/* find from last hit point */
 		hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
- 		if(/*find_flag == true &&*/ hashing == hash_map_addr_entry->hashing)
+ 		if(find_flag == true && hashing == hash_map_addr_entry->hashing)
 		{
 			hash_map_addr_entry->count++;
 			last_hit.next = last_hit.next->next;
 			// printk("fast hit!\n");
+			/* add reference content */
 			goto find;
 		}
-		// printk("reset!\n");
-		last_hit.next = hash_map_addr_list.next;
-		hash_map_addr_entry = rb_search_node(&root, hashing);
 		
+		// last_hit.next = hash_map_addr_list.next;
+		hash_map_addr_entry = rb_search_node(&root, hashing);
+		if(hash_map_addr_entry){
+			hash_map_addr_entry->count++;
+			last_hit.next = hash_map_addr_entry->list.next;
+			find_flag = true;
+			/*add reference content */
+		}
 		/* hash_map_addr_entry ponit reuse for traverse */
 		// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
 		// {	
