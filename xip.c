@@ -295,6 +295,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		/* find from last hit point */
 		hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
+		printk("find_flag:%d\n",find_flag);
  		if(find_flag == true && hashing == hash_map_addr_entry->hashing)
 		{
 			hash_map_addr_entry->count++;
@@ -310,7 +311,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			hash_map_addr_entry->count++;
 			last_hit.next = hash_map_addr_entry->list.next;
 			find_flag = true;
-			printk("hit\n!");
+			printk("hit!\n");
 			/*add reference content */
 		}
 		/* hash_map_addr_entry ponit reuse for traverse */
