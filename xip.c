@@ -295,12 +295,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		/* find from last hit point */
 		hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
-		printk("find_flag:%d\n",find_flag);
  		if(find_flag == true && hashing == hash_map_addr_entry->hashing)
 		{
 			hash_map_addr_entry->count++;
 			last_hit.next = last_hit.next->next;
-			printk("fast hit!\n");
+			// printk("fast hit!\n");
 			/* add reference content */
 			goto find;
 		}
@@ -311,7 +310,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			hash_map_addr_entry->count++;
 			last_hit.next = hash_map_addr_entry->list.next;
 			find_flag = true;
-			printk("hit!\n");
+			// printk("hit!\n");
 			goto find;
 			/*add reference content */
 		}
