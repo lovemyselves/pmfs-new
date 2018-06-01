@@ -30,6 +30,7 @@
 static LIST_HEAD(hash_map_addr_list);
 static LIST_HEAD(last_hit);
 bool find_flag = 0;
+struct rb_root root = RB_ROOT;
 /* claim end */
 
 static ssize_t
@@ -292,6 +293,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		hash_map_addr_temp->addr = xmem;
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		rb_insert_node(&root, hash_map_addr_temp);
 		find:
 		/* end */
 
