@@ -312,6 +312,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			last_hit.next = hash_map_addr_entry->list.next;
 			find_flag = true;
 			printk("hit!\n");
+			goto find;
 			/*add reference content */
 		}
 		/* hash_map_addr_entry ponit reuse for traverse */
