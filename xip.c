@@ -54,7 +54,7 @@ struct hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
 	return NULL;
 }
 
-void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_entry)
+void inline rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_entry)
 {
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
