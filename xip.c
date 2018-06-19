@@ -511,7 +511,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	block = pmfs_find_data_block(inode, start_blk);
 
 	//dedup insert start
-	printk("num_blocks%lu\n",num_blocks);
+	printk("num_blocks:%lu\n",num_blocks);
 	printk("ino:%lu\n",inode->i_ino);
 	printk("offset:%lu\n",offset);
 	printk("pos:%llu\n",pos);
@@ -520,6 +520,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("end_blk:%lu\n",end_blk);
 	printk("block:%llu\n",block);
 	printk("start_blk>>5:%lu\n",start_blk>>5);
+	printk("\n");
 	//end
 
 	/* Referring to the inode's block size, not 4K */
