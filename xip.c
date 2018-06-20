@@ -559,7 +559,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("buf:%s\n",buf);
 		printk("buf+i:%s\n",buf+i*4096);
 		i++;
-	}while(count-i*4096);
+	}while(count>i*4096);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
