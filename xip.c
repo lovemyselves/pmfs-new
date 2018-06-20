@@ -287,7 +287,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		/* 2 and 3 is randomly setting */
 		for(i=0;i<128;i++)
 		{
-			memcpy(temp,(char*)buf+i*sizeof(unsigned),sizeof(unsigned));
+			memcpy(temp,(char*)xmem+i*sizeof(unsigned),sizeof(unsigned));
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
