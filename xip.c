@@ -365,6 +365,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status < 0)
 			break;	
 
+	printk("count in __pmfs_xip_file_write:%lu",count);
 	} while (count);
 
 	*ppos = pos;
