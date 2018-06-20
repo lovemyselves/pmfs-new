@@ -267,7 +267,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		//end
 
 		//dedup printk variable start
-		printk("buf:%s",buf);
+		printk("xmem:%s",xmem);
 		//end
 
 		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
@@ -486,9 +486,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	bool same_block;
 	timing_t xip_write_time, xip_write_fast_time;
 
-	//dedup variable definition start
-	// ssize_t i = 0;
-	// char* data_block;
+	//dedup claiming start
+	unsigned hashing = 0;
+	unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
+	int i;
+
+	struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
+	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -528,6 +532,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("end_blk:%lu\n",end_blk);
 	printk("count:%lu\n",count);
 	printk("start_blk>>5:%lu\n",start_blk>>5);
+	printk("sizeof(*buf):%lu\n",(long unsigned)sizeof(*buf));
 	printk("\n");
 	//end
 
