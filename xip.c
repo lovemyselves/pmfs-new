@@ -364,8 +364,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				status = -EFAULT;
 		if (status < 0)
 			break;	
-
-	printk("count in __pmfs_xip_file_write:%lu",count);
 	} while (count);
 
 	*ppos = pos;
@@ -484,6 +482,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	bool same_block;
 	timing_t xip_write_time, xip_write_fast_time;
 
+	//dedup variable definition start
+	ssize_t i = 0;
+	//end
+
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
 
 	sb_start_write(inode->i_sb);
@@ -552,6 +554,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 	inode->i_ctime = inode->i_mtime = current_time(inode);
 	pmfs_update_time(inode, pi);
+
+	do{	
+		printk("buf:%s\n",buf);
+		printk("buf+i:%s\n",buf+i*4096);
+		i++;
+	}while(count-i*4096);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
