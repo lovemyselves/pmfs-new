@@ -555,11 +555,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	inode->i_ctime = inode->i_mtime = current_time(inode);
 	pmfs_update_time(inode, pi);
 
-	do{	
-		printk("buf:%s\n",buf);
-		printk("buf+i:%s\n",buf+i*4096);
-		i++;
-	}while(count>i*4096);
+	// do{	
+	// 	printk("buf:%s\n",buf);
+	// 	printk("buf+i:%s\n",buf+i*4096);
+	// 	i++;
+	// }while(count>i*4096);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
