@@ -556,10 +556,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	while(count>i*4096){	
-		// printk("buf:%s\n",buf);
+		printk("buf:%s\n",buf);
 		// printk("buf+i:%s\n",buf+i*4096);
 		i++;
-		printk("i:%u",i);
+		printk("i:%lu",i);
 	}
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
