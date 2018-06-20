@@ -558,8 +558,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	data_block = kmalloc(sizeof(char*), GFP_KERNEL);
-	while(count>i*pmfs_inode_blk_size(pi)){
-		memcpy(data_block,(char*)buf+i*pmfs_inode_blk_size(pi),pmfs_inode_blk_size(pi));	
+	while(count>i*4096){
+		memcpy(data_block,(char*)buf+i*4096,4096);	
 		// printk("buf:%s\n",buf);
 		// printk("buf+i:%s\n",buf+i*4096);
 		i++;
