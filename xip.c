@@ -518,7 +518,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("s_blocksize_bits:%u",sb->s_blocksize_bits);
 	printk("start_blk:%lu\n",start_blk);
 	printk("end_blk:%lu\n",end_blk);
-	printk("block:%llu\n",block);
+	printk("block:%lu\n",count);
 	printk("start_blk>>5:%lu\n",start_blk>>5);
 	printk("\n");
 	//end
