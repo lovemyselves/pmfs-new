@@ -266,10 +266,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		//end
 
-		//dedup printk variable start
-		printk("xmem:%s",xmem);
-		//end
-
 		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 		index = pos >> sb->s_blocksize_bits;
 		bytes = sb->s_blocksize - offset;
@@ -523,15 +519,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	block = pmfs_find_data_block(inode, start_blk);
 
 	//dedup insert start
-	printk("num_blocks:%lu\n",num_blocks);
-	printk("ino:%lu\n",inode->i_ino);
-	printk("offset:%lu\n",offset);
-	printk("pos:%llu\n",pos);
-	printk("s_blocksize_bits:%u",sb->s_blocksize_bits);
-	printk("start_blk:%lu\n",start_blk);
-	printk("end_blk:%lu\n",end_blk);
-	printk("count:%lu\n",count);
-	printk("start_blk>>5:%lu\n",start_blk>>5);
+	// printk("num_blocks:%lu\n",num_blocks);
+	// printk("ino:%lu\n",inode->i_ino);
+	// printk("offset:%lu\n",offset);
+	// printk("pos:%llu\n",pos);
+	// printk("s_blocksize_bits:%u",sb->s_blocksize_bits);
+	// printk("start_blk:%lu\n",start_blk);
+	// printk("end_blk:%lu\n",end_blk);
+	// printk("count:%lu\n",count);
+	// printk("start_blk>>5:%lu\n",start_blk>>5);
 	printk("sizeof(*buf):%lu\n",(long unsigned)sizeof(*buf));
 	printk("\n");
 	//end
