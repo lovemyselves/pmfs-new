@@ -266,6 +266,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		//end
 
+		//dedup printk variable start
+		printk("buf:%s",buf);
+		//end
+
 		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 		index = pos >> sb->s_blocksize_bits;
 		bytes = sb->s_blocksize - offset;
@@ -483,8 +487,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	timing_t xip_write_time, xip_write_fast_time;
 
 	//dedup variable definition start
-	ssize_t i = 0;
-	char* data_block;
+	// ssize_t i = 0;
+	// char* data_block;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -524,7 +528,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("end_blk:%lu\n",end_blk);
 	printk("count:%lu\n",count);
 	printk("start_blk>>5:%lu\n",start_blk>>5);
-	// printk("buf:%s",buf);
+	printk("buf:%s",buf);
 	printk("\n");
 	//end
 
@@ -557,14 +561,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	inode->i_ctime = inode->i_mtime = current_time(inode);
 	pmfs_update_time(inode, pi);
 
-	data_block = kmalloc(sizeof(char*), GFP_KERNEL);
-	while(count>i*4096){
-		memcpy(data_block,(char*)buf+i*4096,4096);	
-		// printk("buf:%s\n",buf);
-		// printk("buf+i:%s\n",buf+i*4096);
-		i++;
-		printk("i:%lu",i);
-	}
+	// // data_block = kmalloc(sizeof(char*), GFP_KERNEL);
+	// while(count>i*4096){
+	// 	// memcpy(data_block,(char*)buf+i*4096,4096);	
+	// 	// printk("buf:%s\n",buf);
+	// 	// printk("buf+i:%s\n",buf+i*4096);
+	// 	i++;
+	// 	printk("i:%lu",i);
+	// }
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
