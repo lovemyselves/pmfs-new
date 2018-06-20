@@ -484,6 +484,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	//dedup variable definition start
 	ssize_t i = 0;
+	char* data_block;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -523,6 +524,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("end_blk:%lu\n",end_blk);
 	printk("count:%lu\n",count);
 	printk("start_blk>>5:%lu\n",start_blk>>5);
+	// printk("buf:%s",buf);
 	printk("\n");
 	//end
 
@@ -555,8 +557,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	inode->i_ctime = inode->i_mtime = current_time(inode);
 	pmfs_update_time(inode, pi);
 
-	while(count>i*4096){	
-		printk("buf:%s\n",buf);
+	while(count>i*pmfs_inode_blk_size(pi)){
+		memcpy(data_block,(char*)buf+i*pmfs_inode_blk_size(pi),pmfs_inode_blk_size(pi));	
+		// printk("buf:%s\n",buf);
 		// printk("buf+i:%s\n",buf+i*4096);
 		i++;
 		printk("i:%lu",i);
