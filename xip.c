@@ -528,7 +528,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// printk("end_blk:%lu\n",end_blk);
 	// printk("count:%lu\n",count);
 	// printk("start_blk>>5:%lu\n",start_blk>>5);
-	printk("strlen(buf):%lu\n",(long unsigned)strlen(*buf));
+	// printk("strlen(buf):%lu\n",(long unsigned)strlen(*buf));
 	printk("\n");
 	//end
 
@@ -562,13 +562,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	// // data_block = kmalloc(sizeof(char*), GFP_KERNEL);
-	// while(count>i*4096){
+	while(count>i*4096){
 	// 	// memcpy(data_block,(char*)buf+i*4096,4096);	
 	// 	// printk("buf:%s\n",buf);
 	// 	// printk("buf+i:%s\n",buf+i*4096);
-	// 	i++;
-	// 	printk("i:%lu",i);
-	// }
+		i++;
+		printk("i:%lu",i);
+		printk("blk_size:%lu",pmfs_inode_blk_size(pi));
+	}
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
