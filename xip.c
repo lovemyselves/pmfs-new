@@ -528,7 +528,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// printk("end_blk:%lu\n",end_blk);
 	// printk("count:%lu\n",count);
 	// printk("start_blk>>5:%lu\n",start_blk>>5);
-	printk("sizeof(*buf):%lu\n",(long unsigned)sizeof(*buf));
+	printk("strlen(buf):%lu\n",(long unsigned)strlen(*buf));
 	printk("\n");
 	//end
 
