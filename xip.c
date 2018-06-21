@@ -485,7 +485,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	unsigned hashing = 0;
 	unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
-	int i,j;
+	int i=0,j;
 
 	struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -529,7 +529,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// printk("count:%lu\n",count);
 	// printk("start_blk>>5:%lu\n",start_blk>>5);
 	// printk("strlen(buf):%lu\n",(long unsigned)strlen(*buf));
-	printk("\n");
+	// printk("\n");
 	//end
 
 	/* Referring to the inode's block size, not 4K */
