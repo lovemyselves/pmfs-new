@@ -490,6 +490,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+	xmem = kmalloc(sizeof(pmfs_inode_blk_size(pi)),GFP_KERNEL);
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -563,6 +564,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	i = count;
+	
 	while(i>0){
 		// __copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
 		if (access_ok(VERIFY_READ, buf+count-i, 4096)){
