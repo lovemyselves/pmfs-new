@@ -566,8 +566,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 	while(i>0){
 		// __copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));	
-		if (access_ok(VERIFY_READ, buf, pmfs_inode_blk_size(pi))){
+		if (i>pmfs_inode_blk_size(pi)){
 			copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
+			printk("xmem:%s",xmem);
+		}
+		else{
+			copy_from_user(xmem, buf, i);
 			printk("xmem:%s",xmem);
 		}
 		for(j=0;i<128;j++)
