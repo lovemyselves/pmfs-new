@@ -564,7 +564,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	i = count;
 	xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
-	do{
+	for(i=count;i>4096;i-=4096){
 		// __copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));	
 		if (i>pmfs_inode_blk_size(pi)){
 			// copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
@@ -583,11 +583,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	hashing += (hashing << 3);
 		// 	hashing ^= (hashing >> 2);
 		// }
-		i -= 4096;
 		printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		// printk("hashing:%u",hashing);
 		// printk("i:%d",i);
-	}while(i>0);
+	}
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
