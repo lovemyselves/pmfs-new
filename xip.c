@@ -568,7 +568,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	while(i>0){
 		// __copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
 		// copy_from_user(xmem, buf, 4096);	
-		if (!access_ok(VERIFY_READ, buf, pmfs_inode_blk_size(pi))){
+		if (access_ok(VERIFY_READ, buf, pmfs_inode_blk_size(pi))){
 			printk("test read");
 		}
 		for(j=0;i<128;j++)
@@ -579,8 +579,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing ^= (hashing >> 2);
 		}
 		i -= pmfs_inode_blk_size(pi);
-		printk("hashing:%u",hashing);
-		printk("i:%d",i);
+		// printk("hashing:%u",hashing);
+		// printk("i:%d",i);
 	}
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
