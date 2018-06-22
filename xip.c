@@ -586,7 +586,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("\n");
 		
 		i -= pmfs_inode_blk_size(pi);
-	}while(i<count||i==0);
+	}while(i<count&&i);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
