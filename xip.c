@@ -567,28 +567,26 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	do{	
 		if (i>pmfs_inode_blk_size(pi)){
 			copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
-			printk("xmem:%s",xmem);
 			printk("i:%d",i);
 		}
 		else{
 			copy_from_user(xmem, buf, i);
-			printk("xmem:%s",xmem);
 			printk("small i:%d",i);
 		}
-		// for(j=0;i<128;j++)
-		// {
-		// 	// memcpy(temp,(char*)buf+j*sizeof(unsigned),sizeof(unsigned));
-		// 	hashing += *temp;
-		// 	hashing += (hashing << 3);
-		// 	hashing ^= (hashing >> 2);
-		// }
+		for(j=0;i<128;j++)
+		{
+			memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned));
+			hashing += *temp;
+			hashing += (hashing << 3);
+			hashing ^= (hashing >> 2);
+		}
 		printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		printk("count:%u",count);
 		printk("hashing:%u",hashing);
 		printk("\n");
 		
 		i -= pmfs_inode_blk_size(pi);
-	}while(i<count);
+	}while(i<count||i==0);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
