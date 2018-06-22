@@ -569,7 +569,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// __copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
 		if (access_ok(VERIFY_READ, buf+count-i, 4096)){
 			__copy_from_user(xmem, buf+count-i, 4096);
-			printk("xmem:%s",xmem);
 		}	
 		for(j=0;i<128;j++)
 		{
