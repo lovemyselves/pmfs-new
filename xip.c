@@ -584,10 +584,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// }
 		printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		printk("count:%u",count);
-		// printk("hashing:%u",hashing);
-		i -= pmfs_inode_blk_size(pi);
+		printk("hashing:%u",hashing);
 		printk("i:%u",i);
-	}while(i);
+		
+		if(i<pmfs_inode_blk_size(pi));
+			break;
+		i -= pmfs_inode_blk_size(pi);
+	}while(i<count);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
