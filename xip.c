@@ -566,13 +566,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 	do{	
 		if (i>pmfs_inode_blk_size(pi)){
-			// copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
-			// printk("xmem:%s",xmem);
+			copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
+			printk("xmem:%s",xmem);
 			printk("i:%d",i);
 		}
 		else{
-			// copy_from_user(xmem, buf, i);
-			// printk("xmem:%s",xmem);
+			copy_from_user(xmem, buf, i);
+			printk("xmem:%s",xmem);
 			printk("small i:%d",i);
 		}
 		// for(j=0;i<128;j++)
@@ -585,7 +585,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		printk("count:%u",count);
 		printk("hashing:%u",hashing);
-		printk("i:%u",i);
+		pirntk("\n");
 		
 		if(i<pmfs_inode_blk_size(pi));
 			break;
