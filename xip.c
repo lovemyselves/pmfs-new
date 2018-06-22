@@ -567,12 +567,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	while(i>0){
 		// __copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));	
 		if (i>pmfs_inode_blk_size(pi)){
-			copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
-			printk("xmem:%s",xmem);
+			// copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
+			// printk("xmem:%s",xmem);
+			printk("i:%d",i);
 		}
 		else{
-			copy_from_user(xmem, buf, i);
-			printk("xmem:%s",xmem);
+			// copy_from_user(xmem, buf, i);
+			// printk("xmem:%s",xmem);
+			printk("i:%d",i);
 		}
 		for(j=0;i<128;j++)
 		{
