@@ -486,6 +486,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	unsigned hashing = 0;
 	unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 	int i=0,j;
+	void *xmem;
 
 	struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -561,21 +562,19 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	inode->i_ctime = inode->i_mtime = current_time(inode);
 	pmfs_update_time(inode, pi);
 
-	// // data_block = kmalloc(sizeof(char*), GFP_KERNEL);
-	while(count>i*pmfs_inode_blk_size(pi)){
-	// 	// memcpy(data_block,(char*)buf+i*4096,4096);	
-	// 	// printk("buf:%s\n",buf);
-	// 	// printk("buf+i:%s\n",buf+i*4096);
+	i = count;
+	while(i>0){
+		// __copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
 		for(j=0;i<128;j++)
 		{
-			memcpy(temp,buf+j*sizeof(unsigned),sizeof(unsigned));
+			// memcpy(temp,(char*)buf+j*sizeof(unsigned),sizeof(unsigned));
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
-		i++;
+		i -= pmfs_inode_blk_size(pi);
 		printk("hashing:%u",hashing);
-		printk("i:%lu",i);
+		printk("i:%d",i);
 	}
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
