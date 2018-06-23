@@ -586,14 +586,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		
 		// hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
- 		// if(find_flag == true && hashing == hash_map_addr_entry->hashing)
-		// {
-		// 	hash_map_addr_entry->count++;
-		// 	last_hit.next = last_hit.next->next;
-		// 	// printk("fast hit!\n");
-		// 	/* add reference content */
-		// 	goto find;
-		// }
+ 		if(find_flag == true)
+		{
+			hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
+			hashing == hash_map_addr_entry->hashing
+			hash_map_addr_entry->count++;
+			last_hit.next = last_hit.next->next;
+			// printk("fast hit!\n");
+			/* add reference content */
+			goto find;
+		}
 		
 		// // last_hit.next = hash_map_addr_list.next;
 		// hash_map_addr_entry = rb_search_node(&root, hashing);
