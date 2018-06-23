@@ -73,7 +73,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 			printk("hashing1:%lu",hash_map_addr_new->hashing);
 			printk("hashing2:%lu",hash_map_addr_entry->hashing);
 			printk("hashing accident!");
-			break;
+			return;
 		}
 	}
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
