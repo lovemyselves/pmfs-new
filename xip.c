@@ -588,7 +588,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
  		if(find_flag == true)
 		{
-			if(last.hit.next == NULL)
+			if(last_hit.next == NULL)
 				;
 			else{	
 				hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
