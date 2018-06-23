@@ -70,7 +70,8 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 			entry_node = &(*entry_node)->rb_right;
 		}	
 		else{
-			printk("result:%ld",(long int)(hash_map_addr_new->hashing - hash_map_addr_entry->hashing));
+			printk("hashing1:%lu",hash_map_addr_new->hashing);
+			printk("hashing2:%lu",hash_map_addr_entry->hashing);
 			printk("hashing accident!");
 			break;
 		}
@@ -590,7 +591,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 		}
 		
-		// hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
  		if(find_flag == true)
 		{
 			if(last_hit.next == NULL)
@@ -622,6 +622,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = (void*)xmem;
+
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		rb_insert_node(&root, hash_map_addr_temp);
