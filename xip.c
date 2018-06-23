@@ -351,8 +351,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		
 		// find:
-		rb_insert_node(&root, list_entry(new_list=new_list->next, struct hash_map_addr, list));
-		printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
 		
 		/* end */
 
@@ -380,8 +378,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 	//dedup insert rbtree node start
 	// for(i=0;i<8;i++){
-	// 	rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
-	// 	printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
+		rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
+		printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
 	// 	new_list = new_list->next;
 	// }
 	//end
