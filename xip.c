@@ -66,9 +66,10 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 		
 		if(hash_map_addr_new->hashing < hash_map_addr_entry->hashing)
 			entry_node = &(*entry_node)->rb_left;
-		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing)
+		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing){
 			entry_node = &(*entry_node)->rb_right;
 			printk("had been come here!");
+		}	
 		else{
 			printk("hashing accident!");
 			break;
