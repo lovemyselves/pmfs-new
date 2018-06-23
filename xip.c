@@ -79,8 +79,8 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 	}
 	printk("hash_map_addr_new->addr:%lu",(long unsigned)hash_map_addr_new->addr);
 	printk("new hashing:%lu",hash_map_addr_new->hashing);
-	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
-	rb_insert_color(&hash_map_addr_new->node, root);
+	// rb_link_node(&hash_map_addr_new->node, parent, entry_node);
+	// rb_insert_color(&hash_map_addr_new->node, root);
 }
 /* claim end */
 
