@@ -64,22 +64,22 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 		parent = *entry_node;
 		hash_map_addr_entry = rb_entry(*entry_node, struct hash_map_addr, node);
 		
-		if((long)hash_map_addr_new->hashing < (long)hash_map_addr_entry->hashing)
+		if(hash_map_addr_new->hashing < hash_map_addr_entry->hashing)
 			entry_node = &(*entry_node)->rb_left;
-		else if((long)hash_map_addr_new->hashing > (long)hash_map_addr_entry->hashing){
+		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing){
 			entry_node = &(*entry_node)->rb_right;
 		}	
 		else{
-			printk("hashing1:%lu",hash_map_addr_new->hashing);
-			printk("hashing2:%lu",hash_map_addr_entry->hashing);
-			hash_map_addr_entry = rb_search_node(root, hash_map_addr_entry->hashing);
+			// printk("hashing1:%lu",hash_map_addr_new->hashing);
+			// printk("hashing2:%lu",hash_map_addr_entry->hashing);
 			if(hash_map_addr_entry){printk("hashing accident!");}
 			return;
 		}
 	}
-	printk("success come here!");
-	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
-	rb_insert_color(&hash_map_addr_new->node, root);
+	printk("hash_map_addr_new:%lu",(long unsigned)&hash_map_addr_new);
+	printk("new hashing:%lu",hash_map_addr_new->hashing);
+	// rb_link_node(&hash_map_addr_new->node, parent, entry_node);
+	// rb_insert_color(&hash_map_addr_new->node, root);
 }
 /* claim end */
 
