@@ -28,7 +28,7 @@
 // struct lpn_map_ppn *l_map_p;
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
-static LIST_HEAD(last_hit);
+struct list_head last_hit;
 bool find_flag = false;
 struct rb_root root = RB_ROOT;
 
@@ -601,7 +601,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
 				if(hashing == hash_map_addr_entry->hashing){
 					hash_map_addr_entry->count++;
-					last_hit.next = last_hit.next->next;
+					last_hit = last_hit.next;
 					printk("fast hit!\n");
 					/* add reference content */
 					goto find;
@@ -612,7 +612,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_entry = rb_search_node(&root, hashing);
 		if(hash_map_addr_entry){
 			hash_map_addr_entry->count++;
-			last_hit.next = hash_map_addr_entry->list.next;
+			last_hit = hash_map_addr_entry->list;
 			find_flag = true;
 			printk("hit!\n");
 			goto find;
@@ -627,7 +627,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		rb_insert_node(&root, hash_map_addr_temp);
+		// rb_insert_node(&root, hash_map_addr_temp);
 		
 		find:
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
