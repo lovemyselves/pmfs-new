@@ -598,16 +598,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 		}
 		
-		// // last_hit.next = hash_map_addr_list.next;
-		// hash_map_addr_entry = rb_search_node(&root, hashing);
-		// if(hash_map_addr_entry){
-		// 	hash_map_addr_entry->count++;
-		// 	last_hit.next = hash_map_addr_entry->list.next;
-		// 	find_flag = true;
-		// 	// printk("hit!\n");
-		// 	goto find;
-		// 	/*add reference content */
-		// }
+		hash_map_addr_entry = rb_search_node(&root, hashing);
+		if(hash_map_addr_entry){
+			hash_map_addr_entry->count++;
+			last_hit.next = hash_map_addr_entry->list.next;
+			find_flag = true;
+			// printk("hit!\n");
+			goto find;
+			/*add reference content */
+		}
 
 		find_flag = false;
 		// printk("not hash hit\n");
