@@ -29,7 +29,7 @@
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
-static struct list_head *new_list = &hash_map_addr_list;
+struct list_head *new_list = &hash_map_addr_list;
 bool find_flag = false;
 struct rb_root root = RB_ROOT;
 
@@ -381,7 +381,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 		printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
 		printk("======================================");
-	// 	new_list = new_list->next;
+		new_list = new_list->next;
 	// }
 	//end
 
