@@ -483,9 +483,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	timing_t xip_write_time, xip_write_fast_time;
 
 	//dedup claiming start
-	unsigned hashing = 0;
 	unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
-	size_t i=0,j;
+	size_t i,j,hashing = 0;
 	char *xmem;
 
 	struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
@@ -569,7 +568,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
 			printk("i:%u",i);
 			for(j=0;j<128;j++){
-			memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned));
+			memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned long));
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
@@ -577,9 +576,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		else{
 			copy_from_user(xmem, buf, i);
-			printk("last i:%u",i);
+			printk("last i:%lu",i);
 			for(j=0;j<128&&(j<i/sizeof(unsigned));j++){
-			memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned));
+			memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned long));
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
@@ -594,7 +593,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// }
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		// printk("count:%u",count);
-		printk("hashing:%u",hashing);
+		printk("hashing:%lu",hashing);
 		printk("\n");
 		
 		i -= pmfs_inode_blk_size(pi);
