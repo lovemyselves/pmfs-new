@@ -29,7 +29,7 @@
 // l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
-struct list_head *new_list = &hash_map_addr_list;
+static struct list_head *new_list = &hash_map_addr_list;
 bool find_flag = false;
 struct rb_root root = RB_ROOT;
 
