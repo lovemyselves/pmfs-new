@@ -349,7 +349,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// hash_map_addr_temp->addr = xmem;
 		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		// rb_insert_node(&root, hash_map_addr_temp);
+		rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 		// find:
 		/* end */
 
