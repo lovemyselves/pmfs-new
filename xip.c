@@ -585,7 +585,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 		}
 		
-		// hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
+		hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
  		// if(find_flag == true && hashing == hash_map_addr_entry->hashing)
 		// {
 		// 	hash_map_addr_entry->count++;
@@ -606,16 +606,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	/*add reference content */
 		// }
 
-		// find_flag = false;
-		// // printk("not hash hit\n");
-		// hash_map_addr_temp->hashing = hashing;
-		// hash_map_addr_temp->count = 1;
-		// hash_map_addr_temp->addr = (void*)xmem;
+		find_flag = false;
+		// printk("not hash hit\n");
+		hash_map_addr_temp->hashing = hashing;
+		hash_map_addr_temp->count = 1;
+		hash_map_addr_temp->addr = (void*)xmem;
 
-		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		// rb_insert_node(&root, hash_map_addr_temp);
-		// find:
+		INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		rb_insert_node(&root, hash_map_addr_temp);
+		find:
 		// for(j=0;i<128;j++)
 		// {
 		// 	memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned));
