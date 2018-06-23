@@ -70,7 +70,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 			entry_node = &(*entry_node)->rb_right;
 		}	
 		else{
-			printk("result:%l",(long)(hash_map_addr_new->hashing - hash_map_addr_entry->hashing));
+			printk("result:%ld",(long int)(hash_map_addr_new->hashing - hash_map_addr_entry->hashing));
 			printk("hashing accident!");
 			break;
 		}
