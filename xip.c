@@ -35,7 +35,7 @@ struct rb_root root = RB_ROOT;
 /*
 	dedup rbtree function
 */
-struct hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
+struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
 {
 	struct rb_node *entry_node = root->rb_node;
 	int result;
@@ -72,7 +72,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 		else{
 			printk("hashing1:%lu",hash_map_addr_new->hashing);
 			printk("hashing2:%lu",hash_map_addr_entry->hashing);
-			hash_map_addr_entry = rb_search_node(root, hashing);
+			hash_map_addr_entry = rb_search_node(root, hash_map_addr_entry->hashing);
 			if(hash_map_addr_entry){printk("hashing accident!");}
 			return;
 		}
