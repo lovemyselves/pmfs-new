@@ -588,13 +588,17 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
  		if(find_flag == true)
 		{
-			hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
-			if(hashing == hash_map_addr_entry->hashing){
-				hash_map_addr_entry->count++;
-				last_hit.next = last_hit.next->next;
-				printk("fast hit!\n");
-				/* add reference content */
-				goto find;
+			if(last.hit.next == NULL)
+				;
+			else{	
+				hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
+				if(hashing == hash_map_addr_entry->hashing){
+					hash_map_addr_entry->count++;
+					last_hit.next = last_hit.next->next;
+					printk("fast hit!\n");
+					/* add reference content */
+					goto find;
+				}
 			}
 		}
 		
