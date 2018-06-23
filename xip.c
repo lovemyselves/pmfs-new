@@ -60,7 +60,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_entry;
 
-	while(*entry_node != NULL){
+	while(*entry_node){
 		parent = *entry_node;
 		hash_map_addr_entry = rb_entry(*entry_node, struct hash_map_addr, node);
 		
@@ -68,6 +68,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 			entry_node = &(*entry_node)->rb_left;
 		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing)
 			entry_node = &(*entry_node)->rb_right;
+			printk("had been come here!");
 		else{
 			printk("hashing accident!");
 			break;
