@@ -268,7 +268,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		//dedup claiming start
 		// unsigned hashing = 0;
 		// unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
-		// int i;
+		int i;
 		
 		// struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
 		// hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -375,7 +375,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	} while (count);
 
 	//dedup insert rbtree node start
-	while(new_list->next!=NULL&&new_list->next!=&hash_map_addr_list){
+	for(i=0;i<8;i++){
 		rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 		printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
 		new_list = new_list->next;
