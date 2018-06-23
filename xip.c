@@ -71,7 +71,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 		else if(result > 0)
 			entry_node = &(*entry_node)->rb_right;
 		else
-			return;
+			break;
 		break;
 	}
 	// rb_link_node(&(hash_map_addr_new->node), parent, entry_node);
