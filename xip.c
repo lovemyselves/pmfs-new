@@ -73,11 +73,11 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 			printk("hashing1:%lu",hash_map_addr_new->hashing);
 			printk("hashing2:%lu",hash_map_addr_entry->hashing);
 			printk("hashing accident!");
-			entry_node = &(*entry_node)->rb_right;
+			break;
 		}
 	}
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
-	// rb_insert_color(&hash_map_addr_new->node, root);
+	rb_insert_color(&hash_map_addr_new->node, root);
 }
 /* claim end */
 
@@ -624,7 +624,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->addr = (void*)xmem;
 
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		rb_insert_node(&root, hash_map_addr_temp);
 		
 		find:
