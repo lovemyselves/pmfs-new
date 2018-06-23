@@ -77,7 +77,6 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 			return;
 		}
 	}
-	printk("hash_map_addr_new->addr:%lu",(long unsigned)hash_map_addr_new->addr);
 	printk("new hashing:%lu",hash_map_addr_new->hashing);
 	// rb_link_node(&hash_map_addr_new->node, parent, entry_node);
 	// rb_insert_color(&hash_map_addr_new->node, root);
@@ -349,8 +348,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// hash_map_addr_temp->addr = xmem;
 		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
-		new_list = new_list->next;
+		
 		// find:
 		/* end */
 
@@ -375,6 +373,14 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status < 0)
 			break;	
 	} while (count);
+
+	//dedup insert rbtree node start
+	while(new_list->next!=NULL&&new_list->next!=&hash_map_addr_list){
+		rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
+		printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
+		new_list = new_list->next;
+	}
+	//end
 
 	*ppos = pos;
 	/*
