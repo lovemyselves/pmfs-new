@@ -584,38 +584,38 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing ^= (hashing >> 2);
 			}
 		}
-		hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
- 		if(find_flag == true && hashing == hash_map_addr_entry->hashing)
-		{
-			hash_map_addr_entry->count++;
-			last_hit.next = last_hit.next->next;
-			// printk("fast hit!\n");
-			/* add reference content */
-			goto find;
-		}
+		// hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
+ 		// if(find_flag == true && hashing == hash_map_addr_entry->hashing)
+		// {
+		// 	hash_map_addr_entry->count++;
+		// 	last_hit.next = last_hit.next->next;
+		// 	// printk("fast hit!\n");
+		// 	/* add reference content */
+		// 	goto find;
+		// }
 		
-		// last_hit.next = hash_map_addr_list.next;
-		hash_map_addr_entry = rb_search_node(&root, hashing);
-		if(hash_map_addr_entry){
-			hash_map_addr_entry->count++;
-			last_hit.next = hash_map_addr_entry->list.next;
-			find_flag = true;
-			// printk("hit!\n");
-			goto find;
-			/*add reference content */
-		}
+		// // last_hit.next = hash_map_addr_list.next;
+		// hash_map_addr_entry = rb_search_node(&root, hashing);
+		// if(hash_map_addr_entry){
+		// 	hash_map_addr_entry->count++;
+		// 	last_hit.next = hash_map_addr_entry->list.next;
+		// 	find_flag = true;
+		// 	// printk("hit!\n");
+		// 	goto find;
+		// 	/*add reference content */
+		// }
 
-		find_flag = false;
-		// printk("not hash hit\n");
-		hash_map_addr_temp->hashing = hashing;
-		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->addr = (void*)xmem;
-		// hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
-		hash_map_addr_temp->addr = xmem;
-		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		rb_insert_node(&root, hash_map_addr_temp);
-		find:
+		// find_flag = false;
+		// // printk("not hash hit\n");
+		// hash_map_addr_temp->hashing = hashing;
+		// hash_map_addr_temp->count = 1;
+		// hash_map_addr_temp->addr = (void*)xmem;
+		// // hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
+		// hash_map_addr_temp->addr = xmem;
+		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		// rb_insert_node(&root, hash_map_addr_temp);
+		// find:
 
 		// for(j=0;i<128;j++)
 		// {

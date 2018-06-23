@@ -10,7 +10,7 @@
 // };
 
 struct hash_map_addr{
-    unsigned hashing;
+    size_t hashing;
     void *hashing_md5;
     void *addr;
     unsigned int count;
