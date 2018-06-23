@@ -62,15 +62,18 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 	int result;
 
 	printk("success access!");
-	// while(*entry_node){
-	// 	parent = *entry_node;
-	// 	hash_map_addr_entry = rb_entry(*entry_node, struct hash_map_addr, node);
-	// 	result = hash_map_addr_new->hashing - hash_map_addr_entry->hashing;
-	// 	if(result < 0)
-	// 		entry_node = &(*entry_node)->rb_left;
-	// 	else
-	// 		entry_node = &(*entry_node)->rb_right;
-	// }
+	while(*entry_node != NULL){
+		parent = *entry_node;
+		hash_map_addr_entry = rb_entry(*entry_node, struct hash_map_addr, node);
+		result = hash_map_addr_new->hashing - hash_map_addr_entry->hashing;
+		// if(result < 0)
+		// 	entry_node = &(*entry_node)->rb_left;
+		// else if(result > 0)
+		// 	entry_node = &(*entry_node)->rb_right;
+		// else
+		// 	return;
+		break;
+	}
 	// rb_link_node(&(hash_map_addr_new->node), parent, entry_node);
 	// rb_insert_color(&(hash_map_addr_new->node), root);
 }
