@@ -589,7 +589,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 
 		if (i>pmfs_inode_blk_size(pi)){
-			copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
+			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
 			for(j=0;j<128;j++){
 			memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned long));
@@ -600,7 +600,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("compute result of hashing:%lu",hashing);
 		}
 		else{
-			copy_from_user(xmem, buf, i);
+			copy_from_user(xmem, buf+count-i, i);
 			printk("last i:%lu",i);
 			for(j=0;j<128&&(j<i/sizeof(unsigned long));j++){
 			memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned long));
