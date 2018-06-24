@@ -512,11 +512,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	//dedup claiming start
 	unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
-	size_t i,j,hashing = 0;
+	size_t i,j;
 	char *xmem;
-
-	struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
-	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -592,6 +589,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 	do{	
+		size_t hashing = 0;
+		struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
+		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+
 		if (i>pmfs_inode_blk_size(pi)){
 			copy_from_user(xmem, buf, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
@@ -650,7 +651,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		printk("temp->count:%lu",hash_map_addr_temp->count);
 		printk("temp->hashing:%lu",hash_map_addr_temp->hashing);
-		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		// rb_insert_node(&root, hash_map_addr_temp);
 		
@@ -667,17 +668,17 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	printk("\n");
 	/* hash_map_addr_entry ponit reuse for traverse */
-	// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-	// {	
-	// 	// hash_map_addr_entry->count++;
-	// 	// printk("find the hashing!\n");
-	// 	printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-	// 	// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-	// 	// find_flag = 1;
-	// 	// last_hit.next = hash_map_addr_entry->list.next;
-	// 	// find_flag = true;
-	// 	// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
-	// }
+	list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+	{	
+		// hash_map_addr_entry->count++;
+		// printk("find the hashing!\n");
+		printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+		// find_flag = 1;
+		// last_hit.next = hash_map_addr_entry->list.next;
+		// find_flag = true;
+		// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
+	}
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
