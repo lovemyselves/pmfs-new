@@ -351,10 +351,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		
 		// find:
-		rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
-		printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
-		printk("======================================");
-		new_list = new_list->prev;
+		// new_list = new_list->next;
+		// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
+		// printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
+		// printk("======================================");
 		/* end */
 
 		/* if start or end dest address is not 8 byte aligned, 
@@ -380,12 +380,13 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	} while (count);
 
 	//dedup insert rbtree node start
-	// for(i=0;i<8;i++){
-		// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
-		// printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
-		// printk("======================================");
-		// new_list = new_list->next;
-	// }
+	new_list = &hash_map_addr_list;
+	for(i=0;i<8;i++){
+		rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
+		new_list = new_list->next;
+		printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
+		printk("======================================");
+	}
 	//end
 
 	*ppos = pos;
