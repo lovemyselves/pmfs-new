@@ -667,7 +667,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			break;	
 	}while(true);
 
-	printk("\n");
+	printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	/* hash_map_addr_entry ponit reuse for traverse */
 	list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
 	{	
@@ -680,6 +680,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// find_flag = true;
 		// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
 	}
+	printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
