@@ -257,6 +257,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	ssize_t     written = 0;
 	struct pmfs_inode *pi;
 	timing_t memcpy_time, write_time;
+	size_t i;
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
