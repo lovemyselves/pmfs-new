@@ -381,7 +381,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 	//dedup insert rbtree node start
 	printk("============================================");
-	while(new_list->next!=&hash_map_addr_list&&new_list->next!=NULL){
+	while(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 		/* add physical address */
 		printk("new node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
 		new_list = new_list->next;
@@ -648,7 +648,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("temp->hashing:%lu",hash_map_addr_temp->hashing);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		rb_insert_node(&root, hash_map_addr_temp);
+		// rb_insert_node(&root, hash_map_addr_temp);
 		
 		find:
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
