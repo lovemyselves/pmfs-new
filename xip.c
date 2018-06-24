@@ -653,7 +653,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("temp->count:%lu",hash_map_addr_temp->count);
 		printk("temp->hashing:%lu",hash_map_addr_temp->hashing);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		// rb_insert_node(&root, hash_map_addr_temp);
 		
 		find:
