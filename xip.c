@@ -581,7 +581,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	i = count;
-	
 	do{	
 		size_t hashing = 0;
 		struct hash_map_addr *hash_map_addr_temp;
