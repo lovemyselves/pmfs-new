@@ -388,6 +388,21 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
 		printk("======================================");
 	}
+	printk("\n");
+	/* hash_map_addr_entry ponit reuse for traverse */
+		list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+		{	
+			hash_map_addr_entry->count++;
+			// printk("find the hashing!\n");
+			printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+			// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+			// find_flag = 1;
+			// last_hit.next = hash_map_addr_entry->list.next;
+			// find_flag = true;
+			// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
+			}
+		}
+
 	//end
 
 	*ppos = pos;
