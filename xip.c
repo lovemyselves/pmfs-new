@@ -258,7 +258,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	struct pmfs_inode *pi;
 	timing_t memcpy_time, write_time;
 	size_t i;
-	struct hash_map_addr *hash_map_addr_entry;
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
@@ -390,18 +389,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		printk("======================================");
 	}
 	printk("\n");
-	/* hash_map_addr_entry ponit reuse for traverse */
-	// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-	// {	
-	// 	hash_map_addr_entry->count++;
-	// 	// printk("find the hashing!\n");
-	// 	printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-	// 	// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-	// 	// find_flag = 1;
-	// 	// last_hit.next = hash_map_addr_entry->list.next;
-	// 	// find_flag = true;
-	// 	// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
-	// }
+	
 	
 
 	//end
@@ -671,6 +659,20 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			break;	
 	}while(true);
+	
+	printk("\n");
+	/* hash_map_addr_entry ponit reuse for traverse */
+	list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+	{	
+		// hash_map_addr_entry->count++;
+		// printk("find the hashing!\n");
+		printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+		// find_flag = 1;
+		// last_hit.next = hash_map_addr_entry->list.next;
+		// find_flag = true;
+		// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
+	}
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
