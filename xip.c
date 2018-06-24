@@ -601,6 +601,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 			}
+			printk("compute result of hashing:%lu",hashing);
 		}
 		else{
 			copy_from_user(xmem, buf, i);
@@ -611,6 +612,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 			}
+			printk("compute result of hashing:%lu",hashing);
 		}
 		
  		if(find_flag == true)
@@ -645,8 +647,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = (void*)xmem;
 
-		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		// rb_insert_node(&root, hash_map_addr_temp);
 		
 		find:
@@ -659,20 +661,20 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			break;	
 	}while(true);
-	
+
 	printk("\n");
 	/* hash_map_addr_entry ponit reuse for traverse */
-	list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-	{	
-		// hash_map_addr_entry->count++;
-		// printk("find the hashing!\n");
-		printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-		// find_flag = 1;
-		// last_hit.next = hash_map_addr_entry->list.next;
-		// find_flag = true;
-		// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
-	}
+	// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
+	// {	
+	// 	// hash_map_addr_entry->count++;
+	// 	// printk("find the hashing!\n");
+	// 	printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
+	// 	// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
+	// 	// find_flag = 1;
+	// 	// last_hit.next = hash_map_addr_entry->list.next;
+	// 	// find_flag = true;
+	// 	// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
+	// }
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
