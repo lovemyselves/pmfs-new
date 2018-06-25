@@ -518,7 +518,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j;
 	size_t hashing;
-	struct hash_map_addr *hash_map_addr_entry;
+	
 	
 	//end
 
@@ -598,6 +598,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		char const *data_block = buf + count - i;
 		struct hash_map_addr *hash_map_addr_temp;
+		struct hash_map_addr *hash_map_addr_entry;
 		char *xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hashing = 0;
@@ -669,12 +670,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		// printk("count:%u",count);
 		printk("\n");
+		kfree(hash_map_addr_entry);
 		if(i>pmfs_inode_blk_size(pi))
 			i -= pmfs_inode_blk_size(pi);
 		else
 			break;	
 	}while(true);
-	kfree(hash_map_addr_entry);
+	
 	
 
 	// printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
