@@ -39,7 +39,7 @@ struct rb_root root = RB_ROOT;
 struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
 {
 	struct rb_node *entry_node = root->rb_node;
-	int result;
+	long int result = 5;
 	struct hash_map_addr *hash_map_addr_entry;
 	
 	printk("search hashing:%lu",hashing);
