@@ -518,7 +518,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j;	
 	struct hash_map_addr *hash_map_addr_entry;
-	void *kmem_buf;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -592,20 +591,18 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	i = count;
-	kmem_buf = kmalloc(count,GFP_KERNEL);
-	copy_from_user(kmem_buf, buf, count);
 	// xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 	do{	
-		size_t data_block = count - i;
+		char const *data_block = buf + count - i;
 		size_t hashing = 0;
 		struct hash_map_addr *hash_map_addr_temp;
-		void *kmem = kmem_buf + data_block;
+		void *kmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 		size_t *temp = kmalloc(sizeof(size_t),GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		
 
 		if (i>pmfs_inode_blk_size(pi)){
-			// copy_from_user(kmem, data_block, pmfs_inode_blk_size(pi));
+			copy_from_user(kmem, data_block, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
 			for(j=0;j<128;j++){
 				memcpy(temp,kmem+j*sizeof(size_t),sizeof(size_t));	
@@ -616,7 +613,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// printk("compute result of hashing:%lu",hashing);
 		}
 		else{
-			// copy_from_user(kmem, data_block, i);
+			copy_from_user(kmem, data_block, i);
 			printk("last i:%lu",i);
 			// printk("data_block:%lu",(size_t)data_block);
 			for(j=0;j<128&&(j<i/sizeof(size_t));j++){
