@@ -625,7 +625,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 			printk("compute result of hashing:%lu",hashing);
 		}
-		kfree(xmem);
 		
  		if(find_flag == true)
 		{
@@ -670,7 +669,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		// printk("count:%u",count);
 		printk("\n");
-		kfree(hash_map_addr_entry);
+		// kfree(hash_map_addr_entry);
+		// kfree(xmem);
 		if(i>pmfs_inode_blk_size(pi))
 			i -= pmfs_inode_blk_size(pi);
 		else
