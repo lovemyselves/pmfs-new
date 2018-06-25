@@ -603,7 +603,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if (i>pmfs_inode_blk_size(pi)){
 			copy_from_user(xmem, data_block, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
-			x
 			for(j=0;j<128;j++){
 			hashing += (size_t)*(xmem);
 			xmem += sizeof(size_t);
