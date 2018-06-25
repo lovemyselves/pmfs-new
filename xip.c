@@ -42,6 +42,8 @@ struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
 	int result;
 	struct hash_map_addr *hash_map_addr_entry;
 	
+	printk("search hashing:%lu",hashing);
+
 	while(entry_node){
 		hash_map_addr_entry = rb_entry(entry_node, struct hash_map_addr, node);
 		result = (long int)(hashing - hash_map_addr_entry->hashing); 
