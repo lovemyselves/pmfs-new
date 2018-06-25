@@ -267,6 +267,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
+	printk("============================================");
 	do {
 		unsigned long index;
 		unsigned long offset;
@@ -358,10 +359,16 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		
 		// find:
+		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
+			/* add physical address */
+			printk("new node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
+			new_list = new_list->next;
+		}
+		// printk("============================================");
 		// new_list = new_list->next;
 		// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 		// printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
-		// printk("======================================");
+		
 		/* end */
 
 		/* if start or end dest address is not 8 byte aligned, 
@@ -388,12 +395,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 	//dedup insert rbtree node start
 	printk("============================================");
-	while(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
-		/* add physical address */
-		printk("new node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
-		new_list = new_list->next;
-	}
-	printk("============================================");
+	
+	// printk("============================================");
 	//end
 
 	*ppos = pos;
