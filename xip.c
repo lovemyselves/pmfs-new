@@ -394,7 +394,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	} while (count);
 
 	//dedup insert rbtree node start
-	printk("============================================");
+	printk("============================================\n");
 	
 	// printk("============================================");
 	//end
