@@ -606,7 +606,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			copy_from_user(xmem, buf+count-i, i);
 			printk("last i:%lu",i);
 			for(j=0;j<128&&(j<i/sizeof(size_t));j++){
-			memcpy(temp,xmem+j*sizeof(size_t),sizeof(size_t));
+			// memcpy(temp,xmem+j*sizeof(size_t),sizeof(size_t));
 			// copy_from_user(temp,data_block+j*sizeof(size_t),sizeof(size_t));
 			hashing += *(size_t*)xmem+j*sizeof(size_t);
 			hashing += (hashing << 3);
