@@ -603,14 +603,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if (i>pmfs_inode_blk_size(pi)){
 			copy_from_user(xmem, data_block, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
-			printk("xmem:%lu",(size_t)*xmem);
-			memcpy(&temp,xmem,sizeof(size_t));
-			printk("temp:%lu",temp);
 			for(j=0;j<128;j++){
-			hashing += (size_t)*(xmem);
-			xmem += sizeof(size_t);
-			hashing += (hashing << 3);
-			hashing ^= (hashing >> 2);
+				memcpy(&temp,xmem+j*sizeof(size_t),sizeof(size_t));	
+				hashing += temp;
+				hashing += (hashing << 3);
+				hashing ^= (hashing >> 2);
 			}
 			// printk("compute result of hashing:%lu",hashing);
 		}
@@ -619,8 +616,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("last i:%lu",i);
 			// printk("data_block:%lu",(size_t)data_block);
 			for(j=0;j<128&&(j<i/sizeof(size_t));j++){
-			hashing += (size_t)*(xmem);
-			xmem += sizeof(size_t);
+			memcpy(&temp,xmem+j*sizeof(size_t),sizeof(size_t));	
+			xmem += temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 			}
