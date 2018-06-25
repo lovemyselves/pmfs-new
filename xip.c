@@ -593,7 +593,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	i = count;
-	xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
+	// xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 	do{	
 		
 		char const *data_block = buf + count - i;
