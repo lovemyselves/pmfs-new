@@ -70,7 +70,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 	while(*entry_node){
 		parent = *entry_node;
 		hash_map_addr_entry = rb_entry(*entry_node, struct hash_map_addr, node);
-		result = (long int)(hashing - hash_map_addr_entry->hashing); 
+		result = (long int)(hash_map_addr_new->hashing - hash_map_addr_entry->hashing); 
 		
 		if(result < 0)
 			entry_node = &(*entry_node)->rb_left;
