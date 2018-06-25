@@ -518,7 +518,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j;	
 	struct hash_map_addr *hash_map_addr_entry;
-	void *xmem;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -592,8 +591,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	i = count;
-	xmem = kmalloc(count, GFP_KERNEL);
-	copy_from_user(xmem, buf, count);
+	// xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 	do{	
 		char const *data_block = buf + count - i;
 		size_t hashing = 0;
@@ -604,8 +602,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 
 		if (i>pmfs_inode_blk_size(pi)){
-			// copy_from_user(kmem, data_block, pmfs_inode_blk_size(pi));
-			memcpy(kmem, xmem + count - i, pmfs_inode_blk_size(pi));
+			copy_from_user(kmem, data_block, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
 			for(j=0;j<128;j++){
 				memcpy(temp,kmem+j*sizeof(size_t),sizeof(size_t));	
@@ -671,14 +668,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		// printk("count:%u",count);
 		printk("\n");
-		// kfree(hash_map_addr_entry);
-		// kfree(xmem);
+		kfree(kmem);
 		if(i>pmfs_inode_blk_size(pi))
 			i -= pmfs_inode_blk_size(pi);
 		else
 			break;	
 	}while(true);
-	
+	kfree(hash_map_addr_entry);
 	
 
 	// printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
