@@ -605,6 +605,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if (i>pmfs_inode_blk_size(pi)){
 			copy_from_user(xmem, data_block, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
+			printk("data_block:%lu",(size_t)data_block);
 			for(j=0;j<128;j++){
 			hashing += *(size_t*)xmem+j*sizeof(size_t);
 			hashing += (hashing << 3);
@@ -615,6 +616,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else{
 			copy_from_user(xmem, data_block, i);
 			printk("last i:%lu",i);
+			printk("data_block:%lu",(size_t)data_block);
 			for(j=0;j<128&&(j<i/sizeof(size_t));j++){
 			hashing += *(size_t*)xmem+j*sizeof(size_t);
 			hashing += (hashing << 3);
@@ -671,6 +673,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			break;	
 	}while(true);
+	kfree(hash_map_addr_entry);
+	kfree(xmem);
 
 	// printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	// /* hash_map_addr_entry ponit reuse for traverse */
