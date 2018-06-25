@@ -508,7 +508,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j;
 	struct hash_map_addr *hash_map_addr_entry;
-	char *xmem;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -582,19 +581,17 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	i = count;
-	xmem = kmalloc(count,GFP_KERNEL);
-	copy_from_user(xmem, buf, count);
 	do{	
 		size_t hashing = 0;
-		char* data_block = xmem + count - i;
 		struct hash_map_addr *hash_map_addr_temp;
+		char *xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 
 		if (i>pmfs_inode_blk_size(pi)){
-			// copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
+			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
 			for(j=0;j<128;j++){
-			hashing += *(size_t*)data_block+j*sizeof(size_t);
+			hashing += *(size_t*)xmem+j*sizeof(size_t);
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 			}
@@ -602,10 +599,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("compute result of hashing:%lu",hashing);
 		}
 		else{
-			// copy_from_user(xmem, buf+count-i, i);
+			copy_from_user(xmem, buf+count-i, i);
 			printk("last i:%lu",i);
 			for(j=0;j<128&&(j<i/sizeof(size_t));j++){
-			hashing += *(size_t*)data_block+j*sizeof(size_t);
+			hashing += *(size_t*)xmem+j*sizeof(size_t);
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 			}
@@ -661,7 +658,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			break;	
 	}while(true);
-	kfree(xmem);
 
 	// printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	// /* hash_map_addr_entry ponit reuse for traverse */
