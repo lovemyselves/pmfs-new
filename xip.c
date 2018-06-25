@@ -508,7 +508,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j;
 	struct hash_map_addr *hash_map_addr_entry;
-	char *xmem = kmalloc(count,GFP_KERNEL);
+	char *xmem;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -582,7 +582,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	i = count;
-	
+	xmem = kmalloc(count,GFP_KERNEL);
 	copy_from_user(xmem, buf, count);
 	do{	
 		size_t hashing = 0;
