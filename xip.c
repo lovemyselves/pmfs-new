@@ -661,6 +661,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			break;	
 	}while(true);
+	kfree(xmem);
 
 	// printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	// /* hash_map_addr_entry ponit reuse for traverse */
