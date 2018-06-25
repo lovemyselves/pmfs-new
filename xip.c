@@ -54,6 +54,7 @@ struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
 		else
 			return hash_map_addr_entry;
 	}
+	printk("search result:%lu",result);
 	return NULL;
 }
 
