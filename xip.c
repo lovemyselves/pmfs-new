@@ -44,7 +44,7 @@ struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
 	
 	while(entry_node){
 		hash_map_addr_entry = rb_entry(entry_node, struct hash_map_addr, node);
-		result = hashing - hash_map_addr_entry->hashing; 
+		result = (long int)(hashing - hash_map_addr_entry->hashing); 
 		if(result < 0)
 			entry_node = entry_node->rb_left;
 		else if(result > 0)
@@ -582,7 +582,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	i = count;
 	do{	
-		size_t hashing = 0;
+		size_t hashing = 0, data_block = buf + count - i;
 		struct hash_map_addr *hash_map_addr_temp;
 		struct hash_map_addr *hash_map_addr_entry;
 		char *xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
@@ -590,7 +590,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 
 		if (i>pmfs_inode_blk_size(pi)){
-			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
+			copy_from_user(xmem, data_block, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
 			for(j=0;j<128;j++){
 			hashing += *(size_t*)xmem+j*sizeof(size_t);
@@ -601,7 +601,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("compute result of hashing:%lu",hashing);
 		}
 		else{
-			copy_from_user(xmem, buf+count-i, i);
+			copy_from_user(xmem, data_block, i);
 			printk("last i:%lu",i);
 			for(j=0;j<128&&(j<i/sizeof(size_t));j++){
 			hashing += *(size_t*)xmem+j*sizeof(size_t);
