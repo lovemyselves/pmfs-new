@@ -599,7 +599,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 			}
-			printk("hashing length:%lu",sizeof(size_t));
 			printk("compute result of hashing:%lu",hashing);
 		}
 		else{
@@ -655,7 +654,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		find:
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		// printk("count:%u",count);
-		printk("hashing:%lu",hashing);
 		printk("\n");
 		if(i>pmfs_inode_blk_size(pi))
 			i -= pmfs_inode_blk_size(pi);
