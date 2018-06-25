@@ -582,17 +582,18 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	i = count;
 	do{	
-		size_t hashing = 0;
+		size_t hashing = 0, data_block = buf+count-i;
 		struct hash_map_addr *hash_map_addr_temp;
 		unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 		char *xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 
 		if (i>pmfs_inode_blk_size(pi)){
-			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
+			// copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
 			printk("i:%lu",i);
 			for(j=0;j<128;j++){
-			memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned long));
+			// memcpy(temp,xmem+j*sizeof(unsigned long),sizeof(unsigned long));
+			copy_from_user(temp,data_block+j*sizeof(size_t),sizeof(size_t));
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
@@ -601,10 +602,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("compute result of hashing:%lu",hashing);
 		}
 		else{
-			copy_from_user(xmem, buf+count-i, i);
+			// copy_from_user(xmem, buf+count-i, i);
 			printk("last i:%lu",i);
-			for(j=0;j<128&&(j<i/sizeof(unsigned long));j++){
-			memcpy(temp,xmem+j*sizeof(unsigned),sizeof(unsigned long));
+			for(j=0;j<128&&(j<i/sizeof(size_t));j++){
+			// memcpy(temp,xmem+j*sizeof(unsigned long),sizeof(unsigned long));
+			copy_from_user(temp,data_block+j*sizeof(size_t),sizeof(size_t));
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
