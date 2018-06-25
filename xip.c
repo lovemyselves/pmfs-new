@@ -624,6 +624,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 			printk("compute result of hashing:%lu",hashing);
 		}
+		kfree(xmem);
 		
  		if(find_flag == true)
 		{
@@ -674,7 +675,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			break;	
 	}while(true);
 	kfree(hash_map_addr_entry);
-	kfree(xmem);
+	
 
 	// printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	// /* hash_map_addr_entry ponit reuse for traverse */
