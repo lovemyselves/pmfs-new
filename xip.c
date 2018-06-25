@@ -593,7 +593,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 	do{	
 		char const *data_block = buf + count - i;
-		size_t hashing = 0,temp;
+		size_t hashing = 0, temp = 0;
 		struct hash_map_addr *hash_map_addr_temp;
 		struct hash_map_addr *hash_map_addr_entry;
 		size_t *xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
