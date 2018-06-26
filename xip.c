@@ -596,16 +596,24 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		
 
-		if(i>pmfs_inode_blk_size(pi))
+		if(i>pmfs_inode_blk_size(pi)){
 			kmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			copy_from_user(kmem, data_block, pmfs_inode_blk_size(pi));
-		else
+		}else{
 			kmem = kmalloc(i, GFP_KERNEL);
 			copy_from_user(kmem, data_block, i);
+		}	
 		printk("i:%lu",i);
 		printk("i/sizeof(size_t):%lu",i/sizeof(size_t));
-		for(j=0;j<128&&j<(i/sizeof(size_t)-1);j++){
-			memcpy(temp,kmem+j*sizeof(size_t),sizeof(size_t));	
+		trace = i/sizeof(size_t)-1; 
+		if(trace<128){
+			memcpy(temp, kmem+trace*sizeof(size_t), i-trace*sizeof(size_t));
+			hashing += *temp;
+			hashing += (hashing << 3);
+			hashing ^= (hashing >> 2);
+		}
+		for(j=0;j<128&&j<trace;j++){
+			memcpy(temp, kmem+j*sizeof(size_t), sizeof(size_t));	
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
