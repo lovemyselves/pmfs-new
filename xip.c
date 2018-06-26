@@ -349,7 +349,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			printk("new node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
-			rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
+			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 			new_list = new_list->next;
 		}
 		// printk("============================================");
@@ -646,7 +646,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				if(hashing == hash_map_addr_entry->hashing){
 					hash_map_addr_entry->count++;
 					last_hit = last_hit->next;
-					// printk("fast hit!\n");
+					printk("fast hit!\n");
 					/* add reference content */
 					goto find;
 				}
@@ -658,7 +658,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_entry->count++;
 			last_hit = &hash_map_addr_entry->list;
 			find_flag = true;
-			// printk("hit!\n");
+			printk("hit!\n");
 			goto find;
 			/*add reference content */
 		}
@@ -673,8 +673,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("temp->hashing:%lu",hash_map_addr_temp->hashing);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		printk("before insert_node");
 		// rb_insert_node(&root, hash_map_addr_temp);
-		
+		printk("after insert_node");
+
 		find:
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		// printk("count:%u",count);
