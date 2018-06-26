@@ -39,7 +39,7 @@ struct rb_root root = RB_ROOT;
 struct hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
 {
 	struct rb_node *entry_node = root->rb_node;
-	int result;
+	long long int result;
 	struct hash_map_addr *hash_map_addr_entry;
 	
 	while(entry_node){
@@ -60,7 +60,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_en
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_temp;
-	int result;
+	long long int result;
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -347,6 +347,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			printk("new node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
+			rb_insert_node(&root, hash_map_addr_temp);
 			new_list = new_list->next;
 		}
 		// printk("============================================");
@@ -670,7 +671,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("temp->hashing:%lu",hash_map_addr_temp->hashing);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		rb_insert_node(&root, hash_map_addr_temp);
+		// rb_insert_node(&root, hash_map_addr_temp);
 		
 		find:
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
