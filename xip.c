@@ -58,16 +58,14 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_entry;
-	long int result = 5;
 
 	while(*entry_node){
 		parent = *entry_node;
-		hash_map_addr_entry = rb_entry(*entry_node, struct hash_map_addr, node);
-		result = (long int)(hash_map_addr_new->hashing - hash_map_addr_entry->hashing); 
+		hash_map_addr_entry = rb_entry(*entry_node, struct hash_map_addr, node); 
 		
-		if(result < 0)
+		if(hash_map_addr_new->hashing < hash_map_addr_entry->hashing)
 			entry_node = &(*entry_node)->rb_left;
-		else if(result >0)
+		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing)
 			entry_node = &(*entry_node)->rb_right;	
 		else{
 			// printk("hashing1:%lu",hash_map_addr_new->hashing);
