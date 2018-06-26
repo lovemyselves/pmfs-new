@@ -683,7 +683,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			break;	
 	}while(true);
-	kfree(hash_map_addr_entry);
+	// kfree(hash_map_addr_entry);
 	
 
 	// printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
