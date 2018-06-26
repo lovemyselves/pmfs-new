@@ -70,12 +70,12 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 		else{
 			// printk("hashing1:%lu",hash_map_addr_new->hashing);
 			// printk("hashing2:%lu",hash_map_addr_entry->hashing);
-			printk("search result:%lu",hash_map_addr_new->hashing - hash_map_addr_entry->hashing);
-			if(hash_map_addr_entry){printk("hashing accident!");}
+			// printk("search result:%lu",hash_map_addr_new->hashing - hash_map_addr_entry->hashing);
+			// if(hash_map_addr_entry){printk("hashing accident!");}
 			return;
 		}
 	}
-	printk("new hashing:%lu",hash_map_addr_new->hashing);
+	// printk("new hashing:%lu",hash_map_addr_new->hashing);
 	
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
 	rb_insert_color(&hash_map_addr_new->node, root);
@@ -599,10 +599,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			kmem = kmalloc(i, GFP_KERNEL);
 			copy_from_user(kmem, data_block, i);
 		}	
-		printk("i:%lu",i);
-		printk("i/sizeof(size_t):%lu",i/sizeof(size_t));
+		// printk("i:%lu",i);
+		// printk("i/sizeof(size_t):%lu",i/sizeof(size_t));
 		trace = (size_t)(i/sizeof(size_t))-1; 
-		printk("trace:%lu",trace);
+		// printk("trace:%lu",trace);
 		memcpy(&temp, kmem, sizeof(size_t));
 		hashing = temp;
 
@@ -645,7 +645,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				if(hashing == hash_map_addr_entry->hashing){
 					hash_map_addr_entry->count++;
 					last_hit = last_hit->next;
-					printk("fast hit!\n");
+					// printk("fast hit!\n");
 					/* add reference content */
 					goto find;
 				}
@@ -657,13 +657,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_entry->count++;
 			last_hit = &hash_map_addr_entry->list;
 			find_flag = true;
-			printk("hit!\n");
+			// printk("hit!\n");
 			goto find;
 			/*add reference content */
 		}
 
 		find_flag = false;
-		printk("not hash hit!\n");
+		// printk("not hash hit!\n");
 		
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
