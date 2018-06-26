@@ -603,6 +603,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("i/sizeof(size_t):%lu",i/sizeof(size_t));
 		trace = (size_t)(i/sizeof(size_t))-1; 
 		printk("trace:%lu",trace);
+		memcpy(&temp, kmem, sizeof(size_t));
 
 		// if(trace<128){
 		// 	memcpy(temp, kmem+trace*sizeof(size_t), i-trace*sizeof(size_t));
@@ -610,13 +611,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	hashing += (hashing << 3);
 		// 	hashing ^= (hashing >> 2);
 		// }
-		for(j=0;j<128&&j<trace;j++){
-			memcpy(temp, kmem+j*sizeof(size_t), sizeof(size_t));	
-			hashing += *temp;
-			hashing += (hashing << 3);
-			hashing ^= (hashing >> 2);
-		}
-		printk("temp:%lu",*temp);
+		// for(j=0;j<128&&j<trace;j++){
+		// 	memcpy(temp, kmem+j*sizeof(size_t), sizeof(size_t));	
+		// 	hashing += *temp;
+		// 	hashing += (hashing << 3);
+		// 	hashing ^= (hashing >> 2);
+		// }
+		printk("temp:%lu",temp);
 		printk("compute result of hashing:%lu",hashing);
 		
 		// else{
@@ -670,14 +671,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("temp->hashing:%lu",hash_map_addr_temp->hashing);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		// rb_insert_node(&root, hash_map_addr_temp);
+		rb_insert_node(&root, hash_map_addr_temp);
 		
 		find:
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		// printk("count:%u",count);
 		printk("\n");
 		kfree(kmem);
-		kfree(temp);
+		// kfree(temp);
 		if(i>pmfs_inode_blk_size(pi))
 			i -= pmfs_inode_blk_size(pi);
 		else
