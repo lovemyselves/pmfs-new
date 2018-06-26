@@ -41,8 +41,6 @@ struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
 	struct rb_node *entry_node = root->rb_node;
 	long int result = 5;
 	struct hash_map_addr *hash_map_addr_entry;
-	
-	printk("search hashing:%lu",hashing);
 
 	while(entry_node){
 		hash_map_addr_entry = rb_entry(entry_node, struct hash_map_addr, node);
@@ -51,12 +49,9 @@ struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
 			entry_node = entry_node->rb_left;
 		else if(result > 0)
 			entry_node = entry_node->rb_right;
-		else{
-			printk("search result:%lu",result);
+		else
 			return hash_map_addr_entry;
-		}
 	}
-	printk("search result:%lu",result);
 	return NULL;
 }
 
@@ -594,36 +589,41 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// xmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 	do{	
 		char const *data_block = buf + count - i;
-		size_t hashing = 0;
+		size_t hashing = 0,trace;
 		struct hash_map_addr *hash_map_addr_temp;
 		void *kmem = kmalloc(pmfs_inode_blk_size(pi),GFP_KERNEL);
 		size_t *temp = kmalloc(sizeof(size_t),GFP_KERNEL);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		
 
-		if (i>pmfs_inode_blk_size(pi)){
+		if(i>pmfs_inode_blk_size(pi))
 			copy_from_user(kmem, data_block, pmfs_inode_blk_size(pi));
-			printk("i:%lu",i);
-			for(j=0;j<128;j++){
-				memcpy(temp,kmem+j*sizeof(size_t),sizeof(size_t));	
-				hashing += *temp;
-				hashing += (hashing << 3);
-				hashing ^= (hashing >> 2);
-			}
-			// printk("compute result of hashing:%lu",hashing);
-		}
-		else{
+		else
 			copy_from_user(kmem, data_block, i);
-			printk("last i:%lu",i);
-			// printk("data_block:%lu",(size_t)data_block);
-			for(j=0;j<128&&(j<i/sizeof(size_t));j++){
-				memcpy(temp,kmem+j*sizeof(size_t),sizeof(size_t));	
-				hashing += *temp;
-				hashing += (hashing << 3);
-				hashing ^= (hashing >> 2);
-			}
-			// printk("compute result of hashing:%lu",hashing);
+		printk("i:%lu",i);
+		printk("i/sizeof(size_t):%lu",i/sizeof(size_t));
+		for(j=0;j<128&&j<(i/sizeof(size_t)-1);j++){
+			memcpy(temp,kmem+j*sizeof(size_t),sizeof(size_t));	
+			hashing += *temp;
+			hashing += (hashing << 3);
+			hashing ^= (hashing >> 2);
 		}
+			// printk("compute result of hashing:%lu",hashing);
+		
+		// else{
+		// 	copy_from_user(kmem, data_block, i);
+		// 	printk("last i:%lu",i);
+		// 	// printk("data_block:%lu",(size_t)data_block);
+		// 	j=0;j<i/sizeof(size_t);j++
+		// 	while(true){
+		// 		memcpy(temp,kmem+j*sizeof(size_t),sizeof(size_t));	
+		// 		hashing += *temp;
+		// 		hashing += (hashing << 3);
+		// 		hashing ^= (hashing >> 2);
+		// 		j++;
+		// 	}
+		// 	// printk("compute result of hashing:%lu",hashing);
+		// }
 		
  		if(find_flag == true)
 		{
@@ -669,6 +669,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("count:%u",count);
 		printk("\n");
 		kfree(kmem);
+		kfree(temp);
 		if(i>pmfs_inode_blk_size(pi))
 			i -= pmfs_inode_blk_size(pi);
 		else
