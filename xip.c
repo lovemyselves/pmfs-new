@@ -580,7 +580,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	i = count;
-	xmem = kmalloc(count,GFP_KERNEL);
+	// xmem = kmalloc(count,GFP_KERNEL);
 	do{	
 		char const *data_block = buf + count - i;
 		size_t hashing = 0,trace;
