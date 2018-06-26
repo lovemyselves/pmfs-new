@@ -603,19 +603,20 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("i/sizeof(size_t):%lu",i/sizeof(size_t));
 		trace = (size_t)(i/sizeof(size_t))-1; 
 		printk("trace:%lu",trace);
-		printk("kmem:%lu",(size_t)*kmem);
-		if(trace<128){
-			memcpy(temp, kmem+trace*sizeof(size_t), i-trace*sizeof(size_t));
-			hashing += *temp;
-			hashing += (hashing << 3);
-			hashing ^= (hashing >> 2);
-		}
+
+		// if(trace<128){
+		// 	memcpy(temp, kmem+trace*sizeof(size_t), i-trace*sizeof(size_t));
+		// 	hashing += *temp;
+		// 	hashing += (hashing << 3);
+		// 	hashing ^= (hashing >> 2);
+		// }
 		for(j=0;j<128&&j<trace;j++){
 			memcpy(temp, kmem+j*sizeof(size_t), sizeof(size_t));	
 			hashing += *temp;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
+		printk("temp:%lu",*temp);
 		printk("compute result of hashing:%lu",hashing);
 		
 		// else{
