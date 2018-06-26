@@ -621,6 +621,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// }
 		printk("data_block:%lu",data_block);
 		printk("temp:%lu",temp);
+		printk("i/pmfs_inode_blk_size(pi):%lu",i/pmfs_inode_blk_size(pi));
 		printk("compute result of hashing:%lu",hashing);
 		
 		// else{
