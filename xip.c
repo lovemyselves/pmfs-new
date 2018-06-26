@@ -684,7 +684,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			i -= pmfs_inode_blk_size(pi);
 		else
 			break;	
-	}while(true);
+	}while(i>pmfs_inode_blk_size(pi));
 	kfree(hash_map_addr_entry);
 	
 
