@@ -71,7 +71,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 			// printk("hashing1:%lu",hash_map_addr_new->hashing);
 			// printk("hashing2:%lu",hash_map_addr_entry->hashing);
 			// printk("search result:%lu",hash_map_addr_new->hashing - hash_map_addr_entry->hashing);
-			// if(hash_map_addr_entry){printk("hashing accident!");}
+			if(hash_map_addr_entry){printk("hashing accident!");}
 			return;
 		}
 	}
