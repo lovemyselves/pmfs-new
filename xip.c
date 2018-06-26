@@ -592,18 +592,19 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		size_t temp;
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 
-		if(i>pmfs_inode_blk_size(pi)){
-			kmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
-			copy_from_user(kmem, data_block, pmfs_inode_blk_size(pi));
-		}else{
-			kmem = kmalloc(i, GFP_KERNEL);
-			copy_from_user(kmem, data_block, i);
-		}	
+		// if(i>pmfs_inode_blk_size(pi)){
+		// 	kmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+		// 	copy_from_user(kmem, data_block, pmfs_inode_blk_size(pi));
+		// }else{
+		// 	kmem = kmalloc(i, GFP_KERNEL);
+		// 	copy_from_user(kmem, data_block, i);
+		// }	
 		// printk("i:%lu",i);
 		// printk("i/sizeof(size_t):%lu",i/sizeof(size_t));
-		trace = (size_t)(i/sizeof(size_t))-1; 
-		// printk("trace:%lu",trace);
-		memcpy(&temp, kmem, sizeof(size_t));
+		// trace = (size_t)(i/sizeof(size_t))-1; 
+		// // printk("trace:%lu",trace);
+		// memcpy(&temp, kmem, sizeof(size_t));
+		copy_from_user((char*)&temp,data_block,sizeof(size_t));
 		hashing = temp;
 
 		// if(trace<128){
@@ -618,6 +619,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	hashing += (hashing << 3);
 		// 	hashing ^= (hashing >> 2);
 		// }
+		printk("data_block:%lu",data_block);
 		printk("temp:%lu",temp);
 		printk("compute result of hashing:%lu",hashing);
 		
