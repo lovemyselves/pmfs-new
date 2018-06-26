@@ -39,15 +39,13 @@ struct rb_root root = RB_ROOT;
 struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
 {
 	struct rb_node *entry_node = root->rb_node;
-	long int result = 5;
 	struct hash_map_addr *hash_map_addr_entry;
 
 	while(entry_node){
 		hash_map_addr_entry = rb_entry(entry_node, struct hash_map_addr, node);
-		result = (long int)(hashing - hash_map_addr_entry->hashing); 
-		if(result < 0)
+		if(hashing < hash_map_addr_entry->hashing)
 			entry_node = entry_node->rb_left;
-		else if(result > 0)
+		else if(hashing > hash_map_addr_entry->hashing)
 			entry_node = entry_node->rb_right;
 		else
 			return hash_map_addr_entry;
@@ -618,7 +616,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
-		// printk("compute result of hashing:%lu",hashing);
+		printk("compute result of hashing:%lu",hashing);
 		
 		// else{
 		// 	copy_from_user(kmem, data_block, i);
