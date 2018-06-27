@@ -681,7 +681,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
 		// printk("count:%u",count);
 		printk("\n");
-		kfree(kmem);
 		// kfree(temp);
 		if(i>pmfs_inode_blk_size(pi))
 			i -= pmfs_inode_blk_size(pi);
