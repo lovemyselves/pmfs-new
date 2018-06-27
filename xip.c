@@ -600,8 +600,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hashing += *temp;
 			}
 			else{
-				trace = 1024>i?128:i/sizeof(size_t);
-				hashing = *(size_t*)(xmem+count-i);	
+				trace = i>1024?128:i/sizeof(size_t);
+				
+				hashing += *(size_t*)(xmem+count-i);
+				hashing += (hashing << 3);
+				hashing ^= (hashing >> 2);	
 				printk("hashing:%lu",hashing);
 				break;
 			}
