@@ -607,7 +607,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					hashing ^= (hashing >> 2);
 				}	
 				printk("hashing:%lu",hashing);
-				if
 				break;
 			}
 		}
