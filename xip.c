@@ -509,7 +509,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	size_t i,j,hashing;	
 	struct hash_map_addr *hash_map_addr_entry;
 	void *xmem;
-	void* temp;
+	size_t* temp;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
