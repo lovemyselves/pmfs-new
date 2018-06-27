@@ -588,7 +588,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	copy_from_user(xmem, buf, count);
 	
 	for(j = 0; j < 32; j++ ){
-		struct *hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+		struct hash_map_addr *hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		int k;
 		size_t trace;
 		hashing = 0;
