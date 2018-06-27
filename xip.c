@@ -55,7 +55,7 @@ struct hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
 	return NULL;
 }
 
-void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_entry)
+void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
 {
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
@@ -65,14 +65,16 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_en
 	while(*entry_node){
 		parent = *entry_node;
 		hash_map_addr_temp = rb_entry(*entry_node, struct hash_map_addr, node);
-		result = hash_map_addr_entry->hashing - hash_map_addr_temp->hashing;
-		if(result < 0)
+		result = hash_map_addr_new->hashing - hash_map_addr_temp->hashing;
+		if(hash_map_addr_new->hashing < hash_map_addr_temp->hashing)
 			entry_node = &(*entry_node)->rb_left;
-		else if(result >0)
+		else if(hash_map_addr_new->hashing > hash_map_addr_temp->hashing)
 			entry_node = &(*entry_node)->rb_right;
 		else
 			return;
 	}
+	printk("result:%llu",result);
+	if(result == 0){return;}
 	rb_link_node(&(hash_map_addr_entry->node), parent, entry_node);
 	rb_insert_color(&(hash_map_addr_entry->node), root);
 }
