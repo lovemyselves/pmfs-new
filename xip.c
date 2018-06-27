@@ -591,7 +591,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(i<sizeof(size_t)){
 				temp = kmalloc(i, GFP_KERNEL);
 				memcpy(temp, xmem+count-i, i);
-				hashing = (size_t)*temp;
+				hashing = *temp;
+			}
+			else{
+				hashing = *(size_t*)(xmem+count-i);	
 				printk("hashing:%lu",hashing);
 				break;
 			}
