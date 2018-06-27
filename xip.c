@@ -580,12 +580,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	i = count;
-	// xmem = kmalloc(count,GFP_KERNEL);
+	xmem = kmalloc(count, GFP_KERNEL);
+	copy_from_user(xmem, buf, count);
 	do{	
-		char const *data_block = buf + count - i;
+		size_t data_block = count - i;
 		size_t hashing = 0,trace;
 		struct hash_map_addr *hash_map_addr_temp;
-		void *kmem;
 		// size_t *temp = kmalloc(sizeof(size_t),GFP_KERNEL);
 		size_t temp;
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -602,7 +602,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// trace = (size_t)(i/sizeof(size_t))-1; 
 		// // printk("trace:%lu",trace);
 		// memcpy(&temp, kmem, sizeof(size_t));
-		copy_from_user((char*)&temp,data_block,sizeof(size_t));
+		memcpy(&temp,xmem+data_block,sizeof(size_t));
 		hashing = temp;
 
 		// if(trace<128){
