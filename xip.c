@@ -509,7 +509,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	size_t i,j,hashing;	
 	struct hash_map_addr *hash_map_addr_entry;
 	void *xmem;
-	size_t* temp;
+	void* temp;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -591,7 +591,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(i<sizeof(size_t)){
 				temp = kmalloc(i, GFP_KERNEL);
 				memcpy(temp, xmem+count-i, i);
-				hashing = *temp;
+				hashing = (size_t)*temp;
 				printk("hashing:%lu",hashing);
 				break;
 			}
