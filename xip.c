@@ -611,7 +611,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hashing += *(size_t*)(xmem+count-i);
 				hashing += (hashing << 3);
 				hashing ^= (hashing >> 2);
-				hashing 
 			}	
 			printk("hashing:%lu",hashing);
 			i-=4096;
