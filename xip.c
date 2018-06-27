@@ -506,7 +506,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	timing_t xip_write_time, xip_write_fast_time;
 
 	//dedup claiming start
-	size_t i,j;	
+	size_t i,j,hashing;	
 	struct hash_map_addr *hash_map_addr_entry;
 	void *xmem;
 	size_t* temp;
