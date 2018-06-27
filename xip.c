@@ -589,6 +589,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// size_t *temp = kmalloc(sizeof(size_t),GFP_KERNEL);
 		size_t *temp;
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+		temp = kmalloc(sizeof(size_t), GFP_KERNEL);
 
 		// if(i>pmfs_inode_blk_size(pi)){
 		// 	kmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
@@ -674,7 +675,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		printk("before insert_node");
-		rb_insert_node(&root, hash_map_addr_temp);
+		// rb_insert_node(&root, hash_map_addr_temp);
 		printk("after insert_node");
 
 		find:
