@@ -585,13 +585,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	xmem = kmalloc(count, GFP_KERNEL);
 	copy_from_user(xmem, buf, count);
-	do{
+	
+	for(j = 0; j < 32; j++ ){
 		if(i<4096){
 			if(i<sizeof(size_t)){
 				temp = kmalloc(i, GFP_KERNEL);
 				memcpy(temp, xmem+count-i, i);
 				hashing = *temp;
 				printk("hashing:%lu",hashing);
+				break;
 			}
 		}
 		else{
@@ -599,7 +601,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("hashing:%lu",hashing);
 			i-=4096;
 		}
-	}while(i!=0);
+	}
 	// i = count;
 	// xmem = kmalloc(count, GFP_KERNEL);
 	// copy_from_user(xmem, buf, count);
