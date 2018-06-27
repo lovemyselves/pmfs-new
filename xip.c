@@ -610,7 +610,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				if(i<pmfs_inode_blk_size(pi)) break;
 				else i -= 4096;
 			}
-		}
+		// }
 		// else{
 		// 	for(k=0;k<128;k++){
 		// 		hashing += *(size_t*)(xmem+count-i);
