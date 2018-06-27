@@ -588,35 +588,34 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	copy_from_user(xmem, buf, count);
 	
 	for(j = 0; j < 32; j++ ){
-		struct hash_map_addr *hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+		struct *hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		int k;
 		size_t trace;
 		hashing = 0;
 
 		if(i<pmfs_inode_blk_size(pi)){
-			trace = 1024<i?128:i/sizeof(size_t);
 			if(i%sizeof(size_t)!=0){
-				trace--;
 				temp = kmalloc(i, GFP_KERNEL);
 				memcpy(temp, xmem-i%sizeof(size_t), i%sizeof(size_t));
 				hashing += *temp;
 			}
-			for(k=0;k<trace;k++){
-			hashing += *(size_t*)(xmem+count-i);
-			hashing += (hashing << 3);
-			hashing ^= (hashing >> 2);
-			} 	
-			break;
+			else{
+				trace = 1024>i?128:i/sizeof(size_t);
+				hashing = *(size_t*)(xmem+count-i);	
+				printk("hashing:%lu",hashing);
+				break;
+			}
 		}
 		else{
 			for(k=0;k<128;k++){
 				hashing += *(size_t*)(xmem+count-i);
 				hashing += (hashing << 3);
-				hashing ^= (hashing >> 2); 
+				hashing ^= (hashing >> 2);
+				hashing 
 			}	
+			printk("hashing:%lu",hashing);
 			i-=4096;
 		}
-		printk("hashing:%lu",hashing);
 	}
 	// i = count;
 	// xmem = kmalloc(count, GFP_KERNEL);
