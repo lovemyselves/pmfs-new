@@ -36,7 +36,7 @@ struct rb_root root = RB_ROOT;
 /*
 	dedup rbtree function
 */
-struct hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
+struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
 {
 	struct rb_node *entry_node = root->rb_node;
 	long long int result;
@@ -45,9 +45,9 @@ struct hash_map_addr *rb_search_node(struct rb_root *root, unsigned hashing)
 	while(entry_node){
 		hash_map_addr_entry = rb_entry(entry_node, struct hash_map_addr, node);
 		result = hashing - hash_map_addr_entry->hashing; 
-		if(result < 0)
+		if(hashing < hash_map_addr_entry->hashing)
 			entry_node = entry_node->rb_left;
-		else if(result > 0)
+		else if(hashing > hash_map_addr_entry->hashing)
 			entry_node = entry_node->rb_right;
 		else
 			return hash_map_addr_entry;
@@ -73,7 +73,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 		else
 			return;
 	}
-	printk("result:%llu",result);
+	printk("insert result:%llu",result);
 	if(result == 0){return;}
 	rb_link_node(&(hash_map_addr_new->node), parent, entry_node);
 	rb_insert_color(&(hash_map_addr_new->node), root);
