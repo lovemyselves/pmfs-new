@@ -60,7 +60,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_temp;
-	long long int result;
+	long long int result = 0;
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -590,7 +590,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(i<sizeof(size_t)){
 				temp = kmalloc(i, GFP_KERNEL);
 				memcpy(temp, xmem+count-i, i);
-				hashing = temp;
+				hashing = *temp;
 				printk("hashing:%lu",hashing);
 			}
 		}
