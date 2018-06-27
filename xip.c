@@ -603,8 +603,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				trace = i>1024?128:i/sizeof(size_t);
 				// for(k=0;k<trace;k++){
 					hashing += *(size_t*)(xmem+count-i);
-					hashing += (hashing << 3);
-					hashing ^= (hashing >> 2);
+					// hashing += (hashing << 3);
+					// hashing ^= (hashing >> 2);
 				// }	
 				printk("hashing:%lu",hashing);
 				break;
