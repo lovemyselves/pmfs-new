@@ -265,8 +265,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// unsigned hashing = 0;
 		// unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 		
-		
-		// struct hash_map_addr *hash_map_addr_entry, *hash_map_addr_temp;
+		struct hash_map_addr *hash_map_addr_entry;//, *hash_map_addr_temp;
 		// hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		//end
 
@@ -348,9 +347,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// find:
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
-			// printk("new node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
+			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
+			if((buf+count) == hash_map_addr_entry->addr){
+				printk("new node hashing:%lu",hash_map_addr_entry->hashing);
 			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
-			new_list = new_list->next;
+				new_list = new_list->next;
+			}
 		}
 		// printk("============================================");
 		// new_list = new_list->next;
