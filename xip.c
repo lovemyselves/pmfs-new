@@ -614,10 +614,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("hashing:%lu",hashing);
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->addr = buf + i;
+		hash_map_addr_temp->addr = (void*)buf + i;
 
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		rb_insert_node(&root, hash_map_addr_temp);
 		//less than 32, break;
 		if(dedup_ret == 0)
 			break;
