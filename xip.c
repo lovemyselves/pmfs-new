@@ -596,9 +596,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(i<pmfs_inode_blk_size(pi)){
 			if(i%sizeof(size_t)!=0){
 				temp = kmalloc(i, GFP_KERNEL);
-				memcpy(temp, xmem-i%sizeof(size_t), i%sizeof(size_t));
+				memcpy(temp, xmem+count-i%sizeof(size_t), i%sizeof(size_t));
 				hashing += *temp;
 				kfree(temp);
+				printf("tail hashing:%lu",hashing);
 			}
 			else{
 				trace = i>1024?128:(size_t)(i/sizeof(size_t));
