@@ -588,7 +588,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	for(j = 0; j < 32; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
 		int k, dedup_ret = 1;
-		size_t trace = 128;
+		size_t trace = 128; /* 1/4 of pmfs_inode_blk_size(pi) */
 		hashing = 0;
 
 		if(i<pmfs_inode_blk_size(pi)){
@@ -612,6 +612,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		hash_map_addr_entry = rb_search_node(&root, hashing);
 		if(hash_map_addr_entry){
+			/* hashing conflict decision */
+			if(hash_map_addr_entry->addr)
+				;
 			hash_map_addr_entry->count++;
 			last_hit = &hash_map_addr_entry->list;
 			find_flag = true;
@@ -636,7 +639,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(dedup_ret == 0)
 			break;
 		else
-			i -= 4096;
+			i -= pmfs_inode_blk_size(pi);
 	}
 	kfree(xmem);
 	// i = count;
