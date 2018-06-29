@@ -594,25 +594,20 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hashing = 0;
 
 		if(i<pmfs_inode_blk_size(pi)){
+			trace = i>1024?128:(size_t)(i/sizeof(size_t));
+			printk("trace:%lu",trace);	
+			dedup_ret = 0;
 			if(i%sizeof(size_t)!=0){
 				temp = kmalloc(i, GFP_KERNEL);
 				memcpy(temp, xmem+count-i%sizeof(size_t), i%sizeof(size_t));
 				hashing += *temp;
+				trace--;
 				kfree(temp);
-				goto hash_compute;
 			}
-			else{
-				trace = i>1024?128:(size_t)(i/sizeof(size_t));
-				printk("trace:%lu",trace);	
-			}
-			dedup_ret = 0;
 		}
-		else
-			i-=4096;
 
-		hash_compute:
 		for(k=0;k<trace;k++){
-			hashing += *(size_t*)(xmem+count-i);
+			hashing += *(size_t*)(xmem+count-i+k*sizeof(size_t));
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
@@ -626,6 +621,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		//less than 32, break;
 		if(dedup_ret == 0)
 			break;
+		else
+			i -= 4096;
 	}
 	kfree(xmem);
 	// i = count;
