@@ -348,7 +348,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
-			if((buf+count) == hash_map_addr_entry->addr){
+			if((void*)(buf+count) == hash_map_addr_entry->addr){
 				printk("new node hashing:%lu",hash_map_addr_entry->hashing);
 			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 				new_list = new_list->next;
