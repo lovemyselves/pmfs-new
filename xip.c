@@ -286,65 +286,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		
-		/* page data hashing compute */
-		/* 2 and 3 is randomly setting */
-		// for(i=0;i<128;i++)
-		// {
-		// 	memcpy(temp,(char*)xmem+i*sizeof(unsigned),sizeof(unsigned));
-		// 	hashing += *temp;
-		// 	hashing += (hashing << 3);
-		// 	hashing ^= (hashing >> 2);
-		// }
-
-		/* find from last hit point */
-		// hash_map_addr_entry = list_entry(last_hit.next, struct hash_map_addr, list);
- 		// if(find_flag == true && hashing == hash_map_addr_entry->hashing)
-		// {
-		// 	hash_map_addr_entry->count++;
-		// 	last_hit.next = last_hit.next->next;
-		// 	// printk("fast hit!\n");
-		// 	/* add reference content */
-		// 	goto find;
-		// }
-		
-		// // last_hit.next = hash_map_addr_list.next;
-		// hash_map_addr_entry = rb_search_node(&root, hashing);
-		// if(hash_map_addr_entry){
-		// 	hash_map_addr_entry->count++;
-		// 	last_hit.next = hash_map_addr_entry->list.next;
-		// 	find_flag = true;
-		// 	// printk("hit!\n");
-		// 	goto find;
-		// 	/*add reference content */
-		// }
-		/* hash_map_addr_entry ponit reuse for traverse */
-		// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-		// {	
-		// 	if(hash_map_addr_entry->hashing == hashing)
-		// 	{		
-		// 		hash_map_addr_entry->count++;
-		// 		// printk("find the hashing!\n");
-		// 		// printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-		// 		// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-		// 		// find_flag = 1;
-		// 		last_hit.next = hash_map_addr_entry->list.next;
-		// 		find_flag = true;
-		// 		// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
-		// 		goto find;
-		// 	}
-		// }
-		
-		// // not dup, insert new index
-		// find_flag = false;
-		// // printk("not hash hit\n");
-		// hash_map_addr_temp->hashing = hashing;
-		// hash_map_addr_temp->count = 1;
-		// // hash_map_addr_temp->addr = kmalloc(6*sizeof(char), GFP_KERNEL);
-		// hash_map_addr_temp->addr = xmem;
-		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		
-		// find:
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
@@ -354,12 +295,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				new_list = new_list->next;
 			}
 		}
-		// printk("============================================");
-		// new_list = new_list->next;
-		// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
-		// printk("new rbtree node hashing:%lu",list_entry(new_list->next, struct hash_map_addr, list)->hashing);
-		
-		/* end */
 
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
@@ -625,11 +560,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			/*add reference content */
 		}
 
-		// printk("hashing:%lu",hashing);
+		printk("hashing:%lu",hashing);
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->addr = (void*)buf + i;
+		hash_map_addr_temp->addr = (void*)(buf + i);
 
 		
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
