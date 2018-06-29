@@ -590,7 +590,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	for(j = 0; j < 32; j++ ){
 		struct hash_map_addr *hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		int k, dedup_ret = 1;
-		size_t trace;
+		size_t trace = 128;
 		hashing = 0;
 
 		if(i<pmfs_inode_blk_size(pi)){
@@ -599,29 +599,28 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				memcpy(temp, xmem+count-i%sizeof(size_t), i%sizeof(size_t));
 				hashing += *temp;
 				kfree(temp);
-				printk("tail hashing:%lu",hashing);
+				goto hash_compute;
 			}
 			else{
 				trace = i>1024?128:(size_t)(i/sizeof(size_t));
-				for(k=0;k<trace;k++){
-					hashing += *(size_t*)(xmem+count-i);
-					hashing += (hashing << 3);
-					hashing ^= (hashing >> 2);
-				}
 				printk("trace:%lu",trace);	
 			}
-			printk("hashing:%lu",hashing);
 			dedup_ret = 0;
 		}
-		else{
-			for(k=0;k<128;k++){
-				hashing += *(size_t*)(xmem+count-i);
-				hashing += (hashing << 3);
-				hashing ^= (hashing >> 2);
-			}	
-			printk("hashing:%lu",hashing);
+		else
 			i-=4096;
+
+		hash_compute:
+		for(k=0;k<trace;k++){
+			hashing += *(size_t*)(xmem+count-i);
+			hashing += (hashing << 3);
+			hashing ^= (hashing >> 2);
 		}
+		printk("hashing:%lu",hashing);
+
+		INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		//less than 32, break;
 		if(dedup_ret == 0)
 			break;
 	}
