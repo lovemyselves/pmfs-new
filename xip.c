@@ -599,7 +599,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				memcpy(temp, xmem+count-i%sizeof(size_t), i%sizeof(size_t));
 				hashing += *temp;
 				kfree(temp);
-				printf("tail hashing:%lu",hashing);
+				printk("tail hashing:%lu",hashing);
 			}
 			else{
 				trace = i>1024?128:(size_t)(i/sizeof(size_t));
