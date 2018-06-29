@@ -254,7 +254,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
-	printk("============================================");
+	// printk("============================================");
 	do {
 		unsigned long index;
 		unsigned long offset;
@@ -382,7 +382,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	} while (count);
 
 	//dedup insert rbtree node start
-	printk("============================================\n");
+	// printk("============================================\n");
 	
 	// printk("============================================");
 	//end
