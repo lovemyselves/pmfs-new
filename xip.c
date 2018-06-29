@@ -589,7 +589,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	for(j = 0; j < 32; j++ ){
 		struct hash_map_addr *hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-		int k;
+		int k, dedup_ret = 1;
 		size_t trace;
 		hashing = 0;
 
@@ -608,8 +608,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hashing += (hashing << 3);
 				hashing ^= (hashing >> 2);	
 				printk("hashing:%lu",hashing);
-				break;
 			}
+			dedup_ret = 0;
 		}
 		else{
 			for(k=0;k<128;k++){
@@ -620,6 +620,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("hashing:%lu",hashing);
 			i-=4096;
 		}
+		if(dedup_ret == 0)
+			break;
 	}
 	kfree(xmem);
 	// i = count;
