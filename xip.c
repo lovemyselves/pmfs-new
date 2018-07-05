@@ -290,10 +290,14 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
 			if((void*)(buf + count) == hash_map_addr_entry->addr){
-				printk("new node hashing:%lu",hash_map_addr_entry->hashing);
+				printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
 			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 				new_list = new_list->next;
 			}
+			printk("buf%lu",(size_t)buf);
+			printk("count:%lu",count);
+			printk("buf+count:%lu",(size_t)(buf + count));
+			printk("entry addr:%lu",(size_t)hash_map_addr_entry->addr);
 		}
 
 		/* if start or end dest address is not 8 byte aligned, 
