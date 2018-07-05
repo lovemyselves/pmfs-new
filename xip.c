@@ -569,7 +569,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->addr = (void*)(buf + i);
+		hash_map_addr_temp->addr = (void*)(buf + count - i);
 
 		
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
