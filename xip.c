@@ -566,6 +566,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 
 		printk("hashing:%lu",hashing);
+		printk("addr before finish:%lu",(void*)(buf + count - i));
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
