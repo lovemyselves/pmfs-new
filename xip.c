@@ -298,6 +298,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			printk("count:%lu",count);
 			printk("buf+count:%lu",(size_t)(buf + count));
 			printk("entry addr:%lu",(size_t)hash_map_addr_entry->addr);
+			printk("\n");
 		}
 
 		/* if start or end dest address is not 8 byte aligned, 
