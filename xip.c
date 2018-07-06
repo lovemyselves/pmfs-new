@@ -101,6 +101,7 @@ struct hash_map_addr *rb_search_insert_node(
 	}
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
 	rb_insert_color(&(hash_map_addr_new->node), root);
+	printk("new node in rbtree");
 	return NULL;
 }
 /* claim end */
@@ -584,6 +585,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = (void*)(buf + count - i);
+		INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 
 		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp);
 		if(hash_map_addr_entry){
@@ -600,9 +603,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		printk("hashing:%lu",hashing);
 		printk("addr before finish:%lu",(size_t)(buf + count - i));
-		
-		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		// rb_insert_node(&root, hash_map_addr_temp);
 		
 		find:
