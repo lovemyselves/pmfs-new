@@ -94,7 +94,7 @@ struct hash_map_addr *rb_search_insert_node(
 		else{
 			while(strncpy(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
-				return NULL;
+				return;
 			}
 			return hash_map_addr_entry;
 		}	
@@ -585,7 +585,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = (void*)(buf + count - i);
 
-		hash_map_addr_entry = rb_search_node(&root, hashing);
+		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp);
 		if(hash_map_addr_entry){
 			/* hashing conflict decision */
 			if(hash_map_addr_entry->addr)
@@ -603,7 +603,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		rb_insert_node(&root, hash_map_addr_temp);
+		// rb_insert_node(&root, hash_map_addr_temp);
 		
 		find:
 		//less than 32, break;
