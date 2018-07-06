@@ -563,7 +563,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		if(i <= pmfs_inode_blk_size(pi)){
 			if(i<1024){
-				trace = i/sizeof(size_t);
+				trace = (size_t)(i/sizeof(size_t));
 				data_remainder = i%sizeof(size_t); 
 				if(data_remainder!=0){
 					temp = kmalloc(data_remainder, GFP_KERNEL);
