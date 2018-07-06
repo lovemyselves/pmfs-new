@@ -94,7 +94,7 @@ struct hash_map_addr *rb_search_insert_node(
 		else{
 			while(strncpy(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
-				return;
+				return NULL;
 			}
 			return hash_map_addr_entry;
 		}	
