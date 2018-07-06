@@ -92,7 +92,7 @@ struct hash_map_addr *rb_search_insert_node(
 		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing)
 			entry_node = &(*entry_node)->rb_right;
 		else{
-			while(strncpy(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
+			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
 				return NULL;
 			}
