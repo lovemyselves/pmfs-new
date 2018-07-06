@@ -94,8 +94,10 @@ struct hash_map_addr *rb_search_insert_node(
 		else{
 			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
+				kfree(hash_map_addr_new);
 				return NULL;
 			}
+			kfree(hash_map_addr_new);
 			return hash_map_addr_entry;
 		}	
 	}
@@ -586,8 +588,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = (void*)(buf + count - i);
-		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 
 		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem+count-i);
 		if(hash_map_addr_entry){
@@ -608,6 +608,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		find:
 		//less than 32, break;
+		INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+
 		if(dedup_ret == 0)
 			break;
 		else
