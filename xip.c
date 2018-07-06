@@ -598,7 +598,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_entry->count++;
 			last_hit = &hash_map_addr_entry->list;
 			find_flag = true;
-			// printk("hit");
+			printk("hit");
 			goto find;
 			/*add reference content */
 		}
@@ -606,12 +606,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("hashing:%lu",hashing);
 		printk("addr before finish:%lu",(size_t)(buf + count - i));
 		// rb_insert_node(&root, hash_map_addr_temp);
+		INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		
 		find:
 		//less than 32, break;
-		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-
 		if(dedup_ret == 0)
 			break;
 		else
