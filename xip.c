@@ -569,7 +569,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				data_remainder = i%sizeof(size_t); 
 				if(data_remainder!=0){
 					temp = kmalloc(data_remainder, GFP_KERNEL);
-					strncpy((char*)temp, xmem+count-data_remainder, data_remainder);
+					memcpy(temp, xmem+count-data_remainder, data_remainder-1);
 					printk("data_remainder:%u", data_remainder);
 					printk("temp:%s", (char*)temp);
 					printk("count:%lu",count);
