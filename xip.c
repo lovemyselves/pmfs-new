@@ -76,6 +76,32 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
 	rb_insert_color(&(hash_map_addr_new->node), root);
 }
+
+struct hash_map_addr *rb_search_insert_node(
+	struct rb_root *root, struct hash_map_addr *hash_map_addr_new, size_t data_len)
+{
+	struct rb_node **entry_node = &(root->rb_node);
+	struct rb_node *parent = NULL;
+	struct hash_map_addr *hash_map_addr_entry;
+
+	while(*entry_node){
+		parent = *entry_node;
+		hash_map_addr_entry = rb_entry(*entry_node, struct hash_map_addr, node);
+		if(hash_map_addr_new->hashing < hash_map_addr_entry->hashing)
+			entry_node = &(*entry_node)->rb_left;
+		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing)
+			entry_node = &(*entry_node)->rb_right;
+		else{
+			while(strncpy(hash_map_addr_new->addr,hash_map_addr_entry->addr,data_len)!=0){
+				printk("hash accident!");
+				return NULL;
+			}
+			return hash_map_addr_entry;
+		}	
+	}
+	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
+	rb_insert_color(&(hash_map_addr_new->node), root);
+}
 /* claim end */
 
 static ssize_t
