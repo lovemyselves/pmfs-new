@@ -568,13 +568,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				trace = i/sizeof(size_t);
 				data_remainder = i%sizeof(size_t); 
 				if(data_remainder!=0){
-				// 	temp = kmalloc(data_remainder, GFP_KERNEL);
-				// 	memcpy(temp, xmem+count-data_remainder, data_remainder);
-				// 	printk("data_remainder:%u", data_remainder);
-				// 	printk("temp:%s", (char*)temp);
-				// 	hashing += *temp;
-					trace++;
-				// 	kfree(temp);
+					temp = kmalloc(data_remainder, GFP_KERNEL);
+					memcpy(temp, xmem+count-data_remainder, data_remainder);
+					// printk("data_remainder:%u", data_remainder);
+					// printk("temp:%s", (char*)temp);
+					printk("count:%lu",count);
+					// hashing += *temp;
+					kfree(temp);
 				}
 			}
 			hash_map_addr_temp->length = i;
