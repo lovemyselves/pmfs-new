@@ -294,8 +294,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 				new_list = new_list->next;
 			}
-			printk("buf:%lu",(size_t)buf);
-			printk("entry addr:%lu",(size_t)hash_map_addr_entry->addr);
 			printk("\n");
 		}
 
@@ -527,14 +525,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	for(j = 0; j < 32; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
-		int k, dedup_ret = 1;
+		unsigned k, dedup_ret = 1, data_remainder;
 		size_t trace = 128; /* 1/4 of pmfs_inode_blk_size(pi) */
 		hashing = 0;
 
 		if(i <= pmfs_inode_blk_size(pi)){
-			trace = i>1024?128:(size_t)(i/sizeof(size_t));
-			// printk("trace:%lu",trace);	
-			dedup_ret = 0;
+			if(i<1024){
+				trace = i/sizeof(size_t); 
+			}
 			if(i%sizeof(size_t)!=0){
 				temp = kmalloc(i, GFP_KERNEL);
 				memcpy(temp, xmem+count-i%sizeof(size_t), i%sizeof(size_t));
@@ -542,6 +540,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				trace--;
 				kfree(temp);
 			}
+			dedup_ret = 0;
 		}
 
 		for(k=0;k<trace;k++){
