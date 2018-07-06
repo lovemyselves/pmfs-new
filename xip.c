@@ -83,7 +83,7 @@ struct hash_map_addr *rb_search_insert_node(
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_entry;
-	struct list_head hashing_list_temp;
+	struct list_head *hashing_list_temp;
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -93,7 +93,7 @@ struct hash_map_addr *rb_search_insert_node(
 		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing)
 			entry_node = &(*entry_node)->rb_right;
 		else{
-			hashing_list_temp = hash_map_addr_entry->hashing_list;
+			hashing_list_temp = &hash_map_addr_entry->hashing_list;
 			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp ||
