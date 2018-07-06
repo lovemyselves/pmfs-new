@@ -284,7 +284,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
-	
+
 	printk("++++++++++++++++++++++++++++++++++++++++++++");
 	do {
 		unsigned long index;
@@ -327,7 +327,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 				new_list = new_list->next;
 			}
-			printk("\n");
 		}
 
 		/* if start or end dest address is not 8 byte aligned, 
@@ -571,7 +570,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				if(data_remainder!=0){
 					temp = kmalloc(data_remainder, GFP_KERNEL);
 					memcpy(temp, xmem+count-data_remainder, data_remainder);
-					printk("temp:%lu",*temp);
+					printk("data_remainder:%lu", data_remainder);
+					printk("temp:%s", (char*)temp);
 					hashing += *temp;
 					trace--;
 					kfree(temp);
