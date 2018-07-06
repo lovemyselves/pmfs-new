@@ -94,17 +94,20 @@ struct hash_map_addr *rb_search_insert_node(
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
-			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
+			if(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp ||
-				hash_map_addr_entry->hashing_list.next==NULL ){
+				hash_map_addr_entry->hashing_list.next == NULL ){
 					// not find duplication, return NULL
-					hash_map_addr_entry->hashing_list.next = &hash_map_addr_new->hashing_list;
+					printk("not find duplication, return NULL");
+					list_add_tail(&hash_map_addr_new->hashing_list, hashing_list_temp);
 					return NULL; 
 				}
-				else
+				else{
 					hash_map_addr_entry = list_entry(
 						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
+					printk("This hash value has multiple nodes!");
+				}	
 			}
 			kfree(hash_map_addr_new);
 			return hash_map_addr_entry;
