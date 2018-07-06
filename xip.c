@@ -78,7 +78,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 }
 
 struct hash_map_addr *rb_search_insert_node(
-	struct rb_root *root, struct hash_map_addr *hash_map_addr_new, size_t data_len)
+	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
 {
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
@@ -92,7 +92,7 @@ struct hash_map_addr *rb_search_insert_node(
 		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing)
 			entry_node = &(*entry_node)->rb_right;
 		else{
-			while(strncpy(hash_map_addr_new->addr,hash_map_addr_entry->addr,data_len)!=0){
+			while(strncpy(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
 				return NULL;
 			}
@@ -557,6 +557,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		unsigned k, dedup_ret = 1, data_remainder;
 		size_t trace = 128; /* 1/4 of pmfs_inode_blk_size(pi) */
 		hashing = 0;
+		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
 
 		if(i <= pmfs_inode_blk_size(pi)){
 			if(i<1024){
@@ -570,6 +572,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					kfree(temp);
 				}
 			}
+			hash_map_addr_temp->length = i;
 			dedup_ret = 0;
 		}
 		for(k=0;k<trace;k++){
@@ -577,6 +580,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
+
+		hash_map_addr_temp->hashing = hashing;
+		hash_map_addr_temp->count = 1;
+		hash_map_addr_temp->addr = (void*)(buf + count - i);
 
 		hash_map_addr_entry = rb_search_node(&root, hashing);
 		if(hash_map_addr_entry){
@@ -593,11 +600,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		printk("hashing:%lu",hashing);
 		printk("addr before finish:%lu",(size_t)(buf + count - i));
-		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-		hash_map_addr_temp->hashing = hashing;
-		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->addr = (void*)(buf + count - i);
-
 		
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
