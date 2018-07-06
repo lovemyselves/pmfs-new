@@ -94,8 +94,13 @@ struct hash_map_addr *rb_search_insert_node(
 		else{
 			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
-				kfree(hash_map_addr_new);
-				return NULL;
+				if(hash_map_addr_entry->hashing_list->next==NULL){
+					hash_map_addr_entry->hashing_list->next = &hash_map_addr_new->hashing_list;
+					break; 
+				}
+				else
+					hash_map_addr_entry = list_entry(
+						hash_map_addr_entry->hashing_list->next, struct hash_map_addr, hashing_list);
 			}
 			kfree(hash_map_addr_new);
 			return hash_map_addr_entry;
@@ -104,6 +109,9 @@ struct hash_map_addr *rb_search_insert_node(
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
 	rb_insert_color(&(hash_map_addr_new->node), root);
 	printk("new node in rbtree");
+	INIT_LIST_HEAD(&hash_map_addr_new->hashing_list);
+	INIT_LIST_HEAD(&hash_map_addr_temp->list);
+	list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 	return NULL;
 }
 /* claim end */
@@ -323,7 +331,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			if((void*)buf == hash_map_addr_entry->addr){
 				printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
 				hash_map_addr_entry->addr = (void*)xmem;
-				// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
+			// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
 			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 				new_list = new_list->next;
 			}
@@ -604,8 +612,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("hashing:%lu",hashing);
 		printk("addr before finish:%lu",(size_t)(buf + count - i));
 		// rb_insert_node(&root, hash_map_addr_temp);
-		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		
 		find:
 		//less than 32, break;
