@@ -110,8 +110,8 @@ struct hash_map_addr *rb_search_insert_node(
 	rb_insert_color(&(hash_map_addr_new->node), root);
 	printk("new node in rbtree");
 	INIT_LIST_HEAD(&hash_map_addr_new->hashing_list);
-	INIT_LIST_HEAD(&hash_map_addr_temp->list);
-	list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+	INIT_LIST_HEAD(&hash_map_addr_new->list);
+	list_add_tail(&hash_map_addr_new->list, &hash_map_addr_list);
 	return NULL;
 }
 /* claim end */
