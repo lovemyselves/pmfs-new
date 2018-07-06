@@ -78,7 +78,7 @@ void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_ne
 }
 
 struct hash_map_addr *rb_search_insert_node(
-	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
+	struct rb_root *root, struct hash_map_addr *hash_map_addr_new, void* xmem)
 {
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
@@ -92,7 +92,7 @@ struct hash_map_addr *rb_search_insert_node(
 		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing)
 			entry_node = &(*entry_node)->rb_right;
 		else{
-			while(strncpy(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
+			while(strncpy(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
 				return NULL;
 			}
@@ -588,7 +588,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 
-		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp);
+		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem+count-i);
 		if(hash_map_addr_entry){
 			/* hashing conflict decision */
 			if(hash_map_addr_entry->addr)
