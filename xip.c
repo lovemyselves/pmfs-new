@@ -94,13 +94,13 @@ struct hash_map_addr *rb_search_insert_node(
 		else{
 			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
-				if(hash_map_addr_entry->hashing_list->next==NULL){
-					hash_map_addr_entry->hashing_list->next = &hash_map_addr_new->hashing_list;
+				if(hash_map_addr_entry->hashing_list.next == NULL){
+					hash_map_addr_entry->hashing_list.next = &hash_map_addr_new->hashing_list;
 					break; 
 				}
 				else
 					hash_map_addr_entry = list_entry(
-						hash_map_addr_entry->hashing_list->next, struct hash_map_addr, hashing_list);
+						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
 			}
 			kfree(hash_map_addr_new);
 			return hash_map_addr_entry;
