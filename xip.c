@@ -94,7 +94,7 @@ struct hash_map_addr *rb_search_insert_node(
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
-			if(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
+			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp ||
 				hash_map_addr_entry->hashing_list.next == NULL ){
