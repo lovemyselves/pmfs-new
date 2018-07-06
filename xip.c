@@ -291,6 +291,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
 			if((void*)buf == hash_map_addr_entry->addr){
 				printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
+				hash_map_addr_entry->addr = (void*)xmem;
+				printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
 			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 				new_list = new_list->next;
 			}
@@ -557,7 +559,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_entry->count++;
 			last_hit = &hash_map_addr_entry->list;
 			find_flag = true;
-			printk("hit");
+			// printk("hit");
 			goto find;
 			/*add reference content */
 		}
