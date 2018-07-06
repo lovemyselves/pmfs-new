@@ -101,6 +101,7 @@ struct hash_map_addr *rb_search_insert_node(
 	}
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
 	rb_insert_color(&(hash_map_addr_new->node), root);
+	return NULL;
 }
 /* claim end */
 
