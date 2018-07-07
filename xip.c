@@ -621,7 +621,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 
 		printk("hashing:%lu",hashing);
-		printk("addr before finish:%lu",(size_t)(buf + count - i));
+	
 		// rb_insert_node(&root, hash_map_addr_temp);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
