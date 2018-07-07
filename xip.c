@@ -114,6 +114,7 @@ struct hash_map_addr *rb_search_insert_node(
 				}	
 			}
 			kfree(hash_map_addr_new);
+			pirntk("\n");
 			return hash_map_addr_entry;
 		}	
 	}
