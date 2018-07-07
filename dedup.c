@@ -17,7 +17,8 @@ struct hash_map_addr{
     size_t count;
     struct list_head list;
     struct rb_node node;
-    struct list_head hashing_list;     
+    struct list_head hashing_list;
+    bool flag;     
 };
 
 struct ref_map{

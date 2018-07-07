@@ -94,7 +94,8 @@ struct hash_map_addr *rb_search_insert_node(
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
-			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
+			while(hash_map_addr_entry->flag == true &&
+				strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp ||
 				hash_map_addr_entry->hashing_list.next == NULL ){
@@ -339,6 +340,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
 			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 				new_list = new_list->next;
+				hash_map_addr_entry->flag = true;
 			}
 		}
 
@@ -575,6 +577,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hashing = 0;
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
+		hash_map_addr_temp->flag = false;
 
 		if(i <= pmfs_inode_blk_size(pi)){
 			if(i<1024){
