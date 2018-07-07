@@ -99,7 +99,8 @@ struct hash_map_addr *rb_search_insert_node(
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp ||
 				hash_map_addr_entry->hashing_list.next == NULL ){
 					// not find duplication, return NULL
-					printk("not find duplication, return NULL");
+					printk("hash collision and not find duplication, add new node");
+					printk("\n");
 					list_add_tail(&hash_map_addr_new->hashing_list, hashing_list_temp);
 					return NULL; 
 				}
@@ -119,6 +120,7 @@ struct hash_map_addr *rb_search_insert_node(
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
 	rb_insert_color(&(hash_map_addr_new->node), root);
 	printk("new node in rbtree");
+	printk("\n");
 	
 	return NULL;
 }
