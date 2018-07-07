@@ -94,8 +94,7 @@ struct hash_map_addr *rb_search_insert_node(
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
-			while(hash_map_addr_entry->flag == true &&
-				strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
+			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				printk("hash accident!");
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp ||
 				hash_map_addr_entry->hashing_list.next == NULL ){
@@ -334,14 +333,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
-			if((void*)buf == hash_map_addr_entry->addr){
-				printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
-				hash_map_addr_entry->addr = (void*)xmem;
+			printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
+			hash_map_addr_entry->addr = (void*)xmem;
 			// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
 			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
-				new_list = new_list->next;
-				hash_map_addr_entry->flag = true;
-			}
+			new_list = new_list->next;
+			hash_map_addr_entry->flag = true;
 		}
 
 		/* if start or end dest address is not 8 byte aligned, 
@@ -602,7 +599,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->addr = (void*)(buf + count - i);
+		hash_map_addr_temp->addr = (void*)(xmem+count-i);
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
 		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem+count-i);
