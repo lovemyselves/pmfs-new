@@ -84,6 +84,7 @@ struct hash_map_addr *rb_search_insert_node(
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_entry;
 	struct list_head *hashing_list_temp;
+	bool test_printk_flag = true;
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -95,7 +96,6 @@ struct hash_map_addr *rb_search_insert_node(
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
 			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
-				printk("hash accident!");
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp ||
 				hash_map_addr_entry->hashing_list.next == NULL ){
 					// not find duplication, return NULL
@@ -106,7 +106,10 @@ struct hash_map_addr *rb_search_insert_node(
 				else{
 					hash_map_addr_entry = list_entry(
 						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
-					printk("This hash value has multiple nodes!");
+					if(test_printk_flag){
+						printk("This hash value has multiple nodes!");
+						test_printk_flag = false;
+					}
 				}	
 			}
 			kfree(hash_map_addr_new);
