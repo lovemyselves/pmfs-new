@@ -613,6 +613,35 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->addr = (void*)(xmem+count-i);
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
+		if(find_flag == true && last_hit != NULL )
+		{	
+			hash_map_addr_entry = list_entry(last_hit->next, struct hash_map_addr, list);
+			if(hashing == hash_map_addr_entry->hashing){
+				while(strncmp(hash_map_addr_temp->addr,hash_map_addr_entry->addr,hash_map_addr_temp->length)!=0){
+					if(hash_map_addr_entry->hashing_list.next == last_hit->next; 
+					/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
+						// not find duplication, return NULL
+						printk("hash collision and not find duplication, add new node");
+						printk("\n");
+						list_add_tail(&hash_map_addr_new->hashing_list, hashing_list_temp);
+						return NULL; 
+					}
+					else{
+						hash_map_addr_entry = list_entry(
+						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
+						
+						printk("This hash value has multiple nodes!");
+					}	
+				}
+				hash_map_addr_entry->count++;
+				last_hit = &hash_map_addr_entry->list;
+				printk("fast hit!\n");
+				/* add reference content */
+				goto find;
+			}
+		
+		}
+
 		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem+count-i);
 		if(hash_map_addr_entry){
 			/* hashing conflict decision */
