@@ -618,8 +618,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_entry = list_entry(last_hit->next, struct hash_map_addr, list);
 			if(hashing == hash_map_addr_entry->hashing){
 				while(strncmp(hash_map_addr_temp->addr,hash_map_addr_entry->addr,hash_map_addr_temp->length)!=0){
-					if(hash_map_addr_entry->hashing_list.next == last_hit->next 
-					/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
+					if(hash_map_addr_entry->hashing_list.next == 
+					&list_entry(last_hit->next, struct hash_map_addr, list)->hashing_list ){
 						// not find duplication, return NULL
 						printk("hash collision and not find duplication, add new node");
 						printk("\n");
