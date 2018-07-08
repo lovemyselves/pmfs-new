@@ -624,7 +624,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 						printk("hash collision and not find duplication, add new node");
 						printk("\n");
 						list_add_tail(&hash_map_addr_entry->hashing_list, last_hit->next);
-						return NULL; 
+						find_flag = false;
+						break;
 					}
 					else{
 						hash_map_addr_entry = list_entry(
@@ -633,13 +634,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 						printk("This hash value has multiple nodes!");
 					}	
 				}
-				hash_map_addr_entry->count++;
-				last_hit = &hash_map_addr_entry->list;
-				printk("fast hit!\n");
-				/* add reference content */
-				goto find;
+				if(find_flag == true){
+					hash_map_addr_entry->count++;
+					last_hit = &hash_map_addr_entry->list;
+					printk("fast hit!\n");
+					/* add reference content */
+					goto find;
+				}
 			}
-		
 		}
 
 		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem+count-i);
