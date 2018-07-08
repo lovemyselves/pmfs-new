@@ -113,6 +113,7 @@ struct hash_map_addr *rb_search_insert_node(
 					}
 				}	
 			}
+			printk("same data block, dedup");
 			kfree(hash_map_addr_new);
 			return hash_map_addr_entry;
 		}	
@@ -513,7 +514,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		goto out;
 	}
 
-	pi = pmfs_get_inode(sb, inode->i_ino);
+	pi = pmfs_get_inode(sb, inocde->i_ino);
 
 	offset = pos & (sb->s_blocksize - 1);
 	num_blocks = ((count + offset - 1) >> sb->s_blocksize_bits) + 1;
@@ -527,7 +528,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup insert start
 	// printk("num_blocks:%lu\n",num_blocks);
 	// printk("ino:%lu\n",inode->i_ino);
-	// printk("offset:%lu\n",offset);
+	printk("offset:%lu\n",offset);
 	printk("pos:%llu\n",pos);
 	// printk("s_blocksize_bits:%u",sb->s_blocksize_bits);
 	// printk("start_blk:%lu\n",start_blk);
