@@ -114,6 +114,7 @@ struct hash_map_addr *rb_search_insert_node(
 				}	
 			}
 			printk("same data block, dedup");
+			printk("\n");
 			kfree(hash_map_addr_new);
 			return hash_map_addr_entry;
 		}	
@@ -616,8 +617,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_entry->count++;
 			last_hit = &hash_map_addr_entry->list;
 			find_flag = true;
-			printk("hit");
-			printk("\n");
 			goto find;
 			/*add reference content */
 		}
