@@ -622,6 +622,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hash_map_addr_entry->count++;
 				last_hit = &hash_map_addr_entry->list;
 				printk("fast hit!\n");
+				printk("\n");
 				/* add reference content */
 				goto find;
 			}
