@@ -96,8 +96,8 @@ struct hash_map_addr *rb_search_insert_node(
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
 			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
-				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp ||
-				hash_map_addr_entry->hashing_list.next == NULL ){
+				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp 
+				/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
 					// not find duplication, return NULL
 					printk("hash collision and not find duplication, add new node");
 					printk("\n");
