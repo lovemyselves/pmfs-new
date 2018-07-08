@@ -100,7 +100,6 @@ struct hash_map_addr *rb_search_insert_node(
 				/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
 					// not find duplication, return NULL
 					printk("hash collision and not find duplication, add new node");
-					printk("\n");
 					list_add_tail(&hash_map_addr_new->hashing_list, hashing_list_temp);
 					return NULL; 
 				}
@@ -114,7 +113,6 @@ struct hash_map_addr *rb_search_insert_node(
 				}	
 			}
 			printk("same data block, dedup");
-			printk("\n");
 			kfree(hash_map_addr_new);
 			return hash_map_addr_entry;
 		}	
@@ -122,7 +120,6 @@ struct hash_map_addr *rb_search_insert_node(
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
 	rb_insert_color(&(hash_map_addr_new->node), root);
 	printk("new node in rbtree");
-	printk("\n");
 	
 	return NULL;
 }
@@ -622,7 +619,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hash_map_addr_entry->count++;
 				last_hit = &hash_map_addr_entry->list;
 				printk("fast hit!\n");
-				printk("\n");
 				/* add reference content */
 				goto find;
 			}
@@ -650,6 +646,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			break;
 		else
 			i -= pmfs_inode_blk_size(pi);
+		printk("\n");	
 	}
 	kfree(xmem);
 	// i = count;
