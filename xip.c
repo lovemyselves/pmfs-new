@@ -622,6 +622,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				/* add reference content */
 				goto find;
 			}
+			else
+				find_flag = false;
 		}
 
 		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem+count-i);
