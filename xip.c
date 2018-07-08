@@ -515,7 +515,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		goto out;
 	}
 
-	pi = pmfs_get_inode(sb, inocde->i_ino);
+	pi = pmfs_get_inode(sb, inode->i_ino);
 
 	offset = pos & (sb->s_blocksize - 1);
 	num_blocks = ((count + offset - 1) >> sb->s_blocksize_bits) + 1;
