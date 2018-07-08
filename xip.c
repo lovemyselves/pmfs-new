@@ -84,7 +84,7 @@ struct hash_map_addr *rb_search_insert_node(
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_entry;
 	struct list_head *hashing_list_temp;
-	bool test_printk_flag = true;
+	// bool test_printk_flag = true;
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -99,20 +99,20 @@ struct hash_map_addr *rb_search_insert_node(
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp 
 				/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
 					// not find duplication, return NULL
-					printk("hash collision and not find duplication, add new node");
+					// printk("hash collision and not find duplication, add new node");
 					list_add_tail(&hash_map_addr_new->hashing_list, hashing_list_temp);
 					return NULL; 
 				}
 				else{
 					hash_map_addr_entry = list_entry(
 						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
-					if(test_printk_flag){
-						printk("This hash value has multiple nodes!");
-						test_printk_flag = false;
-					}
+					// if(test_printk_flag){
+					// 	printk("This hash value has multiple nodes!");
+					// 	test_printk_flag = false;
+					// }
 				}	
 			}
-			printk("same data block, dedup");
+			// printk("same data block, dedup");
 			kfree(hash_map_addr_new);
 			return hash_map_addr_entry;
 		}	
@@ -272,18 +272,6 @@ static inline size_t memcpy_to_nvmm(char *kmem, loff_t offset,
 		copied = bytes - __copy_from_user_inatomic_nocache(kmem +
 						offset, buf, bytes);
 	}
-	/* dedup start */
-	// printk("kmem+offset length:%d",(int)strlen(kmem+offset));
-	// printk("kmem+offset:%s\n",kmem+offset);
-	// printk("kmem+offset:%lu\n",kmem+offset);
-	// printk("kmem length:%d",(int)strlen(kmem));
-	// printk("kmem:%s\n",kmem);
-	// printk("kmem+offset:%lu\n",kmem);
-	// printk("bytes value:%zu",bytes);
-	// printk("copied value:%zu",copied);
-	// printk("buf:%s",buf);
-	// printk("kmem+offset:%s",kmem+offset);
-	/* end */
 	return copied;
 }
 
@@ -618,7 +606,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			){
 				hash_map_addr_entry->count++;
 				last_hit = &hash_map_addr_entry->list;
-				printk("fast hit!\n");
+				// printk("fast hit!\n");
 				/* add reference content */
 				goto find;
 			}
@@ -636,7 +624,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			/*add reference content */
 		}
 
-		printk("hashing:%lu",hashing);
+		// printk("hashing:%lu",hashing);
 	
 		// rb_insert_node(&root, hash_map_addr_temp);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
@@ -648,136 +636,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			break;
 		else
 			i -= pmfs_inode_blk_size(pi);
-		printk("\n");	
+		// printk("\n");	
 	}
 	kfree(xmem);
-	// i = count;
-	// xmem = kmalloc(count, GFP_KERNEL);
-	// copy_from_user(xmem, buf, count);
-	// do{	
-	// 	size_t data_block = count - i;
-	// 	size_t hashing = 0;
-	// 	struct hash_map_addr *hash_map_addr_temp;
-	// 	// size_t *temp = kmalloc(sizeof(size_t),GFP_KERNEL);
-	// 	size_t *temp;
-	// 	hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-	// 	temp = kmalloc(sizeof(size_t), GFP_KERNEL);
-
-	// 	// if(i>pmfs_inode_blk_size(pi)){
-	// 	// 	kmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
-	// 	// 	copy_from_user(kmem, data_block, pmfs_inode_blk_size(pi));
-	// 	// }else{
-	// 	// 	kmem = kmalloc(i, GFP_KERNEL);
-	// 	// 	copy_from_user(kmem, data_block, i);
-	// 	// }	
-	// 	// printk("i:%lu",i);
-	// 	// printk("i/sizeof(size_t):%lu",i/sizeof(size_t));
-	// 	// trace = (size_t)(i/sizeof(size_t))-1; 
-	// 	// // printk("trace:%lu",trace);
-	// 	// memcpy(&temp, kmem, sizeof(size_t));
-	// 	memcpy(temp,xmem+data_block,sizeof(size_t));
-	// 	hashing = *temp;
-
-	// 	// if(trace<128){
-	// 	// 	memcpy(temp, kmem+trace*sizeof(size_t), i-trace*sizeof(size_t));
-	// 	// 	hashing += *temp;
-	// 	// 	hashing += (hashing << 3);
-	// 	// 	hashing ^= (hashing >> 2);
-	// 	// }
-	// 	// for(j=0;j<128&&j<trace;j++){
-	// 	// 	memcpy(temp, kmem+j*sizeof(size_t), sizeof(size_t));	
-	// 	// 	hashing += *temp;
-	// 	// 	hashing += (hashing << 3);
-	// 	// 	hashing ^= (hashing >> 2);
-	// 	// }
-	// 	printk("data_block:%lu",data_block);
-	// 	printk("temp:%lu",temp);
-	// 	printk("i/pmfs_inode_blk_size(pi):%lu",i/pmfs_inode_blk_size(pi));
-	// 	printk("compute result of hashing:%lu",hashing);
-		
-	// 	// else{
-	// 	// 	copy_from_user(kmem, data_block, i);
-	// 	// 	printk("last i:%lu",i);
-	// 	// 	// printk("data_block:%lu",(size_t)data_block);
-	// 	// 	j=0;j<i/sizeof(size_t);j++
-	// 	// 	while(true){
-	// 	// 		memcpy(temp,kmem+j*sizeof(size_t),sizeof(size_t));	
-	// 	// 		hashing += *temp;
-	// 	// 		hashing += (hashing << 3);
-	// 	// 		hashing ^= (hashing >> 2);
-	// 	// 		j++;
-	// 	// 	}
-	// 	// 	// printk("compute result of hashing:%lu",hashing);
-	// 	// }
-		
- 	// 	if(find_flag == true)
-	// 	{
-	// 		if(last_hit->next == NULL)
-	// 			;
-	// 		else{	
-	// 			hash_map_addr_entry = list_entry(last_hit->next, struct hash_map_addr, list);
-	// 			if(hashing == hash_map_addr_entry->hashing){
-	// 				hash_map_addr_entry->count++;
-	// 				last_hit = &hash_map_addr_entry->list;
-	// 				printk("fast hit!\n");
-	// 				/* add reference content */
-	// 				goto find;
-	// 			}
-	// 		}
-	// 	}
-		
-	// 	hash_map_addr_entry = rb_search_node(&root, hashing);
-	// 	if(hash_map_addr_entry){
-	// 		hash_map_addr_entry->count++;
-	// 		last_hit = &hash_map_addr_entry->list;
-	// 		find_flag = true;
-	// 		printk("hit!\n");
-	// 		goto find;
-	// 		/*add reference content */
-	// 	}
-
-	// 	find_flag = false;
-	// 	// printk("not hash hit!\n");
-		
-	// 	hash_map_addr_temp->hashing = hashing;
-	// 	hash_map_addr_temp->count = 1;
-
-	// 	printk("temp->count:%lu",hash_map_addr_temp->count);
-	// 	printk("temp->hashing:%lu",hash_map_addr_temp->hashing);
-	// 	INIT_LIST_HEAD(&hash_map_addr_temp->list);
-	// 	list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-	// 	printk("before insert_node");
-	// 	rb_insert_node(&root, hash_map_addr_temp);
-	// 	printk("after insert_node");
-
-	// 	find:
-	// 	// printk("pmfs_inode_blk_size(pi):%u",pmfs_inode_blk_size(pi));
-	// 	// printk("count:%u",count);
-	// 	printk("\n");
-	// 	// kfree(temp);
-	// 	if(i>pmfs_inode_blk_size(pi))
-	// 		i -= pmfs_inode_blk_size(pi);
-	// 	else
-	// 		break;	
-	// }while(i!=0);
-	// kfree(hash_map_addr_entry);
-	// kfree(xmem);
-	
-
-	// printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-	// /* hash_map_addr_entry ponit reuse for traverse */
-	// list_for_each_entry(hash_map_addr_entry,&hash_map_addr_list,list)
-	// {	
-	// 	// hash_map_addr_entry->count++;
-	// 	// printk("find the hashing!\n");
-	// 	printk("hashing in this map entry:%lu\n",hash_map_addr_entry->hashing);
-	// 	// printk("count in this map entry:%u\n",hash_map_addr_entry->count);
-	// 	// find_flag = 1;
-	// 	// last_hit.next = hash_map_addr_entry->list.next;
-	// 	// find_flag = true;
-	// 	// printk("general hit, reference count:%u\n", hash_map_addr_entry->count);
-	// }
-	// printk("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
