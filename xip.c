@@ -340,12 +340,14 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
-			printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
-			hash_map_addr_entry->addr = (void*)xmem;
-			// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
-			// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
-			new_list = new_list->next;
-			hash_map_addr_entry->flag = true;
+			if(hash_map_addr_entry->hashing_md5 == buf){
+				printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
+				hash_map_addr_entry->addr = (void*)xmem;
+				// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
+				// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
+				new_list = new_list->next;
+				hash_map_addr_entry->flag = true;
+			}
 		}
 
 		/* if start or end dest address is not 8 byte aligned, 
@@ -582,6 +584,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
 		hash_map_addr_temp->flag = false;
+		hash_map_addr_temp->hashing_md5 = buf + count - i;
 
 		if(i <= pmfs_inode_blk_size(pi)){
 			if(i<1024){
