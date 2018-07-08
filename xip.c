@@ -612,8 +612,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem+count-i);
 		if(hash_map_addr_entry){
 			/* hashing conflict decision */
-			if(hash_map_addr_entry->addr)
-				;
 			hash_map_addr_entry->count++;
 			last_hit = &hash_map_addr_entry->list;
 			find_flag = true;
