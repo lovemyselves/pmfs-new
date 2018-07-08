@@ -622,8 +622,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				/* add reference content */
 				goto find;
 			}
-			else
-				find_flag = false;
+			// else
+			// 	find_flag = false;
 		}
 
 		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem+count-i);
@@ -641,6 +641,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// rb_insert_node(&root, hash_map_addr_temp);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		find_flag = false;
 		
 		find:
 		//less than 32, break;
