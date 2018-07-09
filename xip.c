@@ -177,7 +177,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		error = pmfs_get_xip_mem(mapping, index, 0,
 					&xip_mem, &xip_pfn);
 
-		printk("mapping:%llu",(ssize_t)mapping);
+		printk("mapping:%lu",(size_t)mapping);
 		printk("index:%lu",index);
 		// printk("xip_mem:%s",(char*)xip_mem);
 
