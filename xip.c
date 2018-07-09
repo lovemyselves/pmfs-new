@@ -592,6 +592,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
 
 		printk("inode:%lu",(size_t)inode);
+		printk("index:%lu",j+start_blk);
 		if(i <= pmfs_inode_blk_size(pi)){
 			if(i<1024){
 				trace = i/sizeof(size_t);
