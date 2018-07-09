@@ -177,7 +177,6 @@ do_xip_mapping_read(struct address_space *mapping,
 		error = pmfs_get_xip_mem(mapping, index, 0,
 					&xip_mem, &xip_pfn);
 
-		printk("mapping:%lu",(size_t)mapping);
 		printk("inode:%lu",(size_t)inode);
 		printk("index:%lu",index);
 		// printk("xip_mem:%s",(char*)xip_mem);
@@ -583,6 +582,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	for(j = 0; j < 32; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
+		struct ref_map *ref_map_temp;
 		unsigned k, dedup_ret = 1, data_remainder;
 		size_t trace = 128; /* 1/4 of pmfs_inode_blk_size(pi) */
 		hashing = 0;
@@ -591,8 +591,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->flag = false;
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
 
-		printk("inode:%lu",(size_t)inode);
-		printk("index:%lu",j+start_blk);
 		if(i <= pmfs_inode_blk_size(pi)){
 			if(i<1024){
 				trace = i/sizeof(size_t);
@@ -653,6 +651,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		find:
 		//less than 32, break;
+		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
+		ref_map_temp->virt_addr = inode;
+		ref_map_temp->index = j+start_blk;
+		ref_map_temp->hma = hash_map_addr_temp;
+		printk("inode:%lu",ref_map_temp->inode);
+		printk("index:%lu",ref_map_temp->index);
 		if(dedup_ret == 0)
 			break;
 		else
