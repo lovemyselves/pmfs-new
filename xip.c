@@ -178,6 +178,7 @@ do_xip_mapping_read(struct address_space *mapping,
 					&xip_mem, &xip_pfn);
 
 		printk("mapping:%lu",(size_t)mapping);
+		printk("inode:%lu",(size_t)inode);
 		printk("index:%lu",index);
 		// printk("xip_mem:%s",(char*)xip_mem);
 
@@ -590,6 +591,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->flag = false;
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
 
+		printk("inode:%lu",(size_t)inode);
 		if(i <= pmfs_inode_blk_size(pi)){
 			if(i<1024){
 				trace = i/sizeof(size_t);
