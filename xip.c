@@ -37,7 +37,7 @@ bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 struct list_head *ref_map_list;
 
-INIT_LIST_HEAD(ref_map_list);
+ref_map_list = NULL;
 
 /*
 	dedup rbtree function
