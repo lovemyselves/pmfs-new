@@ -212,7 +212,8 @@ do_xip_mapping_read(struct address_space *mapping,
 			left = __clear_user(buf + copied, nr);
 		
 		printk("left:%lu", left);
-		printk("offset:%lu", offset);  
+		printk("offset:%lu", offset); 
+		printk("nr:%lu",nr); 
 		// printk("xip_mem:%.*s", nr, (char*)(xip_mem+offset));
 		printk("\n");
 		
@@ -540,9 +541,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// printk("start_blk:%lu\n",start_blk);
 	// printk("end_blk:%lu\n",end_blk);
 	// printk("count:%lu\n",count);
-	// printk("start_blk>>5:%lu\n",start_blk>>5);
+	printk("start_blk>>5:%lu\n",start_blk>>5);
 	// printk("strlen(buf):%lu\n",(long unsigned)strlen(*buf));
-	// printk("\n");
+	printk("\n");
 	//end
 
 	/* Referring to the inode's block size, not 4K */
