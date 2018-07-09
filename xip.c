@@ -35,7 +35,7 @@ struct rb_root root = RB_ROOT;
 struct list_head *last_ref;
 bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
-struct list_head *dedup_ref_list;
+static struct list_head *dedup_ref_list;
 
 dedup_ref_list = NULL;
 
