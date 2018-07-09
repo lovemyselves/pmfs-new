@@ -155,6 +155,10 @@ do_xip_mapping_read(struct address_space *mapping,
 		unsigned long xip_pfn;
 		int zero = 0;
 
+		/* read dedup data block start */
+
+		/* end */
+
 		/* nr is the maximum number of bytes to copy from this page */
 		nr = PAGE_SIZE;
 		if (index >= end_index) {
@@ -200,6 +204,11 @@ do_xip_mapping_read(struct address_space *mapping,
 			left = __copy_to_user(buf+copied, xip_mem+offset, nr);
 		else
 			left = __clear_user(buf + copied, nr);
+		
+		printk("left:%lu", left);
+		printk("offset:%;u", offset);  
+		printk("xip_mem:%.*s", nr, xip_mem+offset);
+		
 		PMFS_END_TIMING(memcpy_r_t, memcpy_time);
 
 		if (left) {
