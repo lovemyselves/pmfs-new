@@ -206,8 +206,8 @@ do_xip_mapping_read(struct address_space *mapping,
 			left = __clear_user(buf + copied, nr);
 		
 		printk("left:%lu", left);
-		printk("offset:%;u", offset);  
-		printk("xip_mem:%.*s", nr, xip_mem+offset);
+		printk("offset:%lu", offset);  
+		printk("xip_mem:%.*s", nr, (char*)(xip_mem+offset));
 		
 		PMFS_END_TIMING(memcpy_r_t, memcpy_time);
 
