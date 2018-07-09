@@ -25,8 +25,7 @@
 #include "dedup.c"
 
 /* dedup claim start */
-// struct lpn_map_ppn *l_map_p;
-// l_map_p = kmalloc(sizeof(struct lpn_map_ppn), GFP_KERNEL);
+
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
 struct list_head *new_list = &hash_map_addr_list;
@@ -36,9 +35,8 @@ struct rb_root root = RB_ROOT;
 struct list_head *last_ref;
 bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
-struct ref_map *ref_map_list;
-
-kmalloc(sizeof(struct ref_map), GFP_KERNEL);
+struct list_head *ref_map_list;
+ref_map_list = kmalloc(sizeof(*ref_map_list), GFP_KERNEL);
 
 /*
 	dedup rbtree function
