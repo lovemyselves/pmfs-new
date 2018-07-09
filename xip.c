@@ -176,6 +176,11 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		error = pmfs_get_xip_mem(mapping, index, 0,
 					&xip_mem, &xip_pfn);
+
+		printk("mapping:%llu",mapping);
+		printk("index:%llu",index);
+		// printk("xip_mem:%s",(char*)xip_mem);
+
 		if (unlikely(error)) {
 			if (error == -ENODATA) {
 				/* sparse */
@@ -208,7 +213,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		
 		printk("left:%lu", left);
 		printk("offset:%lu", offset);  
-		printk("xip_mem:%.*s", nr, (char*)(xip_mem+offset));
+		// printk("xip_mem:%.*s", nr, (char*)(xip_mem+offset));
 		printk("\n");
 		
 		PMFS_END_TIMING(memcpy_r_t, memcpy_time);
