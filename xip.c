@@ -149,6 +149,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		goto out;
 
 	end_index = (isize - 1) >> PAGE_SHIFT;
+	printk("-------------------------------");
 	do {
 		unsigned long nr, left;
 		void *xip_mem;
@@ -208,6 +209,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		printk("left:%lu", left);
 		printk("offset:%lu", offset);  
 		printk("xip_mem:%.*s", nr, (char*)(xip_mem+offset));
+		printk("\n");
 		
 		PMFS_END_TIMING(memcpy_r_t, memcpy_time);
 
@@ -223,6 +225,7 @@ do_xip_mapping_read(struct address_space *mapping,
 	} while (copied < len);
 
 out:
+	printk("+++++++++++++++++++++++++++++++");
 	*ppos = pos + copied;
 	if (filp)
 		file_accessed(filp);
