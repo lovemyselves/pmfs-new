@@ -35,9 +35,9 @@ struct rb_root root = RB_ROOT;
 struct list_head *last_ref;
 bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
-struct list_head *ref_map_list;
+struct list_head *dedup_ref_list;
 
-ref_map_list = NULL;
+dedup_ref_list = NULL;
 
 /*
 	dedup rbtree function
