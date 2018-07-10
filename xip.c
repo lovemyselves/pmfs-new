@@ -122,10 +122,36 @@ struct hash_map_addr *rb_search_insert_node(
 		}	
 	}
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
-	rb_insert_color(&(hash_map_addr_new->node), root);
+	rb_insert_color(&hash_map_addr_new->node, root);
 	// printk("new node in rbtree");
 	
 	return NULL;
+}
+
+void ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
+{
+	struct rb_node **entry_node = &(ref_root->rb_node);
+	struct rb_node *parent = NULL;
+	struct ref_map *ref_map_entry;
+
+	while(*entry_node){
+		parent = *entry_node;
+		ref_map_entry = rb_entry(*entry_node, struct ref_map, node);
+		if(ref_map_new->virt_addr < ref_map_entry->virt_addr)
+			entry_node = &(*entry_node)->rb_left;
+		else if(ref_map_new->virt_addr > ref_map_entry->virt_addr)
+			entry_node = &(*entry_node)->rb_right;
+		else{
+			if(ref_map_new->index < ref_map_entry->index)
+				entry_node = &(*entry_node)->rb_left;
+			else if(ref_map_new->index > ref_map_entry->index)
+				entry_node = &(*entry_node)->rb_right;
+			else
+				return;		
+		}		
+	}
+	rb_link_node(&ref_map_new->node, parent, entry_node);
+	rb_insert_color(&ref_map_new->node, ref_root);
 }
 /* claim end */
 
