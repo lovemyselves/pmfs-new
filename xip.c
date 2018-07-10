@@ -228,14 +228,14 @@ do_xip_mapping_read(struct address_space *mapping,
 		if (nr > len - copied)
 			nr = len - copied;
 
-		ref_map_temp = ref_search_node(ref_root, inode, size_t index);
+		ref_map_temp = ref_search_node(ref_root, inode, index);
 
 		error = pmfs_get_xip_mem(mapping, index, 0,
 					&xip_mem, &xip_pfn);
 
 		printk("inode:%lu",(size_t)inode);
 		printk("index:%lu",index);
-		if(ref_map_temp != NULL && ref_map_temp->addr == xip_mem){
+		if(ref_map_temp != NULL && ref_map_temp->hma->addr == xip_mem){
 			printk("read the same xip_mem!");
 		}
 		// printk("xip_mem:%s",(char*)xip_mem);
