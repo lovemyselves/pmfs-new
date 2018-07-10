@@ -237,7 +237,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		if(ref_map_temp->hma->addr == xip_mem){
 			printk("read the same xip_mem!");
 		}
-		else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)){
+		else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
 			printk("success redirect!");
 		}
 		else{
