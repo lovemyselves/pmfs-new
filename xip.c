@@ -246,6 +246,8 @@ do_xip_mapping_read(struct address_space *mapping,
 		}
 		else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
 			printk("success redirect!");
+			kfree(xip_mem);
+			xip_mem = ref_map_temp->hma->addr;
 		}
 		else{
 			printk("fault!");
