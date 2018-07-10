@@ -236,25 +236,25 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 
-		printk("untapped xip_mem:%lu", (size_t)xip_mem);
-		printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
+		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
+		// printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
 		if(ref_map_temp != NULL)
 		{
-			printk("find ref metadata!");
+			// printk("find ref metadata!");
 			xip_mem = ref_map_temp->hma->addr;
 			xip_pfn --;
 			error = 0;
-			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
+			// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 			goto read_redirect;
 		}
 		error = pmfs_get_xip_mem(mapping, index, 0,
 					&xip_mem, &xip_pfn);
 
-		printk("inode:%lu",(size_t)inode);
-		printk("index:%lu",index);
-		printk("error:%lu", error);
-		printk("original xip_mem:%lu", (size_t)xip_mem);
-		printk("original xip_pfn:%lu", (size_t)xip_pfn);
+		// printk("inode:%lu",(size_t)inode);
+		// printk("index:%lu",index);
+		// printk("error:%lu", error);
+		// printk("original xip_mem:%lu", (size_t)xip_mem);
+		// printk("original xip_pfn:%lu", (size_t)xip_pfn);
 		
 		read_redirect:
 		// if(ref_map_temp->hma->addr == xip_mem){
@@ -303,11 +303,11 @@ do_xip_mapping_read(struct address_space *mapping,
 		else
 			left = __clear_user(buf + copied, nr);
 		
-		printk("left:%lu", left);
-		printk("offset:%lu", offset); 
-		printk("nr:%lu",nr); 
+		// printk("left:%lu", left);
+		// printk("offset:%lu", offset); 
+		// printk("nr:%lu",nr); 
 		// printk("xip_mem:%.*s", nr, (char*)(xip_mem+offset));
-		printk("\n");
+		// printk("\n");
 		
 		PMFS_END_TIMING(memcpy_r_t, memcpy_time);
 
