@@ -117,7 +117,6 @@ struct hash_map_addr *rb_search_insert_node(
 				}	
 			}
 			// printk("same data block, dedup");
-			kfree(hash_map_addr_new);
 			return hash_map_addr_entry;
 		}	
 	}
@@ -689,7 +688,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			){
 				hash_map_addr_entry->count++;
 				last_hit = &hash_map_addr_entry->list;
-				// printk("fast hit!\n");
+				kfree(hash_map_addr_temp);
+				hash_map_addr_temp = hash_map_addr_entry;
+				printk("fast hit!");
 				/* add reference content */
 				goto find;
 			}
@@ -703,6 +704,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_entry->count++;
 			last_hit = &hash_map_addr_entry->list;
 			find_flag = true;
+			kfree(hash_map_addr_temp);
+			hash_map_addr_temp = hash_map_addr_entry;
+			printk("fit!");
 			goto find;
 			/*add reference content */
 		}
