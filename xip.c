@@ -147,7 +147,6 @@ void ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				ref_map_entry->hma = ref_map_new->hma;
-				kfree(ref_map_new);
 			}	
 		}		
 	}
