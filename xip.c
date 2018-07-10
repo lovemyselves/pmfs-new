@@ -228,7 +228,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		if (nr > len - copied)
 			nr = len - copied;
 
-		ref_map_temp = ref_search_node(ref_root, inode, index);
+		ref_map_temp = ref_search_node(&ref_root, inode, index);
 
 		error = pmfs_get_xip_mem(mapping, index, 0,
 					&xip_mem, &xip_pfn);
