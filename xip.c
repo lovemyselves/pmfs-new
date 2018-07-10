@@ -153,6 +153,30 @@ void ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 	rb_link_node(&ref_map_new->node, parent, entry_node);
 	rb_insert_color(&ref_map_new->node, ref_root);
 }
+
+void *ref_search_node(void *inode, size_t index)
+{
+	struct rb_node *entry_node = ref_root->rb_node;
+	struct ref_map *ref_map_entry;
+
+	while(entry_node){
+		ref_map_entry = rb_entry(entry_node, struct ref_map, node);
+		if(inode < ref_map_entry->virt_addr)
+			entry_node = entry_node->rb_left;
+		else if(inode > ref_map_entry->virt_addr)
+			entry_node = entry_node->rb_right;
+		else
+		{
+			if(index < ref_map_entry->index)
+				entry_node = entry_node->rb_left;
+			else if(index > ref_map_entry->index)
+				entry_node = entry_node->rb_right;
+			else
+				return ref_map_entry->hma->addr;
+		}	
+	}
+	return NULL;
+}
 /* claim end */
 
 static ssize_t
