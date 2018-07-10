@@ -241,12 +241,12 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		printk("inode:%lu",(size_t)inode);
 		printk("index:%lu",index);
-		printk("original xip_mem:", xip_mem);
+		printk("original xip_mem:%lu", (size_t)xip_mem);
 		if(ref_map_temp!=NULL && ref_map_temp->hma->addr == xip_mem)
 		{
 			printk("find ref metadata!");
 			xip_mem = ref_map_temp->hma->addr;
-			printk("xip_mem after redirect:", xip_mem);
+			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 		}
 		// if(ref_map_temp->hma->addr == xip_mem){
 		// 	printk("read the same xip_mem!");
