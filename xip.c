@@ -146,9 +146,10 @@ void ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 			else if(ref_map_new->index > ref_map_entry->index)
 				entry_node = &(*entry_node)->rb_right;
 			else{
-				// ref_map_entry->hma = ref_map_new->hma;
-				rb_erase(*entry_node, ref_root);
-				kfree(ref_map_entry);
+				ref_map_entry->hma->count--;
+				//  = ref_map_new->hma;
+				// rb_erase(*entry_node, ref_root);
+				// kfree(ref_map_entry);
 				return;
 			}	
 		}		
