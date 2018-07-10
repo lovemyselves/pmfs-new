@@ -238,6 +238,11 @@ do_xip_mapping_read(struct address_space *mapping,
 		if(ref_map_temp != NULL && ref_map_temp->hma->addr == xip_mem){
 			printk("read the same xip_mem!");
 		}
+		else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)){
+			printk("success redirect!");
+		}
+		else
+			printk("fault!");
 		// printk("xip_mem:%s",(char*)xip_mem);
 
 		if (unlikely(error)) {
