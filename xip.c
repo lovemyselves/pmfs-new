@@ -661,6 +661,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		ref_map_temp->hma = hash_map_addr_temp;
 		printk("inode:%lu",(size_t)ref_map_temp->virt_addr);
 		printk("index:%lu",ref_map_temp->index);
+		printk("length:%lu",hash_map_addr_temp->length);
 		if(dedup_ret == 0)
 			break;
 		else
