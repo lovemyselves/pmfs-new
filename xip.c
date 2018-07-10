@@ -234,14 +234,17 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		printk("inode:%lu",(size_t)inode);
 		printk("index:%lu",index);
-		if(ref_map_temp != NULL && ref_map_temp->hma->addr == xip_mem){
+		if(ref_map_temp->hma->addr == xip_mem){
 			printk("read the same xip_mem!");
 		}
 		else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)){
 			printk("success redirect!");
 		}
-		else
+		else{
 			printk("fault!");
+			printk("xip_mem:%s",(char*)xip_mem);
+			printk("data:%s",(char*)ref_map_temp->hma->addr);
+		}
 		// printk("xip_mem:%s",(char*)xip_mem);
 
 		if (unlikely(error)) {
@@ -727,6 +730,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("inode:%lu",(size_t)ref_map_temp->virt_addr);
 		printk("index:%lu",ref_map_temp->index);
 		printk("length:%lu",hash_map_addr_temp->length);
+		printk("\n");
 		if(dedup_ret == 0)
 			break;
 		else
