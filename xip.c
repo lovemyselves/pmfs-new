@@ -154,7 +154,7 @@ void ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 	rb_insert_color(&ref_map_new->node, ref_root);
 }
 
-void *ref_search_node(struct rb_root *ref_root, void *inode, size_t index)
+struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t index)
 {
 	struct rb_node *entry_node = ref_root->rb_node;
 	struct ref_map *ref_map_entry;
@@ -172,7 +172,7 @@ void *ref_search_node(struct rb_root *ref_root, void *inode, size_t index)
 			else if(index > ref_map_entry->index)
 				entry_node = entry_node->rb_right;
 			else
-				return ref_map_entry->hma->addr;
+				return ref_map_entry;
 		}	
 	}
 	return NULL;
@@ -211,7 +211,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		int zero = 0;
 
 		/* read dedup data block start */
-
+		struct ref_map *ref_map_temp;
 		/* end */
 
 		/* nr is the maximum number of bytes to copy from this page */
@@ -228,11 +228,16 @@ do_xip_mapping_read(struct address_space *mapping,
 		if (nr > len - copied)
 			nr = len - copied;
 
+		ref_map_temp = ref_search_node(ref_root, inode, size_t index);
+
 		error = pmfs_get_xip_mem(mapping, index, 0,
 					&xip_mem, &xip_pfn);
 
 		printk("inode:%lu",(size_t)inode);
 		printk("index:%lu",index);
+		if(ref_map_temp != NULL && ref_map_temp->addr == xip_mem){
+			printk("read the same xip_mem!");
+		}
 		// printk("xip_mem:%s",(char*)xip_mem);
 
 		if (unlikely(error)) {
