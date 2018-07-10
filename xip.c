@@ -241,20 +241,27 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		printk("inode:%lu",(size_t)inode);
 		printk("index:%lu",index);
-		if(ref_map_temp->hma->addr == xip_mem){
-			printk("read the same xip_mem!");
-		}
-		else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
-			printk("success redirect!");
-			
+		printk("original xip_mem:", xip_mem);
+		if(ref_map_temp!=NULL && ref_map_temp->hma->addr == xip_mem)
+		{
+			printk("find ref metadata!");
 			xip_mem = ref_map_temp->hma->addr;
+			printk("xip_mem after redirect:", xip_mem);
 		}
-		else{
-			printk("fault!");
-			printk("strncmp:%d",strncmp(ref_map_temp->hma->addr, xip_mem, nr));
-			printk("xip_mem:%s",(char*)xip_mem);
-			printk("data:%s",(char*)ref_map_temp->hma->addr);
-		}
+		// if(ref_map_temp->hma->addr == xip_mem){
+		// 	printk("read the same xip_mem!");
+		// }
+		// else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
+		// 	printk("success redirect!");
+			
+		// 	xip_mem = ref_map_temp->hma->addr;
+		// }
+		// else{
+		// 	printk("fault!");
+		// 	printk("strncmp:%d",strncmp(ref_map_temp->hma->addr, xip_mem, nr));
+		// 	printk("xip_mem:%s",(char*)xip_mem);
+		// 	printk("data:%s",(char*)ref_map_temp->hma->addr);
+		// }
 		// printk("xip_mem:%s",(char*)xip_mem);
 
 		if (unlikely(error)) {
