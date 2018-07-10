@@ -754,6 +754,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		ref_map_temp->index = j+start_blk;
 		ref_map_temp->hma = hash_map_addr_temp;
 		ref_insert_node(&ref_root, ref_map_temp);
+		INIT_LIST_HEAD(&ref_map_temp->list);
+		list_add_tail(&ref_map_temp->list, &dedup_ref_list);
+
 		printk("inode:%lu",(size_t)ref_map_temp->virt_addr);
 		printk("index:%lu",ref_map_temp->index);
 		printk("length:%lu",hash_map_addr_temp->length);
