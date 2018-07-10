@@ -251,8 +251,12 @@ do_xip_mapping_read(struct address_space *mapping,
 		{
 			printk("find ref metadata!");
 			xip_mem = ref_map_temp->hma->addr;
+			xip_pfn --;
+			error = 0;
 			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
+			goto read_redirect;
 		}
+		read_redirect:
 		// if(ref_map_temp->hma->addr == xip_mem){
 		// 	printk("read the same xip_mem!");
 		// }
