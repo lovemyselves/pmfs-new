@@ -145,8 +145,10 @@ void ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 				entry_node = &(*entry_node)->rb_left;
 			else if(ref_map_new->index > ref_map_entry->index)
 				entry_node = &(*entry_node)->rb_right;
-			else
-				return;		
+			else{
+				ref_map_entry->hma = ref_map_new->hma;
+				kfree(ref_map_new);
+			}	
 		}		
 	}
 	rb_link_node(&ref_map_new->node, parent, entry_node);
