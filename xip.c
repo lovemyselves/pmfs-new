@@ -154,7 +154,7 @@ void ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 	rb_insert_color(&ref_map_new->node, ref_root);
 }
 
-void *ref_search_node(void *inode, size_t index)
+void *ref_search_node(struct rb_root *ref_root, void *inode, size_t index)
 {
 	struct rb_node *entry_node = ref_root->rb_node;
 	struct ref_map *ref_map_entry;
