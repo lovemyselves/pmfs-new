@@ -242,6 +242,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		}
 		else{
 			printk("fault!");
+			printk("strncmp:%d",strncmp(ref_map_temp->hma->addr, xip_mem, nr));
 			printk("xip_mem:%s",(char*)xip_mem);
 			printk("data:%s",(char*)ref_map_temp->hma->addr);
 		}
