@@ -282,7 +282,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		printk("inode:%lu",(size_t)inode);
 		printk("index:%lu",index);
 		printk("error:%lu", error);
-		printk("redirect inode:%lu",ref_map_temp->virt_addr);
+		printk("redirect inode:%lu",(size_t)ref_map_temp->virt_addr);
 		printk("redirect index:%lu",ref_map_temp->index);
 		// printk("original xip_mem:%lu", (size_t)xip_mem);
 		printk("original xip_pfn:%lu", (size_t)xip_pfn);
