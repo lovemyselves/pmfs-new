@@ -291,7 +291,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		// printk("error:%lu", error);
 		// printk("redirect inode:%lu",(size_t)ref_map_temp->virt_addr);
 		// printk("redirect index:%lu",ref_map_temp->index);
-		// printk("original xip_mem:%lu", (size_t)xip_mem);
+		printk("original xip_mem:%lu", (size_t)xip_mem);
 		// printk("original xip_pfn:%lu", (size_t)xip_pfn);
 		printk("\n");
 		
@@ -1003,7 +1003,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	// printk("block:%lu\n",block);
 	// printk("block value:%lu\n",block>>12);
 	// printk("pfn:%lu\n",*pfn);
-	// printk("kmem:%lu\n",(unsigned long)*kmem);
+	printk("kmem:%lu",(size_t)kmem);
 	/* end */
 
 	return 0;
