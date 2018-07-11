@@ -236,19 +236,19 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		// if( ref_find_flag && index>0){
-		// 	ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
-		// 	if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
-		// 	{
-		// 		xip_mem = ref_map_temp->hma->addr;
-		// 		error = 0;
-		// 		last_ref = &ref_map_temp->list;
-		// 		ref_find_flag = true;
-		// 		printk("read datablock from fast link!");
-		// 	}
-		// 	last_ref = last_ref->next;
-		// 	goto read_redirect;
-		// }
+		if( ref_find_flag && index>0){
+			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
+			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
+			{
+				xip_mem = ref_map_temp->hma->addr;
+				error = 0;
+				last_ref = &ref_map_temp->list;
+				ref_find_flag = true;
+				printk("read datablock from fast link!");
+			}
+			last_ref = last_ref->next;
+			goto read_redirect;
+		}
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
 		// printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
@@ -650,9 +650,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// printk("start_blk:%lu\n",start_blk);
 	// printk("end_blk:%lu\n",end_blk);
 	// printk("count:%lu\n",count);
-	printk("start_blk>>5:%lu\n",start_blk>>5);
+	// printk("start_blk>>5:%lu\n",start_blk>>5);
 	// printk("strlen(buf):%lu\n",(long unsigned)strlen(*buf));
-	printk("\n");
+	// printk("\n");
 	//end
 
 	/* Referring to the inode's block size, not 4K */
