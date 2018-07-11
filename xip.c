@@ -210,7 +210,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		goto out;
 
 	end_index = (isize - 1) >> PAGE_SHIFT;
-	printk("-------------------------------");
+	// printk("-------------------------------");
 	do {
 		unsigned long nr, left;
 		void *xip_mem;
@@ -243,7 +243,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				xip_mem = ref_map_temp->hma->addr;
 				error = 0;
 				ref_find_flag = true;
-				printk("read datablock from fast link!");
+				// printk("read datablock from fast link!");
 				last_ref = last_ref->next;
 				goto read_redirect;
 			}
@@ -258,7 +258,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			error = 0;
 			last_ref = &ref_map_temp->list;
 			ref_find_flag = true;
-			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
+			// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 			goto read_redirect;
 		}
 		error = pmfs_get_xip_mem(mapping, index, 0,
@@ -279,14 +279,14 @@ do_xip_mapping_read(struct address_space *mapping,
 		// 	// printk("xip_mem:%s",(char*)xip_mem);
 		// 	printk("data:%s",(char*)ref_map_temp->hma->addr);
 		// }
-		printk("inode:%lu",(size_t)inode);
-		printk("index:%lu",index);
-		printk("error:%lu", error);
-		printk("redirect inode:%lu",(size_t)ref_map_temp->virt_addr);
-		printk("redirect index:%lu",ref_map_temp->index);
+		// printk("inode:%lu",(size_t)inode);
+		// printk("index:%lu",index);
+		// printk("error:%lu", error);
+		// printk("redirect inode:%lu",(size_t)ref_map_temp->virt_addr);
+		// printk("redirect index:%lu",ref_map_temp->index);
 		// printk("original xip_mem:%lu", (size_t)xip_mem);
-		printk("original xip_pfn:%lu", (size_t)xip_pfn);
-		printk("\n");
+		// printk("original xip_pfn:%lu", (size_t)xip_pfn);
+		// printk("\n");
 		
 
 		if (unlikely(error)) {
@@ -339,7 +339,7 @@ do_xip_mapping_read(struct address_space *mapping,
 	} while (copied < len);
 
 out:
-	printk("+++++++++++++++++++++++++++++++");
+	// printk("+++++++++++++++++++++++++++++++");
 	*ppos = pos + copied;
 	if (filp)
 		file_accessed(filp);
