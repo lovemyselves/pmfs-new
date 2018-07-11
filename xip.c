@@ -244,6 +244,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				error = 0;
 				last_ref = &ref_map_temp->list;
 				ref_find_flag = true;
+				printk("read datablock from fast link!");
 			}
 			last_ref = last_ref->next;
 			goto read_redirect;
@@ -258,7 +259,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			error = 0;
 			last_ref = &ref_map_temp->list;
 			ref_find_flag = true;
-			// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
+			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 			goto read_redirect;
 		}
 		error = pmfs_get_xip_mem(mapping, index, 0,
