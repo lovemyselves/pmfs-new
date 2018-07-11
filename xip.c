@@ -235,11 +235,18 @@ do_xip_mapping_read(struct address_space *mapping,
 		if (nr > len - copied)
 			nr = len - copied;
 
+		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		/* dedup new code start */
 		if( (ref_find_flag==true && index>0) && (&dedup_ref_list!=last_ref->next)){
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
 			{
+				if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)!=0){
+					printk("read fault, diff data!");
+				}
+				if(nr != ref_map_temp->hma->length){
+					printk("read fault, diff length!");
+				}
 				xip_mem = ref_map_temp->hma->addr;
 				error = 0;
 				ref_find_flag = true;
@@ -262,8 +269,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 			goto read_redirect;
 		}
-		error = pmfs_get_xip_mem(mapping, index, 0,
-					&xip_mem, &xip_pfn);
+		
 
 		read_redirect:
 		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
