@@ -308,7 +308,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		 * virtual addresses, take care about potential aliasing
 		 * before reading the page on the kernel side.
 		 */
-		if (mapping_writably_mapped(mapping))
+		// if (mapping_writably_mapped(mapping))
 			/* address based flush */ ;
 
 		/*
