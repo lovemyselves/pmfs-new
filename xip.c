@@ -276,7 +276,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		}
 		else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
 			printk("success redirect!");
-			
+			printk("xip_mem:%s",(char*)xip_mem);
 			xip_mem = ref_map_temp->hma->addr;
 		}
 		else{
@@ -285,7 +285,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			printk("xip_mem:%s",(char*)xip_mem);
 			printk("data:%s",(char*)ref_map_temp->hma->addr);
 		}
-		printk("xip_mem:%s",(char*)xip_mem);
+		
 
 		if (unlikely(error)) {
 			if (error == -ENODATA) {
