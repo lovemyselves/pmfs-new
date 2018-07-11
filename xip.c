@@ -743,7 +743,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				find_flag = false;
 		}
 
-		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem);
+		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp);
 		if(hash_map_addr_entry){
 			/* hashing conflict decision */
 			hash_map_addr_entry->count++;
