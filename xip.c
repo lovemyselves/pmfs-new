@@ -83,7 +83,7 @@ static LIST_HEAD(dedup_ref_list);
 // }
 
 struct hash_map_addr *rb_search_insert_node(
-	struct rb_root *root, struct hash_map_addr *hash_map_addr_new, void* xmem)
+	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
 {
 	struct rb_node **entry_node = &(root->rb_node);
 	struct rb_node *parent = NULL;
@@ -100,7 +100,7 @@ struct hash_map_addr *rb_search_insert_node(
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
-			while(strncmp(xmem,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
+			while(strncmp(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp 
 				/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
 					// not find duplication, return NULL
@@ -236,18 +236,18 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		// if(last_ref!=&dedup_ref_list && index>0){
-		// 	ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
-		// 	if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
-		// 	{
-		// 		xip_mem = ref_map_temp->hma->addr;
-		// 		error = 0;
-		// 		last_ref = &ref_map_temp->list;
-		// 		ref_find_flag = true;
-		// 	}
-		// 	last_ref = last_ref->next;
-		// 	goto read_redirect;
-		// }
+		if(last_ref!=&dedup_ref_list && index>0){
+			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
+			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
+			{
+				xip_mem = ref_map_temp->hma->addr;
+				error = 0;
+				last_ref = &ref_map_temp->list;
+				ref_find_flag = true;
+			}
+			last_ref = last_ref->next;
+			goto read_redirect;
+		}
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
 		// printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
@@ -451,6 +451,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
 			if(hash_map_addr_entry->hashing_md5 == buf){
 				printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
+				kfree(hash_map_addr_entry->addr);
 				hash_map_addr_entry->addr = (void*)xmem;
 				// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
 				// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
@@ -607,7 +608,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,hashing;	
 	struct hash_map_addr *hash_map_addr_entry;
-	void *xmem;
 	size_t* temp;
 	//end
 
@@ -641,8 +641,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup insert start
 	// printk("num_blocks:%lu\n",num_blocks);
 	// printk("ino:%lu\n",inode->i_ino);
-	printk("offset:%lu\n",offset);
-	printk("pos:%llu\n",pos);
+	// printk("offset:%lu\n",offset);
+	// printk("pos:%llu\n",pos);
 	// printk("s_blocksize_bits:%u",sb->s_blocksize_bits);
 	// printk("start_blk:%lu\n",start_blk);
 	// printk("end_blk:%lu\n",end_blk);
@@ -683,13 +683,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	/* insert dedup code start*/
 	i = count;
-	xmem = kmalloc(count, GFP_KERNEL);
-	copy_from_user(xmem, buf, count);
-	
+	// xmem = kmalloc(count, GFP_KERNEL);
+	// copy_from_user(xmem, buf, count);
 	for(j = 0; j < 32; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp;
 		unsigned k, dedup_ret = 1, data_remainder;
+		void *xmem;
 		size_t trace = 128; /* 1/4 of pmfs_inode_blk_size(pi) */
 		hashing = 0;
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -699,12 +699,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		if(i <= pmfs_inode_blk_size(pi)){
 			if(i<1024){
+				xmem = kmalloc(i, GFP_KERNEL);
+				copy_from_user(xmem, buf+count-i, i);
 				trace = i/sizeof(size_t);
 				data_remainder = i%sizeof(size_t); 
 				if(data_remainder!=0){
 					temp = kmalloc(sizeof(size_t), GFP_KERNEL);
 					*temp = 0;
-					memcpy(temp, xmem+count-data_remainder, data_remainder);
+					memcpy(temp, xmem, data_remainder);
 					hashing += *temp;
 					kfree(temp);
 				}
@@ -713,14 +715,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dedup_ret = 0;
 		}
 		for(k=0;k<trace;k++){
-			hashing += *(size_t*)(xmem+count-i+k*sizeof(size_t));
+			hashing += *(size_t*)(xmem+k*sizeof(size_t));
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
 
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->addr = (void*)(xmem+count-i);
+		hash_map_addr_temp->addr = xmem;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
 		if(find_flag == true && last_hit != NULL )
@@ -741,7 +743,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				find_flag = false;
 		}
 
-		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem+count-i);
+		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp, xmem);
 		if(hash_map_addr_entry){
 			/* hashing conflict decision */
 			hash_map_addr_entry->count++;
@@ -780,7 +782,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			i -= pmfs_inode_blk_size(pi);
 		// printk("\n");	
 	}
-	kfree(xmem);
+	
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
