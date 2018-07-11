@@ -236,7 +236,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		if( ref_find_flag && last_ref!=&dedup_ref_list && index>0){
+		if( ref_find_flag && index>0){
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
 			{
