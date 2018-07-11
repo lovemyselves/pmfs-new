@@ -308,7 +308,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		 * virtual addresses, take care about potential aliasing
 		 * before reading the page on the kernel side.
 		 */
-		// if (mapping_writably_mapped(mapping))
+		if (mapping_writably_mapped(mapping))
 			/* address based flush */ ;
 
 		/*
@@ -323,9 +323,10 @@ do_xip_mapping_read(struct address_space *mapping,
 		PMFS_START_TIMING(memcpy_r_t, memcpy_time);
 		if (!zero)
 			left = __copy_to_user(buf+copied, xip_mem+offset, nr);
-		else
+		else{
+			printk("go here");
 			left = __clear_user(buf + copied, nr);
-		
+		}
 		// printk("left:%lu", left);
 		// printk("offset:%lu", offset); 
 		// printk("nr:%lu",nr); 
@@ -982,6 +983,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
 	if (rc) {
+		printk("pmfs_get_xip_mem(), rc!=0");
 		pmfs_dbg1("[%s:%d] rc(%d), sb->physaddr(0x%llx), block(0x%llx),"
 			" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__,
 			__LINE__, rc, PMFS_SB(inode->i_sb)->phys_addr,
