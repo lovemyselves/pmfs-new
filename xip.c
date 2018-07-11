@@ -89,7 +89,7 @@ struct hash_map_addr *rb_search_insert_node(
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_entry;
 	struct list_head *hashing_list_temp;
-	// bool test_printk_flag = true;
+	bool test_printk_flag = true;
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -104,20 +104,20 @@ struct hash_map_addr *rb_search_insert_node(
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp 
 				/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
 					// not find duplication, return NULL
-					// printk("hash collision and not find duplication, add new node");
+					printk("hash collision and not find duplication, add new node");
 					list_add_tail(&hash_map_addr_new->hashing_list, hashing_list_temp);
 					return NULL; 
 				}
 				else{
 					hash_map_addr_entry = list_entry(
 						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
-					// if(test_printk_flag){
-					// 	printk("This hash value has multiple nodes!");
-					// 	test_printk_flag = false;
-					// }
+					if(test_printk_flag){
+						printk("This hash value has multiple nodes!");
+						test_printk_flag = false;
+					}
 				}	
 			}
-			// printk("same data block, dedup");
+			printk("same data block, dedup");
 			return hash_map_addr_entry;
 		}	
 	}
