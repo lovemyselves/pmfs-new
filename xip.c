@@ -271,7 +271,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		printk("original xip_pfn:%lu", (size_t)xip_pfn);
 		
 		read_redirect:
-		if(ref_map_temp->hma->addr == xip_mem){
+		if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
 			printk("read the same xip_mem!");
 		}
 		else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
