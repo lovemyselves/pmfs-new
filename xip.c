@@ -276,13 +276,13 @@ do_xip_mapping_read(struct address_space *mapping,
 		}
 		else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
 			printk("success redirect!");
-			printk("xip_mem:%s",(char*)xip_mem);
+			// printk("xip_mem:%s",(char*)xip_mem);
 			xip_mem = ref_map_temp->hma->addr;
 		}
 		else{
 			printk("fault!");
 			printk("strncmp:%d",strncmp(ref_map_temp->hma->addr, xip_mem, nr));
-			printk("xip_mem:%s",(char*)xip_mem);
+			// printk("xip_mem:%s",(char*)xip_mem);
 			printk("data:%s",(char*)ref_map_temp->hma->addr);
 		}
 		
