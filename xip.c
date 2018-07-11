@@ -236,7 +236,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		if( ref_find_flag && index>0 && &dedup_ref_list!=last_ref->next){
+		if( (ref_find_flag==true && index>0) && (&dedup_ref_list!=last_ref->next)){
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
 			{
@@ -245,8 +245,8 @@ do_xip_mapping_read(struct address_space *mapping,
 				ref_find_flag = true;
 				printk("read datablock from fast link!");
 				last_ref = last_ref->next;
+				goto read_redirect;
 			}
-			goto read_redirect;
 		}
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
