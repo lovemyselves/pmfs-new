@@ -245,7 +245,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				ref_find_flag = true;
 				printk("read datablock from fast link!");
 				last_ref = last_ref->next;
-				nr = ref_map_temp->length;
+				nr = ref_map_temp->hma->length;
 				goto read_redirect;
 			}
 		}
