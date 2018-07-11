@@ -698,9 +698,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
 
 		if(i <= pmfs_inode_blk_size(pi)){
-			if(i<1024){
-				xmem = kmalloc(i, GFP_KERNEL);
-				copy_from_user(xmem, buf+count-i, i);
+			xmem = kmalloc(i, GFP_KERNEL);
+			copy_from_user(xmem, buf+count-i, i);
+			if(i<1024){	
 				trace = i/sizeof(size_t);
 				data_remainder = i%sizeof(size_t); 
 				if(data_remainder!=0){
@@ -713,6 +713,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 			hash_map_addr_temp->length = i;
 			dedup_ret = 0;
+		}else{
+			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
 		}
 		for(k=0;k<trace;k++){
 			hashing += *(size_t*)(xmem+k*sizeof(size_t));
