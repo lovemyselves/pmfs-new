@@ -228,7 +228,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				goto out;
 			nr = ((isize - 1) & ~PAGE_MASK) + 1;
 			printk("nr:%lu", nr);
-			printk("isize:%lu", isize);
+			printk("isize:%llu", isize);
 			printk("~PAGE_MASK:%lu", ~PAGE_MASK);
 			if (nr <= offset) {
 				goto out;
