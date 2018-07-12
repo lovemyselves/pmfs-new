@@ -290,7 +290,8 @@ do_xip_mapping_read(struct address_space *mapping,
 		// 	printk("data:%s",(char*)ref_map_temp->hma->addr);
 		// }
 		// printk("inode:%lu",(size_t)inode);
-		// printk("index:%lu",index);
+		printk("index:%lu",index);
+		printk("end_index:%lu",end_index);
 		// printk("error:%lu", error);
 		// printk("redirect inode:%lu",(size_t)ref_map_temp->virt_addr);
 		// printk("redirect index:%lu",ref_map_temp->index);
