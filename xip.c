@@ -220,6 +220,7 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		/* read dedup data block start */
 		struct ref_map *ref_map_temp;
+		void *xmem;
 		/* end */
 
 		/* nr is the maximum number of bytes to copy from this page */
@@ -290,8 +291,9 @@ do_xip_mapping_read(struct address_space *mapping,
 			if((size_t)strncmp(
 				ref_map_temp->hma->addr,xip_mem,nr
 			)==0){
-				xip_mem = kmalloc(nr, GFP_KERNEL);
-				memcpy(xip_mem, ref_map_temp->hma->addr, nr);
+				xmem = kmalloc(nr, GFP_KERNEL);
+				memcpy(xmem, xip_mem, nr);
+				xip_mem = xmem;
 			}
 		}
 
@@ -374,6 +376,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		printk("len-copied>>12:%ld",(long)(len>>12)-(long)(copied>>12));
 		printk("len>>12:%lu",len>>12);
 		printk("copied>>12:%lu",copied>>12);
+		kfree(xmem);
 		printk("\n");
 	} while (copied < len);
 
