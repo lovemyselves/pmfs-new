@@ -717,12 +717,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
 		hash_map_addr_temp->flag = false;
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
-		printk("sizeof(size_t):%lu",sizeof(size_t));
+		
 		if(i <= pmfs_inode_blk_size(pi)){
 			xmem = kmalloc(i, GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, i);
 			if(i<1024){	
-				trace = i/sizeof(size_t);
+				trace = i<<3;
 				data_remainder = i&(sizeof(size_t)-1); 
 				if(data_remainder!=0){
 					temp = kmalloc(sizeof(size_t), GFP_KERNEL);
