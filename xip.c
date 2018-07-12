@@ -112,7 +112,7 @@ struct hash_map_addr *rb_search_insert_node(
 					hash_map_addr_entry = list_entry(
 						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
 					if(test_printk_flag){
-						// printk("This hash value has multiple nodes!");
+						printk("This hash value has multiple nodes!");
 						test_printk_flag = false;
 					}
 				}	
