@@ -89,7 +89,7 @@ struct hash_map_addr *rb_search_insert_node(
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_entry;
 	struct list_head *hashing_list_temp;
-	bool test_printk_flag = true;
+	// bool test_printk_flag = true;
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -244,7 +244,7 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		/* dedup new code start */
 		if( (index!=end_index && index>0) && 
-		(&dedup_ref_list!=last_ref->next /*&& index%32!=31*/)){
+		(&dedup_ref_list!=last_ref->next)){
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
 			{
