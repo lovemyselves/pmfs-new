@@ -279,6 +279,9 @@ do_xip_mapping_read(struct address_space *mapping,
 		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		ref_find_flag = false;
 		printk("direct read");
+		if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)){
+			printk("same data");
+		}
 
 		read_redirect:
 		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
@@ -302,9 +305,9 @@ do_xip_mapping_read(struct address_space *mapping,
 		// printk("redirect inode:%lu",(size_t)ref_map_temp->virt_addr);
 		// printk("redirect index:%lu",ref_map_temp->index);
 		// printk("original xip_mem:%lu", (size_t)xip_mem);
-		// printk("original xip_pfn:%lu", (size_t)xip_pfn);
+		
 		// printk("nr:%lu",nr);
-		// error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
+	
 
 		if (unlikely(error)) {
 			if (error == -ENODATA) {
