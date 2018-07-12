@@ -284,7 +284,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			printk("diff data");
 			printk("hashing value:%lu",ref_map_temp->hma->hashing);
 			// printk("data:%s",ref_map_temp->hma->addr);
-			printk("length:%s",ref_map_temp->hma->length);
+			printk("length:%lu",ref_map_temp->hma->length);
 		}
 
 		read_redirect:
