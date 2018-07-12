@@ -265,7 +265,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			
 			last_ref = &ref_map_temp->list;
 			ref_find_flag = true;
-			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
+			// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 			goto read_redirect;
 		}
 		
