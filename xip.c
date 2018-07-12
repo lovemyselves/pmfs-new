@@ -355,14 +355,16 @@ do_xip_mapping_read(struct address_space *mapping,
 		offset += (nr - left);
 		index += offset >> PAGE_SHIFT;
 		offset &= ~PAGE_MASK;
+		printk("len-copied:%ld",(long)(len)-(long)(copied));
 	} while (copied < len);
 
 out:
 	// printk("+++++++++++++++++++++++++++++++");
 	*ppos = pos + copied;
-	if (filp)
+	if (filp){
 		file_accessed(filp);
-
+		printk("file_accessed(filp)");
+	}
 	return (copied ? copied : error);
 }
 
