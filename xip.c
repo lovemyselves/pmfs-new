@@ -269,6 +269,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		}
 		
 		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
+		printk("direct read");
 
 		read_redirect:
 		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
