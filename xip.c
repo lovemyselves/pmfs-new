@@ -282,6 +282,8 @@ do_xip_mapping_read(struct address_space *mapping,
 		printk("direct read");
 		if(ref_map_temp->hma->addr != xip_mem){
 			printk("diff data");
+			printk("hashing value:%lu",ref_map_temp->hma->hashing);
+			printk("data:%s",ref_map_temp->hma->addr);
 		}
 
 		read_redirect:
