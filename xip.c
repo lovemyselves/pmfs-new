@@ -237,7 +237,7 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		/* dedup new code start */
 		if( (index!=end_index && index>0) && 
-		(&dedup_ref_list!=last_ref->next && /*index%32!=31*/)){
+		(&dedup_ref_list!=last_ref->next /*&& index%32!=31*/)){
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
 			{
@@ -259,7 +259,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
 		// printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
-		if(ref_map_temp != NULL && (index!=end_index && /*index%32!=31*/))
+		if(ref_map_temp != NULL && (index!=end_index /*&& index%32!=31*/))
 		{
 			// printk("find ref metadata!");
 			xip_mem = ref_map_temp->hma->addr;
