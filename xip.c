@@ -111,10 +111,10 @@ struct hash_map_addr *rb_search_insert_node(
 				else{
 					hash_map_addr_entry = list_entry(
 						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
-					if(test_printk_flag){
-						printk("This hash value has multiple nodes!");
-						test_printk_flag = false;
-					}
+					// if(test_printk_flag){
+					// 	printk("This hash value has multiple nodes!");
+					// 	test_printk_flag = false;
+					// }
 				}	
 			}
 			// printk("same data block, dedup");
@@ -243,7 +243,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		if( (/*index!=end_index &&*/ index>0) && 
+		if( (index!=end_index && index>0) && 
 		(&dedup_ref_list!=last_ref->next /*&& index%32!=31*/)){
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
@@ -280,7 +280,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		ref_find_flag = false;
 		printk("direct read");
-		if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)){
+		if(ref_map_temp->hma->addr != xip_mem){
 			printk("diff data");
 		}
 
