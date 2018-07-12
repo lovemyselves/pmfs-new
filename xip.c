@@ -252,6 +252,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				printk("read datablock from fast link!");
 				last_ref = last_ref->next;
 				nr = ref_map_temp->hma->length;
+				error = 0;
 				goto read_redirect;
 			}
 		}
@@ -270,6 +271,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		}
 		
 		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
+		ref_find_flag = false;
 		printk("direct read");
 
 		read_redirect:
