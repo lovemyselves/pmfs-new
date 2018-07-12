@@ -356,9 +356,9 @@ do_xip_mapping_read(struct address_space *mapping,
 		offset &= ~PAGE_MASK;
 		printk("offset:%lu",offset);
 		printk("left:%lu",left);
-		printk("len-copied:%ld",(long)(len)-(long)(copied));
-		printk("len:%lu",len);
-		printk("copied:%lu",copied);
+		printk("len-copied<<12:%ld",(long)(len<<12)-(long)(copied<<12));
+		printk("len<<12:%lu",len<<12);
+		printk("copied<<12:%lu",copied<<12);
 		printk("\n");
 	} while (copied < len);
 
