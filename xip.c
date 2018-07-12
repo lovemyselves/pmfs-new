@@ -356,9 +356,9 @@ do_xip_mapping_read(struct address_space *mapping,
 		offset &= ~PAGE_MASK;
 		printk("offset:%lu",offset);
 		printk("left:%lu",left);
-		printk("len-copied<<12:%ld",(long)(len<<12)-(long)(copied<<12));
-		printk("len<<12:%lu",len<<12);
-		printk("copied<<12:%lu",copied<<12);
+		printk("len-copied>>12:%ld",(long)(len>>12)-(long)(copied>>12));
+		printk("len>>12:%lu",len>>12);
+		printk("copied>>12:%lu",copied>>12);
 		printk("\n");
 	} while (copied < len);
 
@@ -728,7 +728,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			xmem = kmalloc(i, GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, i);
 			if(i<1024){	
-				trace = i<<3;
+				trace = i>>3;
 				data_remainder = i&(sizeof(size_t)-1); 
 				if(data_remainder!=0){
 					temp = kmalloc(sizeof(size_t), GFP_KERNEL);
