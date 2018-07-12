@@ -236,7 +236,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		if( (index!=end_index && index>0) && (&dedup_ref_list!=last_ref->next)){
+		if( (index!=end_index && index>0 && index%32!=0) && (&dedup_ref_list!=last_ref->next)){
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
 			{
@@ -257,7 +257,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
 		// printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
-		if(ref_map_temp != NULL && index!=end_index)
+		if(ref_map_temp != NULL && index!=end_index && index%32!=0)
 		{
 			// printk("find ref metadata!");
 			xip_mem = ref_map_temp->hma->addr;
@@ -269,12 +269,6 @@ do_xip_mapping_read(struct address_space *mapping,
 		}
 		
 		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
-		if(strncmp((char*)xip_mem, (char*)ref_map_temp->hma->addr, nr)==0){
-			printk("ayakashi");
-			printk("xmem:%s", (char*)xip_mem);
-			printk("ref_map_temp->hma->addr:%s", (char*)ref_map_temp->hma->addr);
-		}else
-			printk("diff in end_index");
 
 		read_redirect:
 		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
