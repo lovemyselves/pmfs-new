@@ -235,7 +235,6 @@ do_xip_mapping_read(struct address_space *mapping,
 		if (nr > len - copied)
 			nr = len - copied;
 
-		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		/* dedup new code start */
 		// if( (ref_find_flag==true && index>0) && (&dedup_ref_list!=last_ref->next)){
 		// 	ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
@@ -276,7 +275,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			goto read_redirect;
 		}
 		
-		
+		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 
 		read_redirect:
 		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
@@ -300,6 +299,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		// printk("redirect index:%lu",ref_map_temp->index);
 		// printk("original xip_mem:%lu", (size_t)xip_mem);
 		// printk("original xip_pfn:%lu", (size_t)xip_pfn);
+		printk("nr:%lu",nr);
 		printk("\n");
 		// error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 
