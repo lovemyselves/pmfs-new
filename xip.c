@@ -100,7 +100,8 @@ struct hash_map_addr *rb_search_insert_node(
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
-			while(strncmp(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
+			while(hash_map_addr_new->length != hash_map_addr_entry->length ||
+				strncmp(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp 
 				/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
 					// not find duplication, return NULL
@@ -754,6 +755,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		for(k=0;k<trace;k++){
 			hashing += *(size_t*)(xmem+k*sizeof(size_t));
+			hashing += k;
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
