@@ -232,7 +232,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			printk("isize:%llu", isize);
 			printk("~PAGE_MASK:%lu", ~PAGE_MASK);
 			printk("offset:%lu",offset);
-			printk("==============================================");
+			// printk("==============================================");
 			if (nr <= offset) {
 				goto out;
 			}
@@ -304,7 +304,6 @@ do_xip_mapping_read(struct address_space *mapping,
 		// printk("original xip_mem:%lu", (size_t)xip_mem);
 		// printk("original xip_pfn:%lu", (size_t)xip_pfn);
 		// printk("nr:%lu",nr);
-		printk("\n");
 		// error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 
 		if (unlikely(error)) {
@@ -360,6 +359,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		printk("len-copied:%ld",(long)(len)-(long)(copied));
 		printk("len:%lu",len);
 		printk("copied:%lu",copied);
+		printk("\n");
 	} while (copied < len);
 
 out:
@@ -367,6 +367,7 @@ out:
 	if (filp){
 		file_accessed(filp);
 		printk("file_accessed(filp)");
+		printk("\n");
 	}
 	return (copied ? copied : error);
 }
