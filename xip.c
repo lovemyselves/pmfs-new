@@ -232,7 +232,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			printk("isize:%llu", isize);
 			printk("~PAGE_MASK:%lu", ~PAGE_MASK);
 			printk("offset:%lu",offset);
-			pirntk("==============================================");
+			printk("==============================================");
 			if (nr <= offset) {
 				goto out;
 			}
