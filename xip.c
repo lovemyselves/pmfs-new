@@ -259,7 +259,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
 		// printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
-		if(ref_map_temp != NULL && nr==4096)
+		if(ref_map_temp != NULL && index<12)
 		{
 			// printk("find ref metadata!");
 			if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)!=0){
