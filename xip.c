@@ -259,7 +259,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
 		// printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
-		if(ref_map_temp != NULL && index==0)
+		if(ref_map_temp != NULL && nr==4096)
 		{
 			// printk("find ref metadata!");
 			if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)!=0){
@@ -298,7 +298,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		// printk("error:%lu", error);
 		// printk("redirect inode:%lu",(size_t)ref_map_temp->virt_addr);
 		// printk("redirect index:%lu",ref_map_temp->index);
-		printk("original xip_mem:%lu", (size_t)xip_mem);
+		// printk("original xip_mem:%lu", (size_t)xip_mem);
 		// printk("original xip_pfn:%lu", (size_t)xip_pfn);
 		printk("\n");
 		// error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
