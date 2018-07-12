@@ -232,7 +232,8 @@ do_xip_mapping_read(struct address_space *mapping,
 			printk("isize:%llu", isize);
 			printk("~PAGE_MASK:%lu", ~PAGE_MASK);
 			printk("offset:%lu",offset);
-			// printk("==============================================");
+			printk("len:%lu",len);
+			printk("+");
 			if (nr <= offset) {
 				goto out;
 			}
@@ -280,7 +281,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		ref_find_flag = false;
 		printk("direct read");
 		if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)){
-			printk("same data");
+			printk("diff data");
 		}
 
 		read_redirect:
