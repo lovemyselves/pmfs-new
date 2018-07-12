@@ -261,9 +261,6 @@ do_xip_mapping_read(struct address_space *mapping,
 		if(ref_map_temp != NULL && index<12)
 		{
 			// printk("find ref metadata!");
-			if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)!=0){
-					printk("read fault, diff data!");
-			}
 			if(nr != ref_map_temp->hma->length){
 				printk("read fault, diff length!");
 			}
