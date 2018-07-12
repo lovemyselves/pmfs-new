@@ -224,6 +224,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		/* nr is the maximum number of bytes to copy from this page */
 		nr = PAGE_SIZE;
 		printk("index:%lu",index);
+		printk("len>>12:%lu",len>>12);
 		if (index >= end_index) {
 			if (index > end_index)
 				goto out;
@@ -232,7 +233,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			printk("isize:%llu", isize);
 			printk("~PAGE_MASK:%lu", ~PAGE_MASK);
 			printk("offset:%lu",offset);
-			printk("len:%lu",len);
+			
 			printk("+");
 			if (nr <= offset) {
 				goto out;
