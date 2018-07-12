@@ -255,7 +255,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				// 	printk("read fault, diff length!");
 				// }
 				xip_mem = ref_map_temp->hma->addr;
-				ref_find_flag = true;
+				// ref_find_flag = true;
 				printk("read datablock from fast link!");
 				last_ref = last_ref->next;
 				nr = ref_map_temp->hma->length;
@@ -272,19 +272,22 @@ do_xip_mapping_read(struct address_space *mapping,
 			xip_mem = ref_map_temp->hma->addr;
 			error = 0;
 			last_ref = &ref_map_temp->list;
-			ref_find_flag = true;
+			// ref_find_flag = true;
 			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 			goto read_redirect;
 		}
 		
 		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		ref_find_flag = false;
-		printk("direct read");
-		if(ref_map_temp->hma->addr == xip_mem){
+		
+		if(ref_map_temp->hma->addr != xip_mem){
 			printk("diff data");
 			printk("hashing value:%lu",ref_map_temp->hma->hashing);
 			printk("data:%s",ref_map_temp->hma->addr);
 			printk("length:%s",ref_map_temp->hma->length);
+		}
+		else{
+			printk("direct read");
 		}
 
 		read_redirect:
