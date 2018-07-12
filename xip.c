@@ -236,25 +236,25 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		if( (index!=end_index && index>0) && (&dedup_ref_list!=last_ref->next)){
-			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
-			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
-			{
-				// if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)!=0){
-				// 	printk("read fault, diff data!");
-				// }
-				// if(nr != ref_map_temp->hma->length){
-				// 	printk("read fault, diff length!");
-				// }
-				xip_mem = ref_map_temp->hma->addr;
-				
-				ref_find_flag = true;
-				// printk("read datablock from fast link!");
-				last_ref = last_ref->next;
-				nr = ref_map_temp->hma->length;
-				goto read_redirect;
-			}
-		}
+		// if( (index!=end_index && index>0) && (&dedup_ref_list!=last_ref->next)){
+		// 	ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
+		// 	if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
+		// 	{
+		// 		// if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)!=0){
+		// 		// 	printk("read fault, diff data!");
+		// 		// }
+		// 		// if(nr != ref_map_temp->hma->length){
+		// 		// 	printk("read fault, diff length!");
+		// 		// }
+		// 		xip_mem = ref_map_temp->hma->addr;
+		// 		error = 0;
+		// 		ref_find_flag = true;
+		// 		// printk("read datablock from fast link!");
+		// 		last_ref = last_ref->next;
+		// 		nr = ref_map_temp->hma->length;
+		// 		goto read_redirect;
+		// 	}
+		// }
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
 		// printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
@@ -262,7 +262,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		{
 			// printk("find ref metadata!");
 			xip_mem = ref_map_temp->hma->addr;
-			
+			error = 0;
 			last_ref = &ref_map_temp->list;
 			ref_find_flag = true;
 			// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
