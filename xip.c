@@ -280,10 +280,11 @@ do_xip_mapping_read(struct address_space *mapping,
 		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		ref_find_flag = false;
 		printk("direct read");
-		if(ref_map_temp->hma->addr != xip_mem){
+		if(ref_map_temp->hma->addr == xip_mem){
 			printk("diff data");
 			printk("hashing value:%lu",ref_map_temp->hma->hashing);
 			printk("data:%s",ref_map_temp->hma->addr);
+			printk("length:%s",ref_map_temp->hma->length);
 		}
 
 		read_redirect:
