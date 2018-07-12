@@ -367,6 +367,7 @@ out:
 	if (filp){
 		file_accessed(filp);
 		printk("file_accessed(filp)");
+		printk("*ppos:%llu",(long long)*ppos);
 		printk("\n");
 	}
 	return (copied ? copied : error);
@@ -728,7 +729,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			xmem = kmalloc(i, GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, i);
 			if(i<1024){	
-				trace = i>>3;
+				trace = i<<3;
 				data_remainder = i&(sizeof(size_t)-1); 
 				if(data_remainder!=0){
 					temp = kmalloc(sizeof(size_t), GFP_KERNEL);
