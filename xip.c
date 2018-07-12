@@ -225,6 +225,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		nr = PAGE_SIZE;
 		printk("index:%lu",index);
 		printk("len>>12:%lu",len>>12);
+		printk("+");
 		if (index >= end_index) {
 			if (index > end_index)
 				goto out;
@@ -233,8 +234,6 @@ do_xip_mapping_read(struct address_space *mapping,
 			printk("isize:%llu", isize);
 			printk("~PAGE_MASK:%lu", ~PAGE_MASK);
 			printk("offset:%lu",offset);
-			
-			printk("+");
 			if (nr <= offset) {
 				goto out;
 			}
@@ -244,7 +243,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		if( (index!=end_index && index>0) && 
+		if( (/*index!=end_index &&*/ index>0) && 
 		(&dedup_ref_list!=last_ref->next /*&& index%32!=31*/)){
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
