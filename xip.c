@@ -260,7 +260,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				last_ref = last_ref->next;
 				nr = ref_map_temp->hma->length;
 				error = 0;
-				goto read_redirect;
+				// goto read_redirect;
 			}
 		}
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
@@ -274,7 +274,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			last_ref = &ref_map_temp->list;
 			// ref_find_flag = true;
 			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
-			goto read_redirect;
+			// goto read_redirect;
 		}
 		
 		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
