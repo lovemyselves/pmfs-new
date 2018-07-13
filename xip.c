@@ -227,7 +227,6 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		/* read dedup data block start */
 		struct ref_map *ref_map_temp;
-		void *xmem;
 		/* end */
 
 		/* nr is the maximum number of bytes to copy from this page */
