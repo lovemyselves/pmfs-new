@@ -213,7 +213,7 @@ do_xip_mapping_read(struct address_space *mapping,
 	end_index = (isize - 1) >> PAGE_SHIFT;
 	// printk("-------------------------------");
 	printk("mapping:%lu",(size_t)mapping);
-	printk("ra:%lu",(size_t)ra);
+	printk("ra:%lu",(size_t)_ra);
 	printk("filp:%lu",(size_t)filp);
 	printk("buf:%lu",(size_t)buf);
 	printk("len:%lu",len);
