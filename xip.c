@@ -212,10 +212,10 @@ do_xip_mapping_read(struct address_space *mapping,
 
 	end_index = (isize - 1) >> PAGE_SHIFT;
 	// printk("-------------------------------");
-	printk("mapping:%lu",(size_t)*mapping);
-	printk("ra:%lu",(size_t)*ra);
-	printk("filp:%lu",(size_t)*filp);
-	printk("buf:%lu",(size_t)*buf);
+	printk("mapping:%lu",(size_t)mapping);
+	printk("ra:%lu",(size_t)ra);
+	printk("filp:%lu",(size_t)filp);
+	printk("buf:%lu",(size_t)buf);
 	printk("len:%lu",len);
 	printk("ppos:%llu",*ppos);
 	printk("\n");
@@ -227,6 +227,7 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		/* read dedup data block start */
 		struct ref_map *ref_map_temp;
+		void *xmem;
 		/* end */
 
 		/* nr is the maximum number of bytes to copy from this page */
@@ -286,6 +287,10 @@ do_xip_mapping_read(struct address_space *mapping,
 		ref_find_flag = false;
 
 		read_redirect:
+		pmfs_get_xip_mem(mapping, index, 0, &xmem, &xip_pfn);
+		if(memcmp(xmem, xip_mem, nr)!=0){
+			printk("fault read from fault search");
+		}
 		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
 		// 	printk("read the same xip_mem!");
 		// }
