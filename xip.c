@@ -343,10 +343,8 @@ do_xip_mapping_read(struct address_space *mapping,
 		PMFS_START_TIMING(memcpy_r_t, memcpy_time);
 		if (!zero)
 			left = __copy_to_user(buf+copied, xip_mem+offset, nr);
-		else{
-			printk("go here");
+		else
 			left = __clear_user(buf + copied, nr);
-		}
 		// printk("left:%lu", left);
 		// printk("offset:%lu", offset); 
 		// printk("nr:%lu",nr); 
