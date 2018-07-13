@@ -278,7 +278,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			xip_mem = ref_map_temp->hma->addr;
 			error = 0;
 			last_ref = &ref_map_temp->list;
-			ref_find_flag = true;
+			// ref_find_flag = true;
 			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 			goto read_redirect;
 		}
@@ -287,7 +287,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		ref_find_flag = false;
 
 		read_redirect:
-		pmfs_get_xip_mem(mapping, index, 0, &xmem, &xip_pfn);
+		error = pmfs_get_xip_mem(mapping, index, 0, &xmem, &xip_pfn);
 		if(memcmp(xmem, xip_mem, nr)!=0){
 			printk("fault read from fault search");
 			xip_mem = xmem;
