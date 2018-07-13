@@ -212,13 +212,13 @@ do_xip_mapping_read(struct address_space *mapping,
 
 	end_index = (isize - 1) >> PAGE_SHIFT;
 	// printk("-------------------------------");
-	printk("mapping:%lu",(size_t)mapping);
-	printk("ra:%lu",(size_t)_ra);
-	printk("filp:%lu",(size_t)filp);
-	printk("buf:%lu",(size_t)buf);
-	printk("len:%lu",len);
-	printk("ppos:%llu",*ppos);
-	printk("\n");
+	// printk("mapping:%lu",(size_t)mapping);
+	// printk("ra:%lu",(size_t)_ra);
+	// printk("filp:%lu",(size_t)filp);
+	// printk("buf:%lu",(size_t)buf);
+	// printk("len:%lu",len);
+	// printk("ppos:%llu",*ppos);
+	// printk("\n");
 	do {
 		unsigned long nr, left;
 		void *xip_mem;
@@ -231,17 +231,17 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		/* nr is the maximum number of bytes to copy from this page */
 		nr = PAGE_SIZE;
-		printk("index:%lu",index);
-		printk("len>>12:%lu",len>>12);
-		printk("+");
+		// printk("index:%lu",index);
+		// printk("len>>12:%lu",len>>12);
+		// printk("+");
 		if (index >= end_index) {
 			if (index > end_index)
 				goto out;
 			nr = ((isize - 1) & ~PAGE_MASK) + 1;
-			printk("nr:%lu", nr);
-			printk("isize:%llu", isize);
-			printk("~PAGE_MASK:%lu", ~PAGE_MASK);
-			printk("offset:%lu",offset);
+			// printk("nr:%lu", nr);
+			// printk("isize:%llu", isize);
+			// printk("~PAGE_MASK:%lu", ~PAGE_MASK);
+			// printk("offset:%lu",offset);
 			if (nr <= offset) {
 				goto out;
 			}
@@ -264,7 +264,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				// }
 				xip_mem = ref_map_temp->hma->addr;
 				ref_find_flag = true;
-				printk("read datablock from fast link!");
+				// printk("read datablock from fast link!");
 				last_ref = last_ref->next;
 				error = 0;
 				goto read_redirect;
@@ -278,7 +278,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			error = 0;
 			last_ref = &ref_map_temp->list;
 			ref_find_flag = true;
-			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
+			// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 			goto read_redirect;
 		}
 		
@@ -364,21 +364,21 @@ do_xip_mapping_read(struct address_space *mapping,
 		offset += (nr - left);
 		index += offset >> PAGE_SHIFT;
 		offset &= ~PAGE_MASK;
-		printk("offset:%lu",offset);
-		printk("left:%lu",left);
-		printk("len-copied>>12:%ld",(long)(len>>12)-(long)(copied>>12));
-		printk("len>>12:%lu",len>>12);
-		printk("copied>>12:%lu",copied>>12);
-		printk("\n");
+		// printk("offset:%lu",offset);
+		// printk("left:%lu",left);
+		// printk("len-copied>>12:%ld",(long)(len>>12)-(long)(copied>>12));
+		// printk("len>>12:%lu",len>>12);
+		// printk("copied>>12:%lu",copied>>12);
+		// printk("\n");
 	} while (copied < len);
 
 out:
 	*ppos = pos + copied;
 	if (filp){
 		file_accessed(filp);
-		printk("file_accessed(filp)");
-		printk("*ppos:%llu",(long long)*ppos);
-		printk("\n");
+		// printk("file_accessed(filp)");
+		// printk("*ppos:%llu",(long long)*ppos);
+		// printk("\n");
 	}
 	return (copied ? copied : error);
 }
