@@ -287,11 +287,11 @@ do_xip_mapping_read(struct address_space *mapping,
 		ref_find_flag = false;
 
 		read_redirect:
-		error = pmfs_get_xip_mem(mapping, index, 0, &xmem, &xip_pfn);
-		if(memcmp(xmem, xip_mem, nr)!=0){
-			printk("fault read from fault search");
-			xip_mem = xmem;
-		}
+		// error = pmfs_get_xip_mem(mapping, index, 0, &xmem, &xip_pfn);
+		// if(memcmp(xmem, xip_mem, nr)!=0){
+		// 	printk("fault read from fault search");
+		// 	xip_mem = xmem;
+		// }
 		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
 		// 	printk("read the same xip_mem!");
 		// }
