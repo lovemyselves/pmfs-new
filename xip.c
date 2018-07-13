@@ -101,7 +101,7 @@ struct hash_map_addr *rb_search_insert_node(
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
 			while(hash_map_addr_new->length != hash_map_addr_entry->length ||
-				strncmp(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
+				memcmp(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0){
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp 
 				/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
 					// not find duplication, return NULL
@@ -249,7 +249,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
 			{
-				// if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)!=0){
+				// if(memcmp(ref_map_temp->hma->addr, xip_mem, nr)!=0){
 				// 	printk("read fault, diff data!");
 				// }
 				// if(nr != ref_map_temp->hma->length){
@@ -299,14 +299,14 @@ do_xip_mapping_read(struct address_space *mapping,
 		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
 		// 	printk("read the same xip_mem!");
 		// }
-		// else if(strncmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
+		// else if(memcmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
 		// 	printk("success redirect!");
 		// 	// printk("xip_mem:%s",(char*)xip_mem);
 		// 	xip_mem = ref_map_temp->hma->addr;
 		// }
 		// else{
 		// 	printk("fault!");
-		// 	printk("strncmp:%d",strncmp(ref_map_temp->hma->addr, xip_mem, nr));
+		
 		// 	// printk("xip_mem:%s",(char*)xip_mem);
 		// 	printk("data:%s",(char*)ref_map_temp->hma->addr);
 		// }
@@ -778,7 +778,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		{	
 			hash_map_addr_entry = list_entry(last_hit->next, struct hash_map_addr, list);
 			if(hashing == hash_map_addr_entry->hashing && 
-			strncmp(hash_map_addr_temp->addr,hash_map_addr_entry->addr,hash_map_addr_temp->length) == 0
+			memcmp(hash_map_addr_temp->addr,hash_map_addr_entry->addr,hash_map_addr_temp->length) == 0
 			){
 				hash_map_addr_entry->count++;
 				last_hit = &hash_map_addr_entry->list;
