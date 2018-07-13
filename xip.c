@@ -267,7 +267,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				printk("read datablock from fast link!");
 				last_ref = last_ref->next;
 				error = 0;
-				// goto read_redirect;
+				goto read_redirect;
 			}
 		}
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
