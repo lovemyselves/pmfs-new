@@ -220,7 +220,6 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		/* read dedup data block start */
 		struct ref_map *ref_map_temp;
-		void *xmem;
 		/* end */
 
 		/* nr is the maximum number of bytes to copy from this page */
@@ -291,9 +290,8 @@ do_xip_mapping_read(struct address_space *mapping,
 			if((size_t)strncmp(
 				ref_map_temp->hma->addr,xip_mem,nr
 			)==0){
-				xmem = kmalloc(nr, GFP_KERNEL);
-				memcpy(xmem, xip_mem, nr);
-				xip_mem = xmem;
+				if(memcmp(ref_map_temp->hma->addr, xip_mem, nr)!=0)
+					printk("fault from strncmp");
 			}
 		}
 
