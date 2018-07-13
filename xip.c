@@ -212,6 +212,13 @@ do_xip_mapping_read(struct address_space *mapping,
 
 	end_index = (isize - 1) >> PAGE_SHIFT;
 	// printk("-------------------------------");
+	printk("mapping:%lu",(size_t)*mapping);
+	printk("ra:%lu",(size_t)*ra);
+	printk("filp:%lu",(size_t)*filp);
+	printk("buf:%lu",(size_t)*buf);
+	printk("len:%lu",len);
+	printk("ppos:%llu",*ppos);
+	printk("\n");
 	do {
 		unsigned long nr, left;
 		void *xip_mem;
@@ -244,7 +251,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		if( index>0 && &dedup_ref_list!=last_ref->next){
+		if( index>0 && ref_find_flag && &dedup_ref_list!=last_ref->next){
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
 			{
@@ -255,7 +262,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				// 	printk("read fault, diff length!");
 				// }
 				xip_mem = ref_map_temp->hma->addr;
-				// ref_find_flag = true;
+				ref_find_flag = true;
 				printk("read datablock from fast link!");
 				last_ref = last_ref->next;
 				nr = ref_map_temp->hma->length;
@@ -264,35 +271,19 @@ do_xip_mapping_read(struct address_space *mapping,
 			}
 		}
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
-		// printk("untapped xip_mem:%lu", (size_t)xip_mem);
-		// printk("untapped xip_pfn:%lu", (size_t)xip_pfn);
+		
 		if(ref_map_temp != NULL)
 		{
-			// printk("find ref metadata!");
 			xip_mem = ref_map_temp->hma->addr;
 			error = 0;
 			last_ref = &ref_map_temp->list;
-			// ref_find_flag = true;
+			ref_find_flag = true;
 			printk("xip_mem after redirect:%lu", (size_t)xip_mem);
 			goto read_redirect;
 		}
 		
 		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		ref_find_flag = false;
-		printk("direct read");
-		printk("addr:%lu",(size_t)ref_map_temp->hma->addr);
-		if(ref_map_temp->hma->addr != xip_mem){
-			printk("diff data");
-			printk("hashing value:%lu",ref_map_temp->hma->hashing);
-			// printk("data:%s",ref_map_temp->hma->addr);
-			printk("length:%lu",ref_map_temp->hma->length);
-			if((size_t)strncmp(
-				ref_map_temp->hma->addr,xip_mem,nr
-			)==0){
-				if(memcmp(ref_map_temp->hma->addr, xip_mem, nr)!=0)
-					printk("fault from strncmp");
-			}
-		}
 
 		read_redirect:
 		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
