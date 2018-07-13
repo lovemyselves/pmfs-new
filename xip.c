@@ -762,8 +762,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing ^= (hashing >> 2);
 		}
 
-		printk("hashing:%lu",hashing);
-		printk("\n");
+		// printk("hashing:%lu",hashing);
+		// printk("\n");
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = xmem;
