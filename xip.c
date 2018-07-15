@@ -729,7 +729,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
 		}
 		for(k=0;k<trace;k++){
-			hashing += *(size_t*)(xmem+k<<3);
+			hashing += *(size_t*)(xmem+(k<<3));
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
