@@ -447,6 +447,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status)
 			break;
 		
+		copied = bytes;
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
@@ -466,6 +467,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				hash_map_addr_entry->hashing_md5 = NULL;
 			}
 		}
+		
 
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
