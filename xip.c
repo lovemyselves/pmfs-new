@@ -728,8 +728,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
 		}
-		for(k=0;k<trace;k+=8){
-			hashing += *(size_t*)(xmem+k);
+		for(k=0;k<trace<<3;k++){
+			hashing += *(size_t*)(xmem+(k>>3));
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
