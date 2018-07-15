@@ -446,17 +446,16 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		
 		if (status)
 			break;
-
-		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
 			if(hash_map_addr_entry->hashing_md5 == buf){
+				PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+				copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+				PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 				// printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
 				kfree(hash_map_addr_entry->addr);
 				hash_map_addr_entry->addr = (void*)xmem;
@@ -983,7 +982,6 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
 	if (rc) {
-		printk("pmfs_get_xip_mem(), rc!=0");
 		pmfs_dbg1("[%s:%d] rc(%d), sb->physaddr(0x%llx), block(0x%llx),"
 			" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__,
 			__LINE__, rc, PMFS_SB(inode->i_sb)->phys_addr,
