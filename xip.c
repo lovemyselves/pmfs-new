@@ -262,7 +262,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				// if(nr != ref_map_temp->hma->length){
 				// 	printk("read fault, diff length!");
 				// }
-				xip_mem = ref_map_temp->hma->addr;
+				xip_mem = *ref_map_temp->phys_addr;
 				ref_find_flag = true;
 				// printk("read datablock from fast link!");
 				last_ref = last_ref->next;
@@ -274,7 +274,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		
 		if(ref_map_temp != NULL)
 		{
-			xip_mem = ref_map_temp->hma->addr;
+			xip_mem = *ref_map_temp->phys_addr;
 			error = 0;
 			last_ref = &ref_map_temp->list;
 			ref_find_flag = true;
@@ -286,35 +286,6 @@ do_xip_mapping_read(struct address_space *mapping,
 		ref_find_flag = false;
 
 		read_redirect:
-		// error = pmfs_get_xip_mem(mapping, index, 0, &xmem, &xip_pfn);
-		// if(memcmp(xmem, xip_mem, nr)!=0){
-		// 	printk("fault read from fault search");
-		// 	xip_mem = xmem;
-		// }
-		// if(!ref_map_temp->hma&&ref_map_temp->hma->addr == xip_mem){
-		// 	printk("read the same xip_mem!");
-		// }
-		// else if(memcmp(ref_map_temp->hma->addr, xip_mem, nr)==0){
-		// 	printk("success redirect!");
-		// 	// printk("xip_mem:%s",(char*)xip_mem);
-		// 	xip_mem = ref_map_temp->hma->addr;
-		// }
-		// else{
-		// 	printk("fault!");
-		
-		// 	// printk("xip_mem:%s",(char*)xip_mem);
-		// 	printk("data:%s",(char*)ref_map_temp->hma->addr);
-		// }
-		// printk("inode:%lu",(size_t)inode);
-		// printk("index:%lu",index);
-		// printk("end_index:%lu",end_index);
-		// printk("error:%lu", error);
-		// printk("redirect inode:%lu",(size_t)ref_map_temp->virt_addr);
-		// printk("redirect index:%lu",ref_map_temp->index);
-		// printk("original xip_mem:%lu", (size_t)xip_mem);
-		
-		// printk("nr:%lu",nr);
-	
 
 		if (unlikely(error)) {
 			if (error == -ENODATA) {
