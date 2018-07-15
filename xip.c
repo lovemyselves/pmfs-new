@@ -751,7 +751,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				last_hit = &hash_map_addr_entry->list;
 				kfree(hash_map_addr_temp);
 				hash_map_addr_temp = hash_map_addr_entry;
-				printk("fast hit!");
+				// printk("fast hit!");
 				/* add reference content */
 				goto find;
 			}
@@ -767,13 +767,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			find_flag = true;
 			kfree(hash_map_addr_temp);
 			hash_map_addr_temp = hash_map_addr_entry;
-			printk("fit!");
+			// printk("fit!");
 			goto find;
 			/*add reference content */
 		}
 
 		// printk("hashing:%lu",hashing);
-	
 		// rb_insert_node(&root, hash_map_addr_temp);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
