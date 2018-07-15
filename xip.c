@@ -465,8 +465,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				new_list = new_list->next;
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
+				printk("write a new data block.");
 			}
 		}
+		else
+			printk("No write operation.");
 		
 
 		/* if start or end dest address is not 8 byte aligned, 
