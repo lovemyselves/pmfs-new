@@ -822,10 +822,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* now zero out the edge blocks which will be partially written */
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
-	if(dedup_count!=0)
+	// if(dedup_count!=0)
 		written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
-	else
-		written = count;
+	// else
+	// 	written = count;
 	// printk("written:%ld",written);
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
