@@ -766,7 +766,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			/* hashing conflict decision */
 			hash_map_addr_entry->count++;
 			last_hit = &hash_map_addr_entry->list;
-			find_flag = true;
+			// find_flag = true;
 			kfree(hash_map_addr_temp);
 			hash_map_addr_temp = hash_map_addr_entry;
 			// printk("fit!");
