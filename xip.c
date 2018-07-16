@@ -465,7 +465,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 				PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 				// printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
-				
+				kfree(hash_map_addr_entry->addr);
 				hash_map_addr_entry->addr = (void*)xmem;
 				// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
 				// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
@@ -752,6 +752,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hash_map_addr_entry->count++;
 				last_hit = &hash_map_addr_entry->list;
 				kfree(hash_map_addr_temp);
+				kfree(xmem);
 				hash_map_addr_temp = hash_map_addr_entry;
 				// printk("fast hit!");
 				/* add reference content */
@@ -768,6 +769,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			last_hit = &hash_map_addr_entry->list;
 			find_flag = true;
 			kfree(hash_map_addr_temp);
+			kfree(xmem);
 			hash_map_addr_temp = hash_map_addr_entry;
 			// printk("fit!");
 			goto find;
@@ -791,8 +793,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		INIT_LIST_HEAD(&ref_map_temp->list);
 		list_add_tail(&ref_map_temp->list, &dedup_ref_list);
 
-		kfree(hash_map_addr_temp->addr);
-		
+		// printk("inode:%lu",(size_t)ref_map_temp->virt_addr);
+		// printk("index:%lu",ref_map_temp->index);
+		// printk("length:%lu",hash_map_addr_temp->length);
+		// printk("\n");
 		if(dedup_ret == 0)
 			break;
 		else
