@@ -821,10 +821,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 
-	if(dedup_count==0){
-		ret = count;
-		goto out;
-	}
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
