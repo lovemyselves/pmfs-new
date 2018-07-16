@@ -449,11 +449,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		
 		copied = bytes;
 
-		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
@@ -472,11 +472,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				new_list = new_list->next;
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
-				// printk("write a new data block.");
-			}else
-				// printk("No write operation.");
-		}else
-			// printk("No new datablock!");
+			}
+		}
 		
 		
 
