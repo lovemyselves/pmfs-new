@@ -472,7 +472,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				new_list = new_list->next;
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
-				printk("new data block");
+				// printk("new data block");
 			}
 		}
 		
@@ -824,7 +824,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	else
 		written = count;
-	printk("written:%ld",written);
+	// printk("written:%ld",written);
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
 			" pos %llx start_blk %lx num_blocks %lx\n",
