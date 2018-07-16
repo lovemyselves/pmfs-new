@@ -734,7 +734,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		// printk("sizeof(size_t):%lu",sizeof(size_t));
 		// printk("i>>3:%lu",i>>3);
-		printk("hashing:%lu",hashing);
+		// printk("hashing:%lu",hashing);
 		// printk("\n");
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
