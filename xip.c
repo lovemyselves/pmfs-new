@@ -473,6 +473,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
 				// printk("new data block");
+				goto test;
 			}
 		}
 		
@@ -483,7 +484,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	 	 * (instead of movnti) to write. So flush those cachelines. */
 		pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 
-        	if (likely(copied > 0)) {
+		test:
+        if (likely(copied > 0)) {
 			status = copied;
 
 			if (status >= 0) {
