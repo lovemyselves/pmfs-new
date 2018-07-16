@@ -467,8 +467,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				hash_map_addr_entry->hashing_md5 = NULL;
 				printk("write a new data block.");
 			}else
-			printk("No write operation.");
-		}
+				printk("No write operation.");
+		}else
+			printk("No new datablock!");
 		
 		
 
