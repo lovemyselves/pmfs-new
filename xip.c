@@ -472,11 +472,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				new_list = new_list->next;
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
-				printk("write a new data block.");
+				// printk("write a new data block.");
 			}else
-				printk("No write operation.");
+				// printk("No write operation.");
 		}else
-			printk("No new datablock!");
+			// printk("No new datablock!");
 		
 		
 
@@ -735,8 +735,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
-		printk("sizeof(size_t):%lu",sizeof(size_t));
-		printk("i>>3:%lu",i>>3);
+		// printk("sizeof(size_t):%lu",sizeof(size_t));
+		// printk("i>>3:%lu",i>>3);
 		printk("hashing:%lu",hashing);
 		// printk("\n");
 		hash_map_addr_temp->hashing = hashing;
@@ -754,7 +754,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				last_hit = &hash_map_addr_entry->list;
 				kfree(hash_map_addr_temp);
 				hash_map_addr_temp = hash_map_addr_entry;
-				printk("fast hit!");
+				// printk("fast hit!");
 				/* add reference content */
 				goto find;
 			}
@@ -770,7 +770,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			find_flag = true;
 			kfree(hash_map_addr_temp);
 			hash_map_addr_temp = hash_map_addr_entry;
-			printk("fit!");
+			// printk("fit!");
 			goto find;
 			/*add reference content */
 		}
