@@ -625,6 +625,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,hashing;	
 	struct hash_map_addr *hash_map_addr_entry;
+	size_t dedup_count = 0;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -777,6 +778,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// rb_insert_node(&root, hash_map_addr_temp);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		dedup_count++;
 		
 		find:
 		//less than 32, break;
@@ -796,8 +798,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(dedup_ret == 0)
 			break;
 		else
-			i -= pmfs_inode_blk_size(pi);
-		// printk("\n");	
+			i -= pmfs_inode_blk_size(pi);	
 	}
 	
 
@@ -820,6 +821,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 
+	if(dedup_count==0){
+		ret = count;
+		goto out;
+	}
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
