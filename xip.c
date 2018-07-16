@@ -733,6 +733,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hashing += (hashing << 3);
 			hashing ^= (hashing >> 2);
 		}
+		printk("i>>3:%lu",i>>3);
 		printk("trace>>3:%lu",trace>>3);
 		printk("hashing:%lu",hashing);
 		// printk("\n");
