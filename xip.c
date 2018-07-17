@@ -774,6 +774,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				// printk("fast hit!");
 				/* add reference content */
 				dedup_count++;
+				dedup_interval = 0;
 				goto find;
 			}
 			else
@@ -794,11 +795,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			goto find;
 			/*add reference content */
 		}
-		// else{
-		// 	dedup_interval++;
-		// 	if(dedup_interval==32)
-		// 		dedup_interval=31;
-		// }
+		else{
+			dedup_interval++;
+			if(dedup_interval==32)
+				dedup_interval=31;
+		}
 
 		// printk("hashing:%lu",hashing);
 		// rb_insert_node(&root, hash_map_addr_temp);
