@@ -438,18 +438,19 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		//end
 
-		// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
-		// index = pos >> sb->s_blocksize_bits;
-		// bytes = sb->s_blocksize - offset;
-		// if (bytes > count)
-		// 	bytes = count;
+		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
+		index = pos >> sb->s_blocksize_bits;
+		bytes = sb->s_blocksize - offset;
+		if (bytes > count)
+			bytes = count;
 
-		// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+		printk("status%lu",status);
 		
-		// if (status)
-		// 	break;
+		if (status)
+			break;
 		
-		// copied = bytes;
+		copied = bytes;
 
 		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
@@ -461,19 +462,18 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
 			if(hash_map_addr_entry->hashing_md5 == buf){
-				offset = (pos & (sb->s_blocksize - 1)); /* Within page */
-				index = pos >> sb->s_blocksize_bits;
-				bytes = sb->s_blocksize - offset;
-				if (bytes > count)
-					bytes = count;
+				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
+				// index = pos >> sb->s_blocksize_bits;
+				// bytes = sb->s_blocksize - offset;
+				// if (bytes > count)
+				// bytes = count;
 
-				status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+				// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 		
-				if (status)
-					break;
+				// if (status)
+				// 	break;
 		
-				copied = bytes;
-				
+				// copied = bytes;
 				PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 				copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
