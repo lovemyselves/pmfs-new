@@ -467,7 +467,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 				PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 				// printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
-				kfree(hash_map_addr_entry->addr);
+				if(hash_map_addr_entry->addr!=NULL)
+					kfree(hash_map_addr_entry->addr);
 				hash_map_addr_entry->addr = (void*)xmem;
 				// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
 				// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
@@ -710,7 +711,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp;
 		unsigned k, dedup_ret = 1, data_remainder;
-		void *xmem;
+		void *xmem = NULL;
 		bool hash_flag = true;
 		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 
@@ -793,11 +794,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			goto find;
 			/*add reference content */
 		}
-		else{
-			dedup_interval++;
-			if(dedup_interval==32)
-				dedup_interval=31;
-		}
+		// else{
+		// 	dedup_interval++;
+		// 	if(dedup_interval==32)
+		// 		dedup_interval=31;
+		// }
 
 		// printk("hashing:%lu",hashing);
 		// rb_insert_node(&root, hash_map_addr_temp);
