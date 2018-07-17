@@ -37,7 +37,7 @@ bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
-size_t dedup_interval = 0;
+size_t dedup_interval = 1;
 // struct list_head *dedup_ref_list = NULL;
 
 /*
@@ -722,8 +722,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
 		hash_map_addr_temp->addr = NULL;
 		
-		if( (j&dedup_interval) != 0 && !find_flag)
+		if((j&(dedup_interval-1)) != 0 && !find_flag){
 			hash_flag = false;
+			printk("j:%lu",j);
+		}
 		else
 			hash_flag = true;
 
@@ -801,7 +803,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			/*add reference content */
 		}
 		else{
-			dedup_interval >>= 1;
+			dedup_interval <<= 1;
 			if(dedup_interval==32)
 				dedup_interval=31;
 			// dedup_interval = (31 & ((dedup_interval<<1) - 1)) + 1;
