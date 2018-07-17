@@ -720,6 +720,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
 		hash_map_addr_temp->flag = false;
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
+		hash_map_addr_temp->addr = NULL;
 		
 		if( (j&dedup_interval) != 0 && !find_flag)
 			hash_flag = false;
