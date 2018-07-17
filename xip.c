@@ -724,6 +724,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		if( (j&dedup_interval) != 0 && !find_flag)
 			hash_flag = false;
+		else
+			hash_flag = true;
 
 		if(i <= pmfs_inode_blk_size(pi)){
 			hash_map_addr_temp->length = i;
