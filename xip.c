@@ -802,7 +802,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// dedup_interval <<= 1;
 			// if(dedup_interval==32)
 			// 	dedup_interval=31;
-			dedup_interval = (31 & (dedup_interval<<1 - 1)) + 1;
+			dedup_interval = (31 & ((dedup_interval<<1) - 1)) + 1;
 		}
 
 		// printk("hashing:%lu",hashing);
