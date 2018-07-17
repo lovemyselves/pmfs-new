@@ -707,13 +707,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// xmem = kmalloc(count, GFP_KERNEL);
 	// copy_from_user(xmem, buf, count);
 	for(j = 0; j < 32; j++ ){
-		if( (j&dedup_interval) != 0 && !find_flag)
-			continue;
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp;
 		unsigned k, dedup_ret = 1, data_remainder;
 		void *xmem;
 		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
+
+		if( (j&dedup_interval) != 0 && !find_flag)
+			continue;
+
 		hashing = 0;
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
