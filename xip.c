@@ -525,7 +525,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 	*ppos = pos;
 	printk("pos:%lu", (size_t)pos);
-	printk("inode->i_size:%lu", (size_t)inode->i_size);
+	
 	/*
  	* No need to use i_size_read() here, the i_size
  	* cannot change under us because we hold i_mutex.
@@ -533,6 +533,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	if (pos > inode->i_size) {
 		i_size_write(inode, pos);
 		pmfs_update_isize(inode, pi);
+		printk("inode->i_size:%lu", (size_t)inode->i_size);
 		printk("isize update!");
 	}
 
