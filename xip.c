@@ -531,6 +531,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	if (pos > inode->i_size) {
 		i_size_write(inode, pos);
 		pmfs_update_isize(inode, pi);
+		printk("isize update!");
 	}
 
 	PMFS_END_TIMING(internal_write_t, write_time);
