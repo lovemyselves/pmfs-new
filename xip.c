@@ -726,7 +726,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(i <= pmfs_inode_blk_size(pi)){
 			hash_map_addr_temp->length = i;
 			dedup_ret = 0;
-			if(hash_flag){
+			if(!hash_flag){
 				goto direct_write_out;
 			}
 			xmem = kmalloc(i, GFP_KERNEL);
@@ -738,7 +738,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					memcpy(&hashing, xmem+i-data_remainder, data_remainder);
 			}
 		}else{
-			if(hash_flag){
+			if(!hash_flag){
 				goto direct_write_out;
 			}
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
