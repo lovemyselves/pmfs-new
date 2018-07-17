@@ -36,6 +36,8 @@ struct list_head *last_ref;
 bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
+
+size_t dedup_interval = 0;
 // struct list_head *dedup_ref_list = NULL;
 
 /*
@@ -705,6 +707,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// xmem = kmalloc(count, GFP_KERNEL);
 	// copy_from_user(xmem, buf, count);
 	for(j = 0; j < 32; j++ ){
+		if(j&dedup_interval!=0 && !find_flag)
+			continue;
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp;
 		unsigned k, dedup_ret = 1, data_remainder;
@@ -758,6 +762,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hash_map_addr_temp = hash_map_addr_entry;
 				// printk("fast hit!");
 				/* add reference content */
+				dedup_count++;
 				goto find;
 			}
 			else
@@ -774,6 +779,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			kfree(xmem);
 			hash_map_addr_temp = hash_map_addr_entry;
 			// printk("fit!");
+			dedup_count++;
 			goto find;
 			/*add reference content */
 		}
@@ -782,7 +788,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// rb_insert_node(&root, hash_map_addr_temp);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		dedup_count++;
 		
 		find:
 		//less than 32, break;
@@ -799,6 +804,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("index:%lu",ref_map_temp->index);
 		// printk("length:%lu",hash_map_addr_temp->length);
 		// printk("\n");
+		direct_write_out:
 		if(dedup_ret == 0)
 			break;
 		else
