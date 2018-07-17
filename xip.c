@@ -711,10 +711,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct ref_map *ref_map_temp;
 		unsigned k, dedup_ret = 1, data_remainder;
 		void *xmem;
+		bool hash_flag = true;
 		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
-
-		if( (j&dedup_interval) != 0 && !find_flag)
-			continue;
 
 		hashing = 0;
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -722,7 +720,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->flag = false;
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
 		
+		if( (j&dedup_interval) != 0 && !find_flag)
+			hash_flag = false;
+
 		if(i <= pmfs_inode_blk_size(pi)){
+			hash_map_addr_temp->length = i;
+			dedup_ret = 0;
+			if(hash_flag){
+				goto direct_write_out;
+			}
 			xmem = kmalloc(i, GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, i);
 			if(i>>3<trace){	
@@ -731,12 +737,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				if(data_remainder!=0)
 					memcpy(&hashing, xmem+i-data_remainder, data_remainder);
 			}
-			hash_map_addr_temp->length = i;
-			dedup_ret = 0;
 		}else{
+			if(hash_flag){
+				goto direct_write_out;
+			}
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
 		}
+
 		for(k=0;k<trace;k++){
 			hashing += *(size_t*)(xmem+k*8);
 			hashing += (hashing << 3);
@@ -788,6 +796,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		// printk("hashing:%lu",hashing);
 		// rb_insert_node(&root, hash_map_addr_temp);
+		direct_write_out:
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		
@@ -806,7 +815,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("index:%lu",ref_map_temp->index);
 		// printk("length:%lu",hash_map_addr_temp->length);
 		// printk("\n");
-		direct_write_out:
+		
 		if(dedup_ret == 0)
 			break;
 		else
