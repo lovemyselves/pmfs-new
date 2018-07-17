@@ -1037,7 +1037,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	struct inode *inode = mapping->host;
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
-	printk("rc:%lu",rc);
+	printk("rc:%d",rc);
 	if (rc) {
 		pmfs_dbg1("[%s:%d] rc(%d), sb->physaddr(0x%llx), block(0x%llx),"
 			" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__,
