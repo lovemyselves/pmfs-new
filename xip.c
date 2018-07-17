@@ -794,7 +794,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			/*add reference content */
 		}
 		else{
-			dedup_interval = dedup_interval==31:31?dedup_interval++;
+			dedup_interval++;
+			if(dedup_interval==32)
+				dedup_interval=31;
 		}
 
 		// printk("hashing:%lu",hashing);
