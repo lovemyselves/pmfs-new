@@ -524,8 +524,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	//end
 
 	*ppos = pos;
-	printk("pos:%lu", (size_t*)pos);
-	printk("inode->i_size", (size_t)inode->i_size);
+	printk("pos:%lu", (size_t)pos);
+	printk("inode->i_size:%lu", (size_t)inode->i_size);
 	/*
  	* No need to use i_size_read() here, the i_size
  	* cannot change under us because we hold i_mutex.
