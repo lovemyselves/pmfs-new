@@ -793,6 +793,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			goto find;
 			/*add reference content */
 		}
+		else{
+			dedup_interval = dedup_interval==31:31?dedup_interval++;
+		}
 
 		// printk("hashing:%lu",hashing);
 		// rb_insert_node(&root, hash_map_addr_temp);
