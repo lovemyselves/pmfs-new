@@ -1048,9 +1048,9 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	sector_t block = 0;
 	struct inode *inode = mapping->host;
 
-	if(create==0)
+	if(create==1)
 	{
-		printk("read data");
+		printk("get xip xmem");
 	}
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
