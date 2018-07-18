@@ -797,7 +797,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				if(xmem!=NULL)
 					kfree(xmem);
 				hash_map_addr_temp = hash_map_addr_entry;
-				// printk("fast hit!");
+				printk("fast hit!");
 				/* add reference content */
 				dedup_count++;
 				dedup_interval = 0;
@@ -817,16 +817,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(xmem!=NULL)
 				kfree(xmem);
 			hash_map_addr_temp = hash_map_addr_entry;
-			// printk("fit!");
+			printk("fit!");
 			dedup_count++;
 			goto find;
 			/*add reference content */
 		}
-		else{
-			// dedup_interval = (31 & ((dedup_interval<<1) - 1)) + 1;
-			// printk("dedup_interval:%lu",dedup_interval);
-			;
-		}
+		// else{
+		// 	// dedup_interval = (31 & ((dedup_interval<<1) - 1)) + 1;
+		// 	// printk("dedup_interval:%lu",dedup_interval);
+		// 	;
+		// }
 
 		// printk("hashing:%lu",hashing);
 		// rb_insert_node(&root, hash_map_addr_temp);
