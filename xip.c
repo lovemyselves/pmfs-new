@@ -233,7 +233,8 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		/* nr is the maximum number of bytes to copy from this page */
 		nr = PAGE_SIZE;
-		// printk("index:%lu",index);
+		printk("index:%lu",index);
+		printk("pos:%lu",pos);
 		// printk("len>>12:%lu",len>>12);
 		// printk("+");
 		if (index >= end_index) {
