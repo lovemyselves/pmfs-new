@@ -266,6 +266,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				// 	printk("read fault, diff length!");
 				// }
 				xip_mem = *ref_map_temp->phys_addr;
+				printk("xip_mem:%lu",(size_t)xip_mem);
 				ref_find_flag = true;
 				// printk("read datablock from fast link!");
 				last_ref = last_ref->next;
