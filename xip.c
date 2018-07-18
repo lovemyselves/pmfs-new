@@ -878,18 +878,19 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	// else
 	// 	written = count;
-	// printk("written:%ld",written);
+	printk("written:%ld",written);
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
 			" pos %llx start_blk %lx num_blocks %lx\n",
 			written, count, pos, start_blk, num_blocks);
-
+	printk("transaction commit");
 	pmfs_commit_transaction(sb, trans);
 	ret = written;
 out:
 	inode_unlock(inode);
 	sb_end_write(inode->i_sb);
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
+	printk("return ret");
 	return ret;
 }
 
