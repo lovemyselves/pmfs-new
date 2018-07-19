@@ -39,51 +39,12 @@ struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
 size_t dedup_interval = 1;
-// struct list_head *dedup_ref_list = NULL;
+struct crypto_tfm *tfm;
+struct scatterlist sg[1];
 
 /*
 	dedup rbtree function
 */
-// struct hash_map_addr *rb_search_node(struct rb_root *root, size_t hashing)
-// {
-// 	struct rb_node *entry_node = root->rb_node;
-// 	long long int result;
-// 	struct hash_map_addr *hash_map_addr_entry;
-	
-// 	while(entry_node){
-// 		hash_map_addr_entry = rb_entry(entry_node, struct hash_map_addr, node);
-// 		result = hashing - hash_map_addr_entry->hashing; 
-// 		if(hashing < hash_map_addr_entry->hashing)
-// 			entry_node = entry_node->rb_left;
-// 		else if(hashing > hash_map_addr_entry->hashing)
-// 			entry_node = entry_node->rb_right;
-// 		else
-// 			return hash_map_addr_entry;
-// 	}
-// 	return NULL;
-// }
-
-// void rb_insert_node(struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
-// {
-// 	struct rb_node **entry_node = &(root->rb_node);
-// 	struct rb_node *parent = NULL;
-// 	struct hash_map_addr *hash_map_addr_temp;
-
-// 	while(*entry_node){
-// 		parent = *entry_node;
-// 		hash_map_addr_temp = rb_entry(*entry_node, struct hash_map_addr, node);
-// 		if(hash_map_addr_new->hashing < hash_map_addr_temp->hashing)
-// 			entry_node = &(*entry_node)->rb_left;
-// 		else if(hash_map_addr_new->hashing > hash_map_addr_temp->hashing)
-// 			entry_node = &(*entry_node)->rb_right;
-// 		else{
-// 			printk("hashing accident!");
-// 			return;
-// 		}	
-// 	}
-// 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
-// 	rb_insert_color(&(hash_map_addr_new->node), root);
-// }
 
 struct hash_map_addr *rb_search_insert_node(
 	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
@@ -186,6 +147,10 @@ struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t in
 				return ref_map_entry;
 		}	
 	}
+	return NULL;
+}
+
+char *do_digest(char* code){
 	return NULL;
 }
 /* claim end */
@@ -931,6 +896,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	{
 		printk("pfn in fault:%lu",(size_t)(*ref_map_temp->pfn));
 		xip_pfn = (size_t)*ref_map_temp->pfn;
+		printk("err:%d",err);
 	}
 	//end
 
