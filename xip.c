@@ -40,7 +40,7 @@ static LIST_HEAD(dedup_ref_list);
 
 size_t dedup_interval = 1;
 struct crypto_tfm *tfm;
-struct scatterlist sg[1];
+// struct scatterlist sg[1];
 
 /*
 	dedup rbtree function
