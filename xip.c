@@ -843,6 +843,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		ref_map_temp->index = j+start_blk;
 		ref_map_temp->hma = hash_map_addr_temp;
 		ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
+		ref_map_temp->pfn = &hash_map_addr_temp->pfn;
 		ref_insert_node(&ref_root, ref_map_temp);
 		INIT_LIST_HEAD(&ref_map_temp->list);
 		list_add_tail(&ref_map_temp->list, &dedup_ref_list);
@@ -909,7 +910,9 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	void *xip_mem;
 	unsigned long xip_pfn;
 	int err;
-	
+	//dedup insert code
+	struct ref_map *ref_map_temp;
+
 	printk("pmfs_xip_file_fault");
 
 	size = (i_size_read(inode) + PAGE_SIZE - 1) >> PAGE_SHIFT;
@@ -920,8 +923,17 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 			vmf->pgoff, (unsigned long)vmf->address, size);
 		return VM_FAULT_SIGBUS;
 	}
-
+	
 	err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
+	
+	//dedup insert
+	ref_map_temp = ref_rearch_node(&ref_root, inode, vmf->pgoff);
+	if(ref_map_temp!=NULL)
+	{
+		printk("find");
+	}
+	//end
+
 	if (unlikely(err)) {
 		pmfs_dbg("[%s:%d] get_xip_mem failed(OOM). vm_start(0x%lx),"
 			" vm_end(0x%lx), pgoff(0x%lx), VA(%lx)\n",
