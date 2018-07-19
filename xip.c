@@ -913,8 +913,6 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	//dedup insert code
 	struct ref_map *ref_map_temp;
 
-	printk("pmfs_xip_file_fault");
-
 	size = (i_size_read(inode) + PAGE_SIZE - 1) >> PAGE_SHIFT;
 	if (vmf->pgoff >= size) {
 		pmfs_dbg("[%s:%d] pgoff >= size(SIGBUS). vm_start(0x%lx),"
@@ -1063,7 +1061,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	struct inode *inode = mapping->host;
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
-	printk("rc:%d",rc);
+	// printk("rc:%d",rc);
 	if (rc) {
 		pmfs_dbg1("[%s:%d] rc(%d), sb->physaddr(0x%llx), block(0x%llx),"
 			" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__,
@@ -1083,8 +1081,8 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	// printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
 	// printk("block:%lu\n",block);
 	// printk("block value:%lu\n",block>>12);
-	printk("pfn<<PAGE_SHIFT:%lu\n",(size_t)*pfn<<PAGE_SHIFT);
-	printk("kmem:%lu",(size_t)*kmem);
+	// printk("pfn<<PAGE_SHIFT:%lu\n",(size_t)*pfn<<PAGE_SHIFT);
+	// printk("kmem:%lu",(size_t)*kmem);
 	/* end */
 
 	return 0;
