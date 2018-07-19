@@ -927,7 +927,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	
 	//dedup insert
-	ref_map_temp = ref_rearch_node(&ref_root, inode, vmf->pgoff);
+	ref_map_temp = ref_rearch_node(&ref_root, inode, (size_t)(vmf->pgoff));
 	if(ref_map_temp!=NULL)
 	{
 		printk("find");
