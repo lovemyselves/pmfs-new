@@ -930,7 +930,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	ref_map_temp = ref_search_node(&ref_root, inode, (size_t)(vmf->pgoff));
 	if(ref_map_temp!=NULL)
 	{
-		printk("find");
+		printk("pfn in fault:%lu",(size_t)(*ref_map_temp->pfn));
 	}
 	//end
 
