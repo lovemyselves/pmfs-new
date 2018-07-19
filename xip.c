@@ -931,7 +931,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	if(ref_map_temp!=NULL)
 	{
 		printk("pfn in fault:%lu",(size_t)(*ref_map_temp->pfn));
-		xip_pfn = *ref_map_temp->pfn;
+		xip_pfn = (void *)*ref_map_temp->pfn;
 	}
 	//end
 
