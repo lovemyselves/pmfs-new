@@ -160,10 +160,7 @@ char *do_digest(char* code, size_t len){
 
 	crypto_digest_init(tfm);
 	crypto_digest_update(tfm,sg,1);
-	if(result == NULL){
-		crypto_free_tfm(tfm);
-		return NULL;
-	}
+	
 	result = (char*)kmalloc(sizeof(char)*50, GFP_KERNEL);
 	if(result == NULL){
 		crypto_free_tfm(tfm);
