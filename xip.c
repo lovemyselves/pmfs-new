@@ -151,8 +151,28 @@ struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t in
 	return NULL;
 }
 
-char *do_digest(char* code){
-	return NULL;
+char *do_digest(char* code, size_t len){
+	char *result;
+	tfm = crypto_alloc_tfm("sha1", 0);
+	if(IS_ERR(tfm))
+		return 0;
+	sg_init_one(sg,code,len);
+
+	crypto_digest_init(tfm);
+	crypto_digest_update(tfm,sg,1);
+	if(result == NULL){
+		crypto_free_tfm(tfm);
+		return NULL;
+	}
+	result = (char*)kmalloc(sizeof(char)*50, GFP_KERNEL);
+	if(result == NULL){
+		crypto_free_tfm(tfm);
+		return NULL;
+	}
+	memset(result,0,sizeof(char)*50);
+	crypto_digest_final(tfm, result);
+	crypto_free_tfm(tfm);
+	return result;
 }
 /* claim end */
 
