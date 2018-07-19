@@ -484,6 +484,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				if(hash_map_addr_entry->addr!=NULL)
 					kfree(hash_map_addr_entry->addr);
 				hash_map_addr_entry->addr = (void*)xmem;
+				hash_map_addr_entry->pfn = (void*)xpfn;
 				// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
 				// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 				new_list = new_list->next;

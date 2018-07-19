@@ -13,6 +13,7 @@ struct hash_map_addr{
     size_t hashing;
     void *hashing_md5;
     void *addr;
+    void *pfn;
     size_t length;
     size_t count;
     struct list_head list;
@@ -25,6 +26,7 @@ struct ref_map{
     void *virt_addr;
     size_t index;
     void **phys_addr;
+    void **pfn;
     struct hash_map_addr *hma;
     struct list_head list;
     struct rb_node node;
