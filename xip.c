@@ -42,8 +42,7 @@ static LIST_HEAD(dedup_ref_list);
 
 struct scatterlist sg;
 struct hash_desc desc;
-char *plaintext = "plaintext goes here";
-size_t len = strlen(plaintext);
+
 u8 hashval[20];
 
 /*
