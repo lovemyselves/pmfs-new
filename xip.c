@@ -23,6 +23,8 @@
 // #include <linux/string.h>
 #include <linux/crypto.h>
 #include <linux/scatterlist.h>
+#include <linux/err.h>
+#include <crypto/hash.h>
 #include "dedup.c"
 
 /* dedup claim start */
