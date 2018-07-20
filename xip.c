@@ -20,7 +20,7 @@
 #include "xip.h"
 /*dedup new add include*/
 #include <linux/kernel.h>
-// #include <linux/string.h>
+#include <linux/string.h>
 #include <linux/crypto.h>
 #include <linux/scatterlist.h>
 #include <linux/err.h>
