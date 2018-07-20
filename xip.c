@@ -23,10 +23,6 @@
 // #include <linux/string.h>
 #include <linux/crypto.h>
 #include <linux/scatterlist.h>
-#include <linux/module.h>
-#include <linux/gfp.h>
-#include <linux/err.h>
-#include <linux/syscalls.h>
 #include "dedup.c"
 
 /* dedup claim start */
@@ -44,7 +40,7 @@ static LIST_HEAD(dedup_ref_list);
 
 size_t dedup_interval = 1;
 struct crypto_tfm *tfm;
-struct scatterlist sg[1];
+struct scatterlist sg;
 
 /*
 	dedup rbtree function
@@ -156,22 +152,11 @@ struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t in
 
 char *do_digest(char* code, size_t len){
 	char *result;
-	tfm = crypto_alloc_tfm("sha1", 0);
-	if(IS_ERR(tfm))
-		return 0;
-	sg_init_one(sg,code,len);
-
-	crypto_digest_init(tfm);
-	crypto_digest_update(tfm,sg,1);
+	struct hash_desc desc;
 	
-	result = (char*)kmalloc(sizeof(char)*50, GFP_KERNEL);
-	if(result == NULL){
-		crypto_free_tfm(tfm);
-		return NULL;
-	}
-	memset(result,0,sizeof(char)*50);
-	crypto_digest_final(tfm, result);
-	crypto_free_tfm(tfm);
+	sg_init_one(&sg, code, len);
+	desc.tfm = crypto_alloc_hash("sha1", 0, CRYPTO_ALG_ASYNC);
+
 	return result;
 }
 /* claim end */
