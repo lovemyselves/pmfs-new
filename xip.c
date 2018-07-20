@@ -154,10 +154,10 @@ struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t in
 
 char *do_digest(char* code, size_t len){
 	char *result;
-	struct hash_desc desc;
+	// struct hash_desc desc;
 	
-	sg_init_one(&sg, code, len);
-	desc.tfm = crypto_alloc_hash("sha1", 0, CRYPTO_ALG_ASYNC);
+	// sg_init_one(&sg, code, len);
+	// desc.tfm = crypto_alloc_hash("sha1", 0, CRYPTO_ALG_ASYNC);
 
 	return result;
 }
