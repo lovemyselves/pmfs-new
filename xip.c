@@ -40,9 +40,11 @@ bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
-size_t dedup_interval = 1;
-struct crypto_tfm *tfm;
 struct scatterlist sg;
+struct hash_desc desc;
+char *plaintext = "plaintext goes here";
+size_t len = strlen(plaintext);
+u8 hashval[20];
 
 /*
 	dedup rbtree function
