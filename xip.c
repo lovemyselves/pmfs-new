@@ -43,16 +43,30 @@ struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
 size_t dedup_interval = 1;
-
-struct scatterlist sg[2];
-char result[128];
-struct crypto_ahash *tfm;
-struct ahash_request *req;
 /*
 	dedup rbtree function
 */
 char *do_digest(char* code, size_t len){
 	char *result;
+
+	struct scatterlist sg[2];
+	char result[128];
+	struct crypto_ahash *tfm;
+	struct ahash_request *req;
+	
+	tfm = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
+	if (IS_ERR(tfm))
+		fail();
+
+	ahash_request_set_callback(req, 0, NULL, NULL);
+	ahash_request_set_crypt(req, sg, result, 2);
+
+	if (crypto_ahash_digest(req))
+		fail();
+	
+	ahash_request_free(req);
+	crypto_free_ahash(tfm);
+	
 	return result;
 }
 
