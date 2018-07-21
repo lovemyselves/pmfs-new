@@ -52,8 +52,22 @@ char * code2 = "234123132513451345";
 */
 char *do_digest(char* code, size_t len){
 	char *result;
+    
+    tfm = crypto_alloc_tfm("sha1",0);
+    if(IS_ERR(tfm))
+            return 0;
+    sg_init_one(sg,code, len);
 
-
+    crypto_digest_init(tfm);
+    crypto_digest_update(tfm,sg,1);
+    result = (char *)kmalloc(sizeof(char)*50,GFP_KERNEL);
+    if(result == NULL) {
+        crypto_free_tfm(tfm);
+        return 0;
+    }
+    memset(result,0,sizeof(char)*50);
+    crypto_digest_final(tfm,result);
+        crypto_free_tfm(tfm);
 	return result;
 }
 
