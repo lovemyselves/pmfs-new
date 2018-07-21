@@ -47,7 +47,7 @@ size_t dedup_interval = 1;
 struct scatterlist sg;
 struct hash_desc desc;
 char *plaintext = "plaintext goes here";
-size_t len = strlen(plaintext);
+size_t len = 21;
 u8 hashval[20];
 /*
 	dedup rbtree function
