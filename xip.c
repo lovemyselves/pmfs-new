@@ -44,17 +44,15 @@ static LIST_HEAD(dedup_ref_list);
 
 size_t dedup_interval = 1;
 
-struct scatterlist sg;
-struct hash_desc desc;
-char *plaintext = "plaintext goes here";
-size_t len = 21;
-u8 hashval[20];
+struct scatterlist sg[2];
+char result[128];
+struct crypto_ahash *tfm;
+struct ahash_request *req;
 /*
 	dedup rbtree function
 */
 char *do_digest(char* code, size_t len){
 	char *result;
-    
 	return result;
 }
 
