@@ -42,14 +42,16 @@ struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
 size_t dedup_interval = 1;
+
+struct crypto_tfm *tfm;
+struct scatterlist sg[1];
+char * code1 = "2ew34123132513451345";
+char * code2 = "234123132513451345";
 /*
 	dedup rbtree function
 */
 char *do_digest(char* code, size_t len){
 	char *result;
-	struct hash_desc desc;
-	
-	sg_init_one(&sg, code, len);
 
 
 	return result;
