@@ -47,8 +47,6 @@ size_t dedup_interval = 1;
 	dedup rbtree function
 */
 char *do_digest(char* code, size_t len){
-	char *result;
-
 	struct scatterlist sg[2];
 	char result[128];
 	struct crypto_ahash *tfm;
