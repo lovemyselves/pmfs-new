@@ -666,6 +666,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	end_blk = start_blk + num_blocks - 1;
 
 	block = pmfs_find_data_block(inode, start_blk);
+	printk("block:%lu", block);
 
 	/* Referring to the inode's block size, not 4K */
 	same_block = (((count + offset - 1) >>
