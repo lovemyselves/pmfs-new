@@ -20,11 +20,12 @@
 #include "xip.h"
 /*dedup new add include*/
 #include <linux/kernel.h>
-#include <linux/string.h>
+// #include <linux/string.h>
 #include <linux/crypto.h>
 #include <linux/scatterlist.h>
 #include <linux/err.h>
-#include <crypto/hash.h>
+#include <linux/gfp.h>
+#include <linux/slab.h>
 #include "dedup.c"
 
 /* dedup claim start */
@@ -40,14 +41,19 @@ bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
-struct scatterlist sg;
-struct hash_desc desc;
-
-u8 hashval[20];
-
+size_t dedup_interval = 1;
 /*
 	dedup rbtree function
 */
+char *do_digest(char* code, size_t len){
+	char *result;
+	struct hash_desc desc;
+	
+	sg_init_one(&sg, code, len);
+
+
+	return result;
+}
 
 struct hash_map_addr *rb_search_insert_node(
 	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
@@ -153,15 +159,6 @@ struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t in
 	return NULL;
 }
 
-char *do_digest(char* code, size_t len){
-	char *result;
-	// struct hash_desc desc;
-	
-	// sg_init_one(&sg, code, len);
-	// desc.tfm = crypto_alloc_hash("sha1", 0, CRYPTO_ALG_ASYNC);
-
-	return result;
-}
 /* claim end */
 
 static ssize_t
