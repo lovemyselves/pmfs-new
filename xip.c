@@ -659,6 +659,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	offset = pos & (sb->s_blocksize - 1);
 	num_blocks = ((count + offset - 1) >> sb->s_blocksize_bits) + 1;
+	printk("num_blocks:%lu",num_blocks);
 	/* offset in the actual block size block */
 	offset = pos & (pmfs_inode_blk_size(pi) - 1);
 	start_blk = pos >> sb->s_blocksize_bits;
