@@ -46,27 +46,27 @@ size_t dedup_interval = 1;
 /*
 	dedup rbtree function
 */
-char *do_digest(char* code, size_t len){
-	struct scatterlist sg[2];
-	char result[128];
-	struct crypto_ahash *tfm;
-	struct ahash_request *req;
+// char *do_digest(char* code, size_t len){
+// 	struct scatterlist sg[2];
+// 	char result[128];
+// 	struct crypto_ahash *tfm;
+// 	struct ahash_request *req;
 	
-	tfm = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
-	if (IS_ERR(tfm))
-		fail();
+// 	tfm = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
+// 	if (IS_ERR(tfm))
+// 		fail();
 
-	ahash_request_set_callback(req, 0, NULL, NULL);
-	ahash_request_set_crypt(req, sg, result, 2);
+// 	ahash_request_set_callback(req, 0, NULL, NULL);
+// 	ahash_request_set_crypt(req, sg, result, 2);
 
-	if (crypto_ahash_digest(req))
-		fail();
+// 	if (crypto_ahash_digest(req))
+// 		fail();
 	
-	ahash_request_free(req);
-	crypto_free_ahash(tfm);
+// 	ahash_request_free(req);
+// 	crypto_free_ahash(tfm);
 	
-	return result;
-}
+// 	return result;
+// }
 
 struct hash_map_addr *rb_search_insert_node(
 	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
