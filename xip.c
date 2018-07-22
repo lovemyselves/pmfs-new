@@ -844,9 +844,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		new_eblk = true;
 
 	/* don't zero-out the allocated blocks */
-	// pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
-	if(actual_num_blocks!=0)
-		pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
+	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
+	// if(actual_num_blocks!=0)
+	// 	pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
 	/* now zero out the edge blocks which will be partially written */
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
