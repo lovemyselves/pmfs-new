@@ -430,7 +430,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		bytes = sb->s_blocksize - offset;
 		if (bytes > count)
 			bytes = count;
-		printk("bytes:%lu",bytes);
+		
 		// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 		// printk("status%lu",status);
 		
