@@ -636,7 +636,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,hashing;	
 	struct hash_map_addr *hash_map_addr_entry;
-	size_t dedup_count = 0;
+	unsigned long actual_num_blocks;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -774,7 +774,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hash_map_addr_temp = hash_map_addr_entry;
 				printk("fast hit!");
 				/* add reference content */
-				dedup_count++;
 				dedup_interval = 0;
 				goto find;
 			}
@@ -793,7 +792,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				kfree(xmem);
 			hash_map_addr_temp = hash_map_addr_entry;
 			printk("fit!");
-			dedup_count++;
 			goto find;
 			/*add reference content */
 		}
