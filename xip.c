@@ -486,7 +486,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
 	 	 * (instead of movnti) to write. So flush those cachelines. */
-		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+		pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 		// printk("flush");
 
 		test:
@@ -753,7 +753,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		// printk("sizeof(size_t):%lu",sizeof(size_t));
 		// printk("i>>3:%lu",i>>3);
-		// printk("hashing:%lu",hashing);
+		printk("hashing:%lu",hashing);
 		// printk("\n");
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
@@ -859,7 +859,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
 			" pos %llx start_blk %lx num_blocks %lx\n",
 			written, count, pos, start_blk, num_blocks);
-	printk("transaction commit");
+	
 	pmfs_commit_transaction(sb, trans);
 	ret = written;
 out:
