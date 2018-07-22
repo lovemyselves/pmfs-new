@@ -775,7 +775,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("fast hit!");
 				/* add reference content */
 				dedup_interval = 0;
-				actual_num_blocks++;
 				goto find;
 			}
 			else
@@ -792,7 +791,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(xmem!=NULL)
 				kfree(xmem);
 			hash_map_addr_temp = hash_map_addr_entry;
-			actual_num_blocks++;
 			printk("fit!");
 			goto find;
 			/*add reference content */
@@ -808,6 +806,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		direct_write_out:
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		actual_num_blocks++;
 		
 		find:
 		//less than 32, break;
@@ -851,6 +850,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 	
+	printk("actual_num_blocks:%lu", actual_num_blocks);
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	
 	printk("written:%ld",written);
