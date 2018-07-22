@@ -636,7 +636,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,hashing;	
 	struct hash_map_addr *hash_map_addr_entry;
-	unsigned long actual_num_blocks;
+	unsigned long actual_num_blocks = 0;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -775,6 +775,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("fast hit!");
 				/* add reference content */
 				dedup_interval = 0;
+				actual_num_blocks++;
 				goto find;
 			}
 			else
@@ -791,6 +792,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(xmem!=NULL)
 				kfree(xmem);
 			hash_map_addr_temp = hash_map_addr_entry;
+			actual_num_blocks++;
 			printk("fit!");
 			goto find;
 			/*add reference content */
@@ -809,7 +811,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		find:
 		//less than 32, break;
-		printk("going to ...");
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
 		ref_map_temp->virt_addr = inode;
 		ref_map_temp->index = j+start_blk;
@@ -849,10 +850,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* now zero out the edge blocks which will be partially written */
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
-	// if(dedup_count!=0)
-		written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
-	// else
-	// 	written = count;
+	
+	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
+	
 	printk("written:%ld",written);
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
