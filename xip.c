@@ -478,16 +478,16 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("new data block");
 				goto test;
 			}
-		}else
+		}else{
 			printk("No new data block");
-		
-		
+			pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+			printk("flush");
+		}
 
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
 	 	 * (instead of movnti) to write. So flush those cachelines. */
-		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
-		// printk("flush");
+
 
 		test:
         if (likely(copied > 0)) {
