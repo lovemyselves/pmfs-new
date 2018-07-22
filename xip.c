@@ -486,7 +486,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
 	 	 * (instead of movnti) to write. So flush those cachelines. */
-		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+		pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 		printk("flush");
 
 		test:
@@ -844,16 +844,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		new_eblk = true;
 
 	/* don't zero-out the allocated blocks */
-	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
-
+	// pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
+	pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
 	/* now zero out the edge blocks which will be partially written */
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 	
 	printk("actual_num_blocks:%lu", actual_num_blocks);
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
-	
 	printk("written:%ld",written);
+
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
 			" pos %llx start_blk %lx num_blocks %lx\n",
