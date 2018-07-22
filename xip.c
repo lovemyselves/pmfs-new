@@ -844,9 +844,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		new_eblk = true;
 
 	/* don't zero-out the allocated blocks */
-	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
-	// if(actual_num_blocks!=0)
-	// 	pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
+	// pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
+	if(actual_num_blocks!=0)
+		pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
 	/* now zero out the edge blocks which will be partially written */
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
@@ -900,9 +900,9 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	ref_map_temp = ref_search_node(&ref_root, inode, (size_t)(vmf->pgoff));
 	if(ref_map_temp!=NULL)
 	{
-		printk("pfn in fault:%lu",(size_t)(*ref_map_temp->pfn));
+		// printk("pfn in fault:%lu",(size_t)(*ref_map_temp->pfn));
 		xip_pfn = (size_t)*ref_map_temp->pfn;
-		printk("err:%d",err);
+		// printk("err:%d",err);
 	}
 	//end
 
