@@ -666,12 +666,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	end_blk = start_blk + num_blocks - 1;
 
 	block = pmfs_find_data_block(inode, start_blk);
-	printk("block:%lu", block);
+	printk("block:%llu", block);
 
 	/* Referring to the inode's block size, not 4K */
 	same_block = (((count + offset - 1) >>
 			pmfs_inode_blk_shift(pi)) == 0) ? 1 : 0;
-	printk("same_block:%lu",same_block);	
+	printk("same_block:%d",same_block);	
 	if (block && same_block) {
 		PMFS_START_TIMING(xip_write_fast_t, xip_write_fast_time);
 		ret = pmfs_file_write_fast(sb, inode, pi, buf, count, pos,
