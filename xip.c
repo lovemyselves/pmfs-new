@@ -476,8 +476,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
 				// printk("new data block");
-				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
-				printk("flush");
+				// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+				// printk("flush");
 				goto test;
 			}
 		}else{
@@ -851,7 +851,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 	}
-	
+
 	printk("actual_num_blocks:%lu", actual_num_blocks);
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	printk("written:%ld",written);
