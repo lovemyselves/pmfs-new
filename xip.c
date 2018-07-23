@@ -431,19 +431,19 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (bytes > count)
 			bytes = count;
 		
-		// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
-		// printk("status%lu",status);
+		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+		printk("status%lu",status);
 		
 		// if (status)
 		// 	break;
 		status = 0;
 		copied = bytes;
 		printk("1 copied:%lu",copied);
-		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
