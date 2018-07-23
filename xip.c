@@ -476,7 +476,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
 				// printk("new data block");
-				// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				// printk("flush");
 			// }
 		}else{
