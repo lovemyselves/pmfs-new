@@ -717,12 +717,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
 		hash_map_addr_temp->addr = NULL;
 		
-		if((j&(dedup_interval-1)) != 0 && !find_flag){
-			hash_flag = false;
+		if((j&(dedup_interval-1)) != 0 && find_flag){
+			// ;
 			// printk("j:%lu",j);
 		}
-		else
-			hash_flag = true;
 
 		if(i <= pmfs_inode_blk_size(pi)){
 			hash_map_addr_temp->length = i;
@@ -844,9 +842,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		new_eblk = true;
 
 	/* don't zero-out the allocated blocks */
-	// pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
-	if(actual_num_blocks!=0){
-		pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
+	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
+	// if(actual_num_blocks!=0){
+	// 	pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
 	/* now zero out the edge blocks which will be partially written */
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
