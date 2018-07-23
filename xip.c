@@ -431,12 +431,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (bytes > count)
 			bytes = count;
 		
-		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
-		printk("status%lu",status);
-		
-		if (status)
-			break;
-
 		status = 0;
 		copied = bytes;
 		printk("1 copied:%lu",copied);
@@ -452,10 +446,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// if (bytes > count)
 				// bytes = count;
 
-				// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+				status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 		
-				// if (status)
-				// 	break;
+				if (status)
+					break;
 	
 				PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
