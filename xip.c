@@ -438,7 +438,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// 	break;
 		status = 0;
 		copied = bytes;
-
+		printk("1 copied:%lu",copied);
 		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
@@ -478,6 +478,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("new data block");
 				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				// printk("flush");
+				printk("2 copied:%lu",copied);
 			// }
 		}else{
 			printk("No new data block");
