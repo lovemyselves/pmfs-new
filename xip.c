@@ -431,19 +431,20 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (bytes > count)
 			bytes = count;
 		
-		// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
-		// printk("status%lu",status);
+		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+		printk("status%lu",status);
 		
-		// if (status)
-		// 	break;
+		if (status)
+			break;
+
 		status = 0;
 		copied = bytes;
 		printk("1 copied:%lu",copied);
-		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
@@ -455,16 +456,16 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// if (bytes > count)
 				// bytes = count;
 
-				status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+				// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 		
-				if (status)
-					break;
+				// if (status)
+				// 	break;
 	
-				PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-				copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-				PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+				// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+				// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+				// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+				// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+				// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 				// printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
 				if(hash_map_addr_entry->addr!=NULL)
 					kfree(hash_map_addr_entry->addr);
@@ -476,9 +477,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
 				// printk("new data block");
-				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+				// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				// printk("flush");
-				printk(" copied:%lu",copied);
+				printk("2 copied:%lu",copied);
 			}
 		}else{
 			printk("No new data block");
@@ -487,7 +488,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
 	 	 * (instead of movnti) to write. So flush those cachelines. */
-		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
+		pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
 
         if (likely(copied > 0)) {
 			status = copied;
