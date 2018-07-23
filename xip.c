@@ -448,7 +448,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
-			if(hash_map_addr_entry->hashing_md5 == buf){
+			// if(hash_map_addr_entry->hashing_md5 == buf){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
 				// bytes = sb->s_blocksize - offset;
@@ -478,8 +478,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("new data block");
 				// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				// printk("flush");
-				goto test;
-			}
+			// }
 		}else{
 			printk("No new data block");
 		}
@@ -487,9 +486,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
 	 	 * (instead of movnti) to write. So flush those cachelines. */
+		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
 
-
-		test:
         if (likely(copied > 0)) {
 			status = copied;
 
