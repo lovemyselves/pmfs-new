@@ -518,12 +518,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
  	* No need to use i_size_read() here, the i_size
  	* cannot change under us because we hold i_mutex.
  	*/
-	// if (pos > inode->i_size) {
-	// 	i_size_write(inode, pos);
-	// 	pmfs_update_isize(inode, pi);
-	// 	printk("inode->i_size:%lu", (size_t)inode->i_size);
-	// 	printk("isize update!");
-	// }
+	if (pos > inode->i_size) {
+		i_size_write(inode, pos);
+		pmfs_update_isize(inode, pi);
+		printk("inode->i_size:%lu", (size_t)inode->i_size);
+		printk("isize update!");
+	}
 
 	PMFS_END_TIMING(internal_write_t, write_time);
 	return written ? written : status;
@@ -869,7 +869,6 @@ out:
 	inode_unlock(inode);
 	sb_end_write(inode->i_sb);
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
-	printk("return ret");
 	return ret;
 }
 
