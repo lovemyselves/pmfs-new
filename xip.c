@@ -661,7 +661,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* offset in the actual block size block */
 	offset = pos & (pmfs_inode_blk_size(pi) - 1);
 	start_blk = pos >> sb->s_blocksize_bits;
-	end_blk = start_blk + num_blocks - 1;
+	// end_blk = start_blk + num_blocks - 1;
 
 	block = pmfs_find_data_block(inode, start_blk);
 	printk("block:%llu", block);
@@ -833,6 +833,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if (pmfs_find_data_block(inode, start_blk) == 0)
 		    new_sblk = true;
 	}
+
+	end_blk = start_blk + actual_num_blocks - 1;
 
 	eblk_offset = (pos + count) & (pmfs_inode_blk_size(pi) - 1);
 	if ((eblk_offset != 0) &&
