@@ -850,12 +850,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	printk("actual_num_blocks:%lu", actual_num_blocks);
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
-	if (pos+count > inode->i_size) {
-		i_size_write(inode, pos+count);
-		pmfs_update_isize(inode, pi);
-		printk("inode->i_size:%lu", (size_t)inode->i_size);
-		printk("isize update!");
-	}
+	// if (pos+count > inode->i_size) {
+	// 	i_size_write(inode, pos+count);
+	// 	pmfs_update_isize(inode, pi);
+	// 	printk("inode->i_size:%lu", (size_t)inode->i_size);
+	// 	printk("isize update!");
+	// }
 	printk("written:%ld",written);
 
 	if (written < 0 || written != count)
