@@ -444,7 +444,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				buf += bytes;
 				i -= bytes;
 				if(i<bytes)
-					goto 
+					break;
 			}
 			if(hash_map_addr_entry->hashing_md5 == buf){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
