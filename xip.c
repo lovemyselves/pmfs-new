@@ -1037,7 +1037,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	sector_t block = 0;
 	sector_t dedup_block = 0;
 	struct inode *inode = mapping->host;
-	struct ref_map ref_map_temp;
+	struct ref_map *ref_map_temp;
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
 	dedup_rc = rc;
