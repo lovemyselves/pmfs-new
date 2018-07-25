@@ -450,6 +450,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// 	if(i<bytes)
 			// 		goto dedup;
 			// }
+			printk("buf:%lu", (size_t)buf);
+			printk("hash_map_addr_entry:%lu", (size_t)hash_map_addr_entry);
 			if(hash_map_addr_entry->hashing_md5 == buf){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
@@ -519,7 +521,16 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	//dedup insert rbtree node start
 	// printk("============================================\n");
 	if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
-		printk("may error , not write all!");
+		hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
+			// while(hash_map_addr_entry->hashing_md5 != buf){
+			// 	buf += 4096;
+			// 	i -= 4096;
+			// 	if(i<bytes)
+			// 		goto dedup;
+			// }
+			printk("last buf.....................................");
+			printk("buf:%lu", (size_t)buf);
+			printk("hash_map_addr_entry:%lu", (size_t)hash_map_addr_entry);
 	}
 	// printk("============================================");
 	//end
