@@ -474,7 +474,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
 				// printk("new data block");
-				// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				// printk("flush");
 				printk("2 copied:%lu",copied);
 			}
@@ -485,7 +485,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
 	 	 * (instead of movnti) to write. So flush those cachelines. */
-		pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
+		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
 	
 		dedup:
 
@@ -836,7 +836,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		    new_sblk = true;
 	}
 
-	end_blk = start_blk + actual_num_blocks - 1;
+	// end_blk = start_blk + actual_num_blocks - 1;
 
 	eblk_offset = (pos + count) & (pmfs_inode_blk_size(pi) - 1);
 	if ((eblk_offset != 0) &&
