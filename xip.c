@@ -452,7 +452,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// }
 			printk("buf:%lu", (size_t)buf);
 			printk("hash_map_addr_entry:%lu", (size_t)(hash_map_addr_entry->hashing_md5));
-			if(hash_map_addr_entry->hashing_md5 == buf){
+			// if(hash_map_addr_entry->hashing_md5 == buf){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
 				// bytes = sb->s_blocksize - offset;
@@ -467,6 +467,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 				copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+				copied = memcpy_to_nvm((char *)xmem, offset, 
+				hash_map_addr_entry->hashing_md5, hash_map_addr_entry->hashing_md5);
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 				PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 				// printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
@@ -483,7 +485,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				// printk("flush");
 				printk("2 copied:%lu",copied);
-			}
+			// }
 		}else{
 			printk("No new data block");
 		}
