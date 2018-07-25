@@ -420,7 +420,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		//dedup claiming start
 		// unsigned hashing = 0;
 		// unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
-		size_t i = count;
+		// size_t i = count;
 		struct hash_map_addr *hash_map_addr_entry;//, *hash_map_addr_temp;
 		// hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		//end
@@ -487,8 +487,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	 	 * (instead of movnti) to write. So flush those cachelines. */
 		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
 	
-		dedup:
-
+		// dedup:
         if (likely(copied > 0)) {
 			status = copied;
 
@@ -663,7 +662,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* offset in the actual block size block */
 	offset = pos & (pmfs_inode_blk_size(pi) - 1);
 	start_blk = pos >> sb->s_blocksize_bits;
-	// end_blk = start_blk + num_blocks - 1;
+	end_blk = start_blk + num_blocks - 1;
 
 	block = pmfs_find_data_block(inode, start_blk);
 	printk("block:%llu", block);
