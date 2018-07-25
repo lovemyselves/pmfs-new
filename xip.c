@@ -1033,12 +1033,16 @@ static inline int __pmfs_get_block(struct inode *inode, pgoff_t pgoff,
 int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 		      void **kmem, unsigned long *pfn)
 {
-	int rc;
+	int rc, dedup_rc;
 	sector_t block = 0;
+	sector_t dedup_block = 0;
 	struct inode *inode = mapping->host;
+	struct ref_map ref_map_temp;
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
-	// printk("rc:%d",rc);
+	dedup_rc = rc;
+	printk("rc:%d",rc);
+
 	if (rc) {
 		pmfs_dbg1("[%s:%d] rc(%d), sb->physaddr(0x%llx), block(0x%llx),"
 			" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__,
@@ -1049,6 +1053,19 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 
 	*kmem = pmfs_get_block(inode->i_sb, block);
 	*pfn = pmfs_get_pfn(inode->i_sb, block);
+
+	ref_map_temp = ref_search_node(&ref_root, inode, pgoff);
+	if(ref_map_temp != NULL)
+	{
+		// *kmem = *ref_map_temp->phys_addr;
+		rc = 0;
+		if(*kmem == *ref_map_temp->phys_addr)
+			printk("read a raw data block");
+		// last_ref = &ref_map_temp->list;
+		// ref_find_flag = true;
+		// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
+		// goto read_redirect;
+	}
 
 	pmfs_dbg_mmapvv("[%s:%d] sb->physaddr(0x%llx), block(0x%lx),"
 		" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__, __LINE__,
