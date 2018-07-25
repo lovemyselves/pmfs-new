@@ -431,7 +431,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (bytes > count)
 			bytes = count;
 		
-		status = 0;
+		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+
+		if (status)
+			break;
+
 		copied = bytes;
 		printk("1 bytes:%lu", bytes);
 		printk("1 copied:%lu", copied);
@@ -453,10 +457,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// if (bytes > count)
 				// bytes = count;
 
-				status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+				// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 		
-				if (status)
-					break;
+				// if (status)
+				// 	break;
 	
 				PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
@@ -481,6 +485,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		}else{
 			printk("No new data block");
 		}
+
+		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
