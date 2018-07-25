@@ -420,7 +420,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		//dedup claiming start
 		// unsigned hashing = 0;
 		// unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
-		// size_t i = count;
+		size_t i = count;
 		struct hash_map_addr *hash_map_addr_entry;//, *hash_map_addr_temp;
 		// hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		//end
