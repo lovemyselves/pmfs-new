@@ -440,12 +440,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
-			// while(hash_map_addr_entry->hashing_md5 != buf){
-			// 	buf += bytes;
-			// 	i -= bytes;
-			// 	if(i<bytes)
-			// 		goto dedup;
-			// }
+			while(hash_map_addr_entry->hashing_md5 != buf){
+				buf += bytes;
+				i -= bytes;
+				if(i<bytes)
+					goto dedup;
+			}
 			if(hash_map_addr_entry->hashing_md5 == buf){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
@@ -487,7 +487,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	 	 * (instead of movnti) to write. So flush those cachelines. */
 		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
 	
-		// dedup:
+		dedup:
         if (likely(copied > 0)) {
 			status = copied;
 
@@ -760,8 +760,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(find_flag == true && last_hit != NULL )
 		{	
 			hash_map_addr_entry = list_entry(last_hit->next, struct hash_map_addr, list);
-			if(hashing == hash_map_addr_entry->hashing /*&& 
-			memcmp(hash_map_addr_temp->addr,hash_map_addr_entry->addr,hash_map_addr_temp->length) == 0*/
+			if(hashing == hash_map_addr_entry->hashing && 
+			memcmp(hash_map_addr_temp->addr,hash_map_addr_entry->addr,hash_map_addr_temp->length) == 0
 			){
 				hash_map_addr_entry->count++;
 				last_hit = &hash_map_addr_entry->list;
