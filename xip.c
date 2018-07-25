@@ -420,7 +420,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		//dedup claiming start
 		// unsigned hashing = 0;
 		// unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
-		size_t i = count;
+		// size_t i = count;
 		struct hash_map_addr *hash_map_addr_entry;//, *hash_map_addr_temp;
 		// hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		//end
@@ -440,12 +440,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
-			while(hash_map_addr_entry->hashing_md5 != buf){
-				buf += bytes;
-				i -= bytes;
-				if(i<bytes)
-					goto dedup;
-			}
+			// while(hash_map_addr_entry->hashing_md5 != buf){
+			// 	buf += 4096;
+			// 	i -= 4096;
+			// 	if(i<bytes)
+			// 		goto dedup;
+			// }
 			if(hash_map_addr_entry->hashing_md5 == buf){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
@@ -487,7 +487,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	 	 * (instead of movnti) to write. So flush those cachelines. */
 		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
 	
-		dedup:
+		// dedup:
         if (likely(copied > 0)) {
 			status = copied;
 
@@ -909,7 +909,8 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		xip_pfn = (size_t)*ref_map_temp->pfn;
 		err = 0;
 		// printk("err:%d",err);
-	}
+	}else
+		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	//end
 
 	if (unlikely(err)) {
