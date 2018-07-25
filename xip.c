@@ -468,7 +468,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 				// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 				copied = memcpy_to_nvm((char*)xmem, offset,
-				(char*)hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
+				buf, hash_map_addr_entry->length);
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 				PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 				// printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
