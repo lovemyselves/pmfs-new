@@ -828,9 +828,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 	
 	/* don't zero-out the allocated blocks */
-	// pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
-	pmfs_alloc_blocks(trans, inode, start_blk, (num_blocks/2), false);
-	pmfs_alloc_blocks(trans, inode, start_blk+(num_blocks/2), num_blocks, false);
+	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
@@ -853,7 +851,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 	// }
 
-	printk("actual_num_blocks:%lu", actual_num_blocks);
+	// printk("actual_num_blocks:%lu", actual_num_blocks);
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	// if (pos+count > inode->i_size) {
 	// 	i_size_write(inode, pos+count);
@@ -861,7 +859,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// 	printk("inode->i_size:%lu", (size_t)inode->i_size);
 	// 	printk("isize update!");
 	// }
-	printk("written:%ld",written);
 
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
