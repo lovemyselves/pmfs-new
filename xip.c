@@ -518,7 +518,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 	//dedup insert rbtree node start
 	// printk("============================================\n");
-	
+	if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
+		printk("may error , not write all!");
+	}
 	// printk("============================================");
 	//end
 
