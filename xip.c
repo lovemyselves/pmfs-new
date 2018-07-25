@@ -1046,7 +1046,10 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
 	dedup_rc = rc;
+	printk("*******");
 	printk("rc:%d",rc);
+	printk("a call of pmfs_get_xip_mem");
+	printk("*******");
 
 	if (rc) {
 		pmfs_dbg1("[%s:%d] rc(%d), sb->physaddr(0x%llx), block(0x%llx),"
