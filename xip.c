@@ -452,14 +452,14 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// }
 			// printk("buf:%lu", (size_t)buf);
 			// printk("hash_map_addr_entry:%lu", (size_t)(hash_map_addr_entry->hashing_md5));
-			if(hash_map_addr_entry->length == bytes){
+			// if(hash_map_addr_entry->length == bytes){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
 				// bytes = sb->s_blocksize - offset;
 				// if (bytes > count)
 				// bytes = count;
 
-				status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+				status = pmfs_get_xip_mem(mapping, hash_map_addr_entry->pfn, 1, &xmem, &xpfn);
 		
 				// if (status)
 				// 	break;
@@ -485,7 +485,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				// printk("flush");
 				// printk("2 copied:%lu",copied);
-			}
+			// }
 		}
 		// else{
 		// 	printk("No new data block");
