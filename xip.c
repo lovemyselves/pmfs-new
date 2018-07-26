@@ -469,9 +469,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 				// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 			pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);	
-			copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		    // copied = memcpy_to_nvmm((char *)xmem, offset, 
-		    // hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
+			// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		    copied = memcpy_to_nvmm((char *)xmem, offset, 
+		    hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
 		    pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 				// if (status)
 				// 	break;
