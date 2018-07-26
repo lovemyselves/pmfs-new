@@ -476,7 +476,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		    pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 
 			xmem = kmalloc(bytes, GFP_KERNEL);
-			copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+			copy_from_user(xmem, buf, bytes);
+			// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 				// if (status)
 				// 	break;
 	
