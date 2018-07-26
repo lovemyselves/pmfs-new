@@ -440,10 +440,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		// copied = memcpy_to_nvmm((char *)xmem, offset, 
-		// hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
-		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		// // copied = memcpy_to_nvmm((char *)xmem, offset, 
+		// // hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
+		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		// printk("1 bytes:%lu", bytes);
 		// printk("1 copied:%lu", copied);
@@ -460,7 +460,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// }
 			// printk("buf:%lu", (size_t)buf);
 			// printk("hash_map_addr_entry:%lu", (size_t)(hash_map_addr_entry->hashing_md5));
-			if(hash_map_addr_entry->length == bytes){
+			// if(hash_map_addr_entry->length == bytes){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
 				// bytes = sb->s_blocksize - offset;
@@ -468,7 +468,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// bytes = count;
 
 				// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
-		
+			pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);	
+			copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		    // copied = memcpy_to_nvmm((char *)xmem, offset, 
+		    // hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
+		    pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 				// if (status)
 				// 	break;
 	
@@ -494,7 +498,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				printk("a new data block");
 				// printk("flush");
 				// printk("2 copied:%lu",copied);
-			}
+			// }
 		}
 		// else{
 		// 	printk("No new data block");
