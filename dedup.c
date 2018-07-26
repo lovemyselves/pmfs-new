@@ -18,7 +18,7 @@ struct ref_map{
     void *virt_addr;
     size_t index;
     void **phys_addr;
-    void **pfn;
+    unsigned long *pfn;
     struct hash_map_addr *hma;
     struct list_head list;
     struct rb_node node;
