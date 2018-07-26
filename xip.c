@@ -1079,10 +1079,10 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	ref_map_temp = ref_search_node(&ref_root, inode, pgoff);
 	if(ref_map_temp != NULL)
 	{
-		if(*ref_map_temp->phys_addr !=NULL)
-			*kmem = *ref_map_temp->phys_addr;
-		rc = 0;
-		// printk("find a read-dedup metadata");
+		// if(*ref_map_temp->phys_addr !=NULL)
+		// 	*kmem = *ref_map_temp->phys_addr;
+		// rc = 0;
+		printk("find a read metadata");
 		// if(*kmem == *ref_map_temp->phys_addr)
 		// printk("read a raw data block");
 		// last_ref = &ref_map_temp->list;
