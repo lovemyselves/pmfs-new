@@ -431,7 +431,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (bytes > count)
 			bytes = count;
 		
-		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+		status = 0;
 
 		if (status)
 			break;
@@ -452,14 +452,14 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// }
 			// printk("buf:%lu", (size_t)buf);
 			// printk("hash_map_addr_entry:%lu", (size_t)(hash_map_addr_entry->hashing_md5));
-			// if(hash_map_addr_entry->length == bytes){
+			if(hash_map_addr_entry->length == bytes){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
 				// bytes = sb->s_blocksize - offset;
 				// if (bytes > count)
 				// bytes = count;
 
-				// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+				status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 		
 				// if (status)
 				// 	break;
@@ -475,7 +475,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				if(hash_map_addr_entry->addr!=NULL)
 					kfree(hash_map_addr_entry->addr);
 				hash_map_addr_entry->addr = (void*)xmem;
-				hash_map_addr_entry->pfn = (void*)xpfn;
+				hash_map_addr_entry->pfn = xpfn;
 				// printk("data_block content:%s:",(char *)hash_map_addr_entry->addr);
 				// rb_insert_node(&root, list_entry(new_list->next, struct hash_map_addr, list));
 				new_list = new_list->next;
@@ -485,7 +485,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				// printk("flush");
 				// printk("2 copied:%lu",copied);
-			// }
+			}
 		}
 		// else{
 		// 	printk("No new data block");
@@ -729,6 +729,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->flag = false;
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
 		hash_map_addr_temp->addr = NULL;
+		hash_map_addr_temp->pfn = start_blk + j;
+		printk("index == hash_map_addr_temp:%lu", start_blk + j);
 		
 		if((j&(dedup_interval-1)) != 0 && find_flag){
 			// ;
@@ -920,7 +922,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	if(ref_map_temp!=NULL)
 	{
 		// printk("pfn in fault:%lu",(size_t)(*ref_map_temp->pfn));
-		xip_pfn = (size_t)*ref_map_temp->pfn;
+		xip_pfn = *ref_map_temp->pfn;
 		err = 0;
 		// printk("err:%d",err);
 	}else

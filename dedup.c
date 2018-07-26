@@ -5,7 +5,7 @@ struct hash_map_addr{
     size_t hashing;
     void *hashing_md5;
     void *addr;
-    void *pfn;
+    unsigned long pfn;
     size_t length;
     size_t count;
     struct list_head list;
