@@ -1076,20 +1076,19 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	*kmem = pmfs_get_block(inode->i_sb, block);
 	*pfn = pmfs_get_pfn(inode->i_sb, block);
 
-	ref_map_temp = ref_search_node(&ref_root, inode, pgoff);
-	if(ref_map_temp != NULL)
-	{
-		// if(*ref_map_temp->phys_addr !=NULL)
-		// 	*kmem = *ref_map_temp->phys_addr;
-		// rc = 0;
-		printk("find a read metadata");
-		// if(*kmem == *ref_map_temp->phys_addr)
-		// printk("read a raw data block");
-		// last_ref = &ref_map_temp->list;
-		// ref_find_flag = true;
-		// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
-		// goto read_redirect;
-	}
+	// ref_map_temp = ref_search_node(&ref_root, inode, pgoff);
+	// if(ref_map_temp != NULL)
+	// {
+	// 	// *kmem = *ref_map_temp->phys_addr;
+	// 	rc = 0;
+	// 	// printk("find a read-dedup metadata");
+	// 	// if(*kmem == *ref_map_temp->phys_addr)
+	// 	// printk("read a raw data block");
+	// 	// last_ref = &ref_map_temp->list;
+	// 	// ref_find_flag = true;
+	// 	// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
+	// 	// goto read_redirect;
+	// }
 
 	pmfs_dbg_mmapvv("[%s:%d] sb->physaddr(0x%llx), block(0x%lx),"
 		" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__, __LINE__,
