@@ -447,7 +447,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		// printk("1 bytes:%lu", bytes);
 		// printk("1 copied:%lu", copied);
-		
+		printk("a __write call");
 
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
@@ -491,6 +491,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				hash_map_addr_entry->hashing_md5 = NULL;
 				// printk("new data block");
 				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+				printk("a new data block");
 				// printk("flush");
 				// printk("2 copied:%lu",copied);
 			// }
@@ -738,7 +739,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->hashing_md5 = (void*)buf + count - i;
 		hash_map_addr_temp->addr = NULL;
 		hash_map_addr_temp->pfn = start_blk + j;
-		printk("index == hash_map_addr_temp:%lu", start_blk + j);
 		
 		if((j&(dedup_interval-1)) != 0 && find_flag){
 			// ;
