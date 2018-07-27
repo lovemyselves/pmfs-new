@@ -841,7 +841,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		actual_num_blocks++;
 		printk("hashing:%lu", hashing);
 		printk("no fit!");
-		printk("from %lu to %lu", i, i+(hash_map_addr_temp->length));
+		printk("from %lu to %lu", count-i, count-i+(hash_map_addr_temp->length));
 		
 		find:
 		//less than 32, break;
