@@ -838,6 +838,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		actual_num_blocks++;
+		printk("hashing:%lu",hash_map_addr_tmep->hashing);
 		printk("no fit!");
 		
 		find:
