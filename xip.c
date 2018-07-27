@@ -770,10 +770,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					memcpy(&hashing, xmem+i-data_remainder, data_remainder);
 			}
 		}else{
-			if(!hash_flag){
-				goto direct_write_out;
-				printk("may write logical write");
-			}
+			// if(!hash_flag){
+			// 	goto direct_write_out;
+			// 	printk("may write logical write");
+			// }
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
 		}
