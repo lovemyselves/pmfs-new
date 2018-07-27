@@ -432,18 +432,18 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			bytes = count;
 		
 		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
-
+		
 		if (status)
 			break;
 
 		copied = bytes;
 
 		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 		// // copied = memcpy_to_nvmm((char *)xmem, offset, 
 		// // hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		// printk("1 bytes:%lu", bytes);
 		// printk("1 copied:%lu", copied);
@@ -468,12 +468,12 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// bytes = count;
 
 			// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
-			printk("offset:%lu",(size_t)offset);
-			pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);	
-			copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		    // copied = memcpy_to_nvmm((char *)xmem, offset, 
-		    // hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
-		    pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+			// printk("offset:%lu",(size_t)offset);
+			// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);	
+			// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		    // // copied = memcpy_to_nvmm((char *)xmem, offset, 
+		    // // hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
+		    // pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 
 			// xmem = kmalloc(hash_map_addr_entry->length, GFP_KERNEL);
 			// copy_from_user(xmem, hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
