@@ -449,7 +449,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// printk("1 copied:%lu", copied);
 		printk("a __write call");
 
-		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
+		// if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
+		if(new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
 			// while(hash_map_addr_entry->hashing_md5 != buf){
