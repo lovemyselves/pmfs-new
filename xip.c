@@ -438,7 +438,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		copied = bytes;
 
-		printk("a __write call");
+		// printk("a __write call");
 
 		// if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
@@ -490,9 +490,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				new_list = new_list->next;
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
+				
 				// printk("new data block");
 				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
-				printk("a new data block");
+				// printk("a new data block");
 				// printk("flush");
 				// printk("2 copied:%lu",copied);
 			// }
@@ -943,7 +944,10 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		// printk("pfn in fault:%lu",(size_t)(*ref_map_temp->pfn));
 		xip_pfn = *ref_map_temp->pfn;
 		err = 0;
-		// printk("err:%d",err);
+		if(ref_map_temp->hma->flag)
+			printk("no dedup while insert");
+		else
+			printk("may have logical problem");
 	}else
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	//end
