@@ -945,8 +945,10 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		err = 0;
 		if(ref_map_temp->hma->flag)
 			printk("no dedup while insert");
-		else
+		else{
 			printk("may have logical problem");
+			err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
+		}
 	}else
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	//end
