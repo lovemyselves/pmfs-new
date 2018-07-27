@@ -512,11 +512,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// 	printk("No new data block");
 		// }
 
-		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
