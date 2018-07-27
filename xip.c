@@ -452,7 +452,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// }
 			// printk("buf:%lu", (size_t)buf);
 			// printk("hash_map_addr_entry:%lu", (size_t)(hash_map_addr_entry->hashing_md5));
-			if(hash_map_addr_entry->hashing_md5 == buf){
+			if(!hash_map_addr_entry->flag){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
 				// bytes = sb->s_blocksize - offset;
