@@ -749,16 +749,17 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->addr = NULL;
 		hash_map_addr_temp->pfn = start_blk + j;
 		
-		if((j&(dedup_interval-1)) != 0 && find_flag){
-			// ;
-			// printk("j:%lu",j);
-		}
+		// if((j&(dedup_interval-1)) != 0 && find_flag){
+		// 	// ;
+		// 	// printk("j:%lu",j);
+		// }
 
 		if(i <= pmfs_inode_blk_size(pi)){
 			hash_map_addr_temp->length = i;
 			dedup_ret = 0;
 			if(!hash_flag){
 				goto direct_write_out;
+				printk("may write logical write");
 			}
 			xmem = kmalloc(i, GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, i);
@@ -771,6 +772,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}else{
 			if(!hash_flag){
 				goto direct_write_out;
+				printk("may write logical write");
 			}
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
