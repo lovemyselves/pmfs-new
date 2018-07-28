@@ -435,6 +435,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			bytes = count;
 		
 		// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+		status = 0;
 		
 		if (status)
 			break;
