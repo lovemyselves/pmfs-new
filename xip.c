@@ -810,26 +810,26 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->addr = xmem;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
-		// if(find_flag == true && last_hit != NULL )
-		// {	
-		// 	hash_map_addr_entry = list_entry(last_hit->next, struct hash_map_addr, list);
-		// 	if(hashing == hash_map_addr_entry->hashing // && 
-		// 	// memcmp(hash_map_addr_temp->addr,hash_map_addr_entry->addr,hash_map_addr_temp->length) == 0
-		// 	){
-		// 		hash_map_addr_entry->count++;
-		// 		last_hit = &hash_map_addr_entry->list;
-		// 		kfree(hash_map_addr_temp);
-		// 		if(xmem!=NULL)
-		// 			kfree(xmem);
-		// 		hash_map_addr_temp = hash_map_addr_entry;
-		// 		printk("fast hit!");
-		// 		/* add reference content */
-		// 		dedup_interval = 0;
-		// 		goto find;
-		// 	}
-		// 	else
-		// 		find_flag = false;
-		// }
+		if(find_flag == true && last_hit != NULL )
+		{	
+			hash_map_addr_entry = list_entry(last_hit->next, struct hash_map_addr, list);
+			if(hashing == hash_map_addr_entry->hashing // && 
+			// memcmp(hash_map_addr_temp->addr,hash_map_addr_entry->addr,hash_map_addr_temp->length) == 0
+			){
+				hash_map_addr_entry->count++;
+				last_hit = &hash_map_addr_entry->list;
+				kfree(hash_map_addr_temp);
+				if(xmem!=NULL)
+					kfree(xmem);
+				hash_map_addr_temp = hash_map_addr_entry;
+				printk("fast hit!");
+				/* add reference content */
+				dedup_interval = 0;
+				goto find;
+			}
+			else
+				find_flag = false;
+		}
 
 		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp);
 		if(hash_map_addr_entry){
