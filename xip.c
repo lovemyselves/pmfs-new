@@ -256,6 +256,7 @@ do_xip_mapping_read(struct address_space *mapping,
 				// printk("read datablock from fast link!");
 				last_ref = last_ref->next;
 				error = 0;
+				printk("read from dedup metadata");
 				goto read_redirect;
 			}
 		}
@@ -268,6 +269,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			last_ref = &ref_map_temp->list;
 			ref_find_flag = true;
 			// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
+			printk("read from dedup metadata");
 			goto read_redirect;
 		}
 		
@@ -948,7 +950,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		xip_pfn = *ref_map_temp->pfn;
 		err = 0;
 		if(ref_map_temp->hma->flag)
-			printk("no dedup while insert");
+			printk("read from dedup metadata");
 		else{
 			printk("may have logical problem");
 			err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
