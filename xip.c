@@ -434,7 +434,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (bytes > count)
 			bytes = count;
 		
-		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+		// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 		
 		if (status)
 			break;
@@ -469,7 +469,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// if (bytes > count)
 				// bytes = count;
 
-			// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+			status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 			// printk("offset:%lu",(size_t)offset);
 			pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);	
 			copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
