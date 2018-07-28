@@ -443,11 +443,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		// printk("a __write call");
 
-		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		printk("index:%lu",index);
 		// if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
