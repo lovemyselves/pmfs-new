@@ -443,6 +443,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		// printk("a __write call");
 
+		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		// if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
@@ -474,16 +479,16 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// if (status)
 				// 	break;
 	
-				PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+				// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+				// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 				// 
-				if(hash_map_addr_entry->length==bytes)
-					copied = memcpy_to_nvmm((char *)xmem, offset, 
-					buf, hash_map_addr_entry->length);
-				else
-					copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-				PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+				// if(hash_map_addr_entry->length==bytes)
+				// 	copied = memcpy_to_nvmm((char *)xmem, offset, 
+				// 	buf, hash_map_addr_entry->length);
+				// else
+				// 	copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+				// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+				// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 				// printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
 				
 				if(hash_map_addr_entry->addr!=NULL)
