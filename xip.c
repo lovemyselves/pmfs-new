@@ -477,7 +477,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 				// 
-				if(hash_map_addr_entry->length!=bytes)
+				if(hash_map_addr_entry->length==bytes)
 					copied = memcpy_to_nvmm((char *)xmem, offset, 
 					hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
 				else
