@@ -448,6 +448,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+		printk("index:%lu",index);
 		// if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
@@ -460,6 +461,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// }
 			// printk("buf:%lu", (size_t)buf);
 			// printk("hash_map_addr_entry:%lu", (size_t)(hash_map_addr_entry->hashing_md5));
+			printk("copied:%lu",copied);
 			if(!hash_map_addr_entry->flag){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
