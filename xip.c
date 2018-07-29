@@ -485,14 +485,14 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 					break;
 	
 				// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+				// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 				// 
 				// if(hash_map_addr_entry->length==bytes)
 				// 	copied = memcpy_to_nvmm((char *)xmem, offset, 
 				// 	buf, hash_map_addr_entry->length);
 				// else
-				copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+				// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+				// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 				// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 				// printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
 				
@@ -528,9 +528,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// }
 
 		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 
 		/* if start or end dest address is not 8 byte aligned, 
@@ -538,7 +538,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	 	 * (instead of movnti) to write. So flush those cachelines. */
 		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
 	
-		dedup:
+		// dedup:
         if (likely(copied > 0)) {
 			status = copied;
 
