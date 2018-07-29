@@ -434,21 +434,21 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (bytes > count)
 			bytes = count;
 		
-		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
-		// status = 0;
+		// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+		// // status = 0;
 		
-		if (status)
-			break;
+		// if (status)
+		// 	break;
 
 		copied = bytes;
 
 		// printk("a __write call");
 
-		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+		// // pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		// // copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		// // pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		printk("index:%lu",index);
 		// if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
@@ -470,7 +470,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// if (bytes > count)
 				// bytes = count;
 
-			// status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
+			status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 			// if (status)
 			// 	break;
 			// printk("offset:%lu",(size_t)offset);
@@ -481,8 +481,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		    // pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 
 			// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-				// if (status)
-				// 	break;
+				if (status)
+					break;
 	
 				// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 				pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
