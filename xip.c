@@ -444,11 +444,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		// printk("a __write call");
 
-		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		// // pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		// // copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		// // pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
+		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 		printk("index:%lu",index);
 		// if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
@@ -481,8 +481,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		    // pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 
 			// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-				if (status)
-					break;
+				// if (status)
+				// 	break;
 	
 				// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 				// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
@@ -495,7 +495,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 				// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 				// printk("new_list hashing:%lu",hash_map_addr_entry->hashing);
-				
+				copy_from_user(xmem+offset,buf,bytes);
 				if(hash_map_addr_entry->addr!=NULL)
 					kfree(hash_map_addr_entry->addr);
 				hash_map_addr_entry->addr = (void*)xmem;
@@ -528,11 +528,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// }
 
 		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
-		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 		// copy_from_user(xmem+offset,buf,bytes);
-		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
-		copy_from_user(xmem+offset,buf,bytes);
+		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
+		// copy_from_user(xmem+offset,buf,bytes);
 		// PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 
 		/* if start or end dest address is not 8 byte aligned, 
