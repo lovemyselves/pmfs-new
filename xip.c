@@ -897,7 +897,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		    new_sblk = true;
 	}
 
-	end_blk = start_blk + actual_num_blocks - 1;
+	// end_blk = start_blk + actual_num_blocks - 1;
 
 	eblk_offset = (pos + count) & (pmfs_inode_blk_size(pi) - 1);
 	if ((eblk_offset != 0) &&
