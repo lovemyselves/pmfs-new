@@ -905,7 +905,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* now zero out the edge blocks which will be partially written */
 	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
-	// }
+	}
 
 	// printk("actual_num_blocks:%lu", actual_num_blocks);
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
