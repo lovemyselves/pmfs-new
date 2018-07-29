@@ -885,7 +885,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 	
 	/* don't zero-out the allocated blocks */
-	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
+	// pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
