@@ -23,3 +23,9 @@ struct ref_map{
     struct list_head list;
     struct rb_node node;
 };
+
+struct dedup_inode{
+    size_t end_blk;
+    size_t length;
+    const char __user buf[32];
+}
