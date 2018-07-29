@@ -766,6 +766,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->flag = false;
 		hash_map_addr_temp->addr = NULL;
 		hash_map_addr_temp->pfn = start_blk + j;
+		hash_map_addr_temp->hashing_md5 = (void *)(buf + count - i);
 		
 		// if((j&(dedup_interval-1)) != 0 && find_flag){
 		// 	// ;
