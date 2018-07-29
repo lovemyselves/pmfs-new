@@ -28,4 +28,4 @@ struct dedup_inode{
     size_t end_blk;
     size_t length;
     const char __user buf[32];
-}
+};
