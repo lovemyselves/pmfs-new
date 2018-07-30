@@ -903,6 +903,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("count:%lu",count);
 		printk("len:%lu",len);
 		printk("pos:%lu",(size_t)pos);
+		printk("offset:%lu",(size_t)(pos & (sb->s_blocksize - 1)));
 		printk("j:%lu==========================",actual_num_blocks);
 	// 	num_blocks = actual_num_blocks;
 	}
