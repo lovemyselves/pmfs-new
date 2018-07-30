@@ -901,6 +901,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("\n");
 		printk("num_blocks:%lu",num_blocks);
 		printk("count:%lu",count);
+		printk("len:%lu",len);
 		printk("j:%lu==========================",actual_num_blocks);
 	// 	num_blocks = actual_num_blocks;
 	}
