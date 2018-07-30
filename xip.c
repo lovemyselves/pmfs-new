@@ -480,7 +480,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		    // // // hash_map_addr_entry->hashing_md5, hash_map_addr_entry->length);
 		    // pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 
-			copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+			copied = memcpy_to_nvmm((char *)xmem, offset+64, buf, bytes);
 				// if (status)
 				// 	break;
 	
