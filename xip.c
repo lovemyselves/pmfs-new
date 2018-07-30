@@ -515,8 +515,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			}else
 				printk("flag false!");
 			// goto dedup;
-		}else
+		}else{
+			printk("inode:%lu",index);
 			printk("no new");
+		}
 		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
