@@ -898,7 +898,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	/* don't zero-out the allocated blocks */
 	if(actual_num_blocks!=0){
-		pritnk("\n");
+		printk("\n");
 		printk("num_blocks:%lu",num_blocks);
 		printk("count:%lu",count);
 		printk("j:%lu==========================",actual_num_blocks);
