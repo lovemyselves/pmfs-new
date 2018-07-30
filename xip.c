@@ -463,6 +463,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			// printk("buf:%lu", (size_t)buf);
 			// printk("hash_map_addr_entry:%lu", (size_t)(hash_map_addr_entry->hashing_md5));
 			printk("copied-bytes:%lu",copied-bytes);
+			copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 			if(!hash_map_addr_entry->flag){
 				// offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 				// index = pos >> sb->s_blocksize_bits;
@@ -511,7 +512,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				// printk("a new data block");
 				// printk("flush");
 				// printk("2 copied:%lu",copied);
-			}
+			}else
+				printk("flag false!");
 			// goto dedup;
 		}
 		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
