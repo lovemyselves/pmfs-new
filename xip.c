@@ -869,6 +869,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		actual_num_blocks++;
+
 		// printk("hashing:%lu", hashing);
 		// printk("no fit!");
 		// printk("from %lu to %lu", count-i, count-i+(hash_map_addr_temp->length));
@@ -896,9 +897,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 	
 	/* don't zero-out the allocated blocks */
-	// if(actual_num_blocks!=0){
+	if(actual_num_blocks!=0){
+		printk("==========================j:%lu==========================",actual_num_blocks);
 	// 	num_blocks = actual_num_blocks;
-	// }
+	}
+
 	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
