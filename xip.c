@@ -409,6 +409,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	ssize_t     written = 0;
 	struct pmfs_inode *pi;
 	timing_t memcpy_time, write_time;
+	int j = 0;
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
@@ -424,6 +425,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		// unsigned hashing = 0;
 		// unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
 		// size_t i = count;
+		
 		struct hash_map_addr *hash_map_addr_entry;//, *hash_map_addr_temp;
 		// hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		//end
@@ -507,6 +509,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
 				
+				j++;
 				// printk("new data block");
 				// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				// printk("a new data block");
@@ -569,6 +572,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	// printk("============================================\n");
 	// printk("============================================");
 	//end
+	printk("i:%d",i);
 
 	*ppos = pos;
 	// printk("pos:%lu", (size_t)pos);
