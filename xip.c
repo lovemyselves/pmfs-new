@@ -516,7 +516,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				printk("flag false!");
 			// goto dedup;
 		}else{
-			printk("inode:%lu",index);
+			printk("ino:%lu",inode->ino);
+			printk("index:%lu",index);
 			printk("no new");
 		}
 		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
