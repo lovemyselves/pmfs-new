@@ -516,7 +516,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				printk("flag false!");
 			// goto dedup;
 		}else
-			prink("no new");
+			printk("no new");
 		// PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 		// pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
 		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
