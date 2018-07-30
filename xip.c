@@ -761,9 +761,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	/* insert dedup code start*/
 	i = count;
+	printk("offset1:%lu",offset);
 	// xmem = kmalloc(count, GFP_KERNEL);
 	// copy_from_user(xmem, buf, count);
-	for(j = 0; j < 32; j++ ){
+	for(j = 0; j < num_blocks; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp;
 		unsigned k, dedup_ret = 1, data_remainder;
