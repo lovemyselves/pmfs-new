@@ -782,7 +782,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dedup_ret = 0;
 			if(!hash_flag){
 				goto direct_write_out;
-				printk("may write logical write");
+				// printk("may write logical write");
 			}
 			xmem = kmalloc(i, GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, i);
@@ -827,7 +827,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				if(xmem!=NULL)
 					kfree(xmem);
 				hash_map_addr_temp = hash_map_addr_entry;
-				printk("fast hit!");
+				// printk("fast hit!");
 				/* add reference content */
 				dedup_interval = 0;
 				goto find;
@@ -846,7 +846,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(xmem!=NULL)
 				kfree(xmem);
 			hash_map_addr_temp = hash_map_addr_entry;
-			printk("fit!");
+			// printk("fit!");
 			goto find;
 			/*add reference content */
 		}
@@ -862,9 +862,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		actual_num_blocks++;
-		printk("hashing:%lu", hashing);
-		printk("no fit!");
-		printk("from %lu to %lu", count-i, count-i+(hash_map_addr_temp->length));
+		// printk("hashing:%lu", hashing);
+		// printk("no fit!");
+		// printk("from %lu to %lu", count-i, count-i+(hash_map_addr_temp->length));
 		
 		find:
 		//less than 32, break;
