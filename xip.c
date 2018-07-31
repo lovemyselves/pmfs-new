@@ -178,6 +178,9 @@ bool short_hash(char *xmem, size_t len, size_t *hashing)
 	size_t trace = len >> sizeof(size_t);
 	size_t data_remainder = len & (sizeof(size_t)-1);
 	size_t k,hash_offset=0;
+
+	if(*hashing!=0)
+		return false;
 				 
 	if(data_remainder!=0)
 		memcpy(hashing, xmem+len-data_remainder, data_remainder);
@@ -188,6 +191,8 @@ bool short_hash(char *xmem, size_t len, size_t *hashing)
 			*hashing ^= (hashing >> 2);
 			hash_offset += sizeof(size_t);
 	}
+
+	return true;
 }
 
 /* claim end */
@@ -833,12 +838,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		// printk("sizeof(size_t):%lu",sizeof(size_t));
 		// printk("i>>3:%lu",i>>3);
-		// printk("hashing:%lu",hashing);
+		printk("1hashing:%lu",hashing);
 		// printk("\n");
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = xmem;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
+
+		hashing = 0;
+		if(short_hash(xmem, hash_map_addr_temp->length, &hashing))
+			printk("2hashing:%lu",hashing);
 
 		if(find_flag == true && last_hit != NULL )
 		{	
