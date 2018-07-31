@@ -191,7 +191,7 @@ bool short_hash(char *xmem, size_t len, size_t *hashing)
 			*hashing ^= (*hashing >> 2);
 			hash_offset += sizeof(size_t);
 	}
-
+	printk("sizeof(size_t):%lu", sizeof(size_t));
 	return true;
 }
 
