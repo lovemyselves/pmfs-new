@@ -187,8 +187,8 @@ bool short_hash(char *xmem, size_t len, size_t *hashing)
 	
 	for(k=0;k<trace;k++){
 			*hashing += *(size_t*)(xmem + hash_offset);
-			*hashing += (hashing << 3);
-			*hashing ^= (hashing >> 2);
+			*hashing += (*hashing << 3);
+			*hashing ^= (*hashing >> 2);
 			hash_offset += sizeof(size_t);
 	}
 
