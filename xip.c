@@ -173,6 +173,23 @@ struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t in
 	return NULL;
 }
 
+bool short_hash(char *xmem, size_t len, size_t *hashing)
+{
+	size_t trace = len >> sizeof(size_t);
+	size_t data_remainder = len & (sizeof(size_t)-1);
+	size_t k,hash_offset=0;
+				 
+	if(data_remainder!=0)
+		memcpy(hashing, xmem+len-data_remainder, data_remainder);
+	
+	for(k=0;k<trace;k++){
+			*hashing += *(size_t*)(xmem + hash_offset);
+			*hashing += (hashing << 3);
+			*hashing ^= (hashing >> 2);
+			hash_offset += sizeof(size_t);
+	}
+}
+
 /* claim end */
 
 static ssize_t
@@ -761,7 +778,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	/* insert dedup code start*/
 	i = count;
-	printk("offset1:%lu",offset);
+	
 	// xmem = kmalloc(count, GFP_KERNEL);
 	// copy_from_user(xmem, buf, count);
 	for(j = 0; j < num_blocks; j++ ){
