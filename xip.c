@@ -175,7 +175,7 @@ struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t in
 
 bool short_hash(char *xmem, size_t len, size_t *hashing)
 {
-	size_t trace = len >> sizeof(size_t);
+	size_t trace = len >> 3;
 	size_t data_remainder = len & (sizeof(size_t)-1);
 	size_t k,hash_offset=0;
 
