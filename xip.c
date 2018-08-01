@@ -801,53 +801,24 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->flag = false;
 		hash_map_addr_temp->addr = NULL;
 		hash_map_addr_temp->pfn = start_blk + j;
-		
-		// if((j&(dedup_interval-1)) != 0 && find_flag){
-		// 	// ;
-		// 	// printk("j:%lu",j);
-		// }
 
 		if(i <= pmfs_inode_blk_size(pi)){
 			hash_map_addr_temp->length = i;
 			dedup_ret = 0;
-			if(!hash_flag){
-				goto direct_write_out;
-				// printk("may write logical write");
-			}
 			xmem = kmalloc(i, GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, i);
-			if(i>>3<trace){	
-				trace = i>>3;
-				data_remainder = i&(sizeof(size_t)-1); 
-				if(data_remainder!=0)
-					memcpy(&hashing, xmem+i-data_remainder, data_remainder);
-			}
 		}else{
-			// if(!hash_flag){
-			// 	goto direct_write_out;
-			// 	printk("may write logical write");
-			// }
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
 		}
 
-		for(k=0;k<trace;k++){
-			hashing += *(size_t*)(xmem+k*8);
-			hashing += (hashing << 3);
-			hashing ^= (hashing >> 2);
-		}
-		// printk("sizeof(size_t):%lu",sizeof(size_t));
-		// printk("i>>3:%lu",i>>3);
-		printk("1hashing:%lu",hashing);
-		// printk("\n");
+		if(short_hash(xmem, hash_map_addr_temp->length, &hashing))
+			printk("2hashing:%lu",hashing);
+	
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = xmem;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
-
-		hashing = 0;
-		if(short_hash(xmem, hash_map_addr_temp->length, &hashing))
-			printk("2hashing:%lu",hashing);
 
 		if(find_flag == true && last_hit != NULL )
 		{	
