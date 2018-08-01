@@ -116,7 +116,7 @@ struct hash_map_addr *rb_search_insert_node(
 	return NULL;
 }
 
-void ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
+bool ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 {
 	struct rb_node **entry_node = &(ref_root->rb_node);
 	struct rb_node *parent = NULL;
@@ -141,12 +141,14 @@ void ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 				//  = ref_map_new->hma;
 				// rb_erase(*entry_node, ref_root);
 				// kfree(ref_map_entry);
-				return;
+				return false;
 			}	
 		}		
 	}
 	rb_link_node(&ref_map_new->node, parent, entry_node);
 	rb_insert_color(&ref_map_new->node, ref_root);
+
+	return true;
 }
 
 struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t index)
@@ -782,6 +784,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_update_time(inode, pi);
 
 	/* insert dedup code start*/
+	if(offset!=0){
+		prnitk("offset!=0");
+	}
+
+	
+
 	i = count;
 	
 	// xmem = kmalloc(count, GFP_KERNEL);
@@ -895,16 +903,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 	
 	/* don't zero-out the allocated blocks */
-	if(actual_num_blocks!=0){
-		printk("\n");
-		printk("num_blocks:%lu",num_blocks);
-		printk("count:%lu",count);
-		printk("len:%lu",len);
-		printk("pos:%lu",(size_t)pos);
-		printk("offset:%lu",(size_t)(pos & (sb->s_blocksize - 1)));
-		printk("j:%lu==========================",actual_num_blocks);
-	// 	num_blocks = actual_num_blocks;
-	}
+	// if(actual_num_blocks!=0){
+	// 	printk("\n");
+	// 	printk("num_blocks:%lu",num_blocks);
+	// 	printk("count:%lu",count);
+	// 	printk("len:%lu",len);
+	// 	printk("pos:%lu",(size_t)pos);
+	// 	printk("offset:%lu",(size_t)(pos & (sb->s_blocksize - 1)));
+	// 	printk("j:%lu==========================",actual_num_blocks);
+	// // 	num_blocks = actual_num_blocks;
+	// }
 
 	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
 
