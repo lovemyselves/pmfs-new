@@ -785,7 +785,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	/* insert dedup code start*/
 	if(offset!=0){
-		prnitk("offset!=0");
+		printk("offset!=0");
 	}
 
 	
