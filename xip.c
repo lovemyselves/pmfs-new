@@ -786,9 +786,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* insert dedup code start*/
 	if(offset!=0){
 		printk("offset!=0");
-	}
-
-	
+	}	
 
 	i = count;
 	
@@ -803,7 +801,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
 
-		hashing = 0;
+		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
+		if(!ref_insert_node(&ref_root, ref_map_temp)){
+			ref_map_temp->hma->count--;
+		}
+
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
 		hash_map_addr_temp->flag = false;
@@ -882,13 +884,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		find:
 		//less than 32, break;
-		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
+		
 		ref_map_temp->virt_addr = inode;
 		ref_map_temp->index = j+start_blk;
 		ref_map_temp->hma = hash_map_addr_temp;
 		ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
 		ref_map_temp->pfn = &hash_map_addr_temp->pfn;
-		ref_insert_node(&ref_root, ref_map_temp);
+		
 		INIT_LIST_HEAD(&ref_map_temp->list);
 		list_add_tail(&ref_map_temp->list, &dedup_ref_list);
 
