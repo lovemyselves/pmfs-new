@@ -809,7 +809,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->addr = NULL;
 		hash_map_addr_temp->pfn = start_blk + j;
 
-		if(j=0 && offset!=0){
+		if(j==0 && offset!=0){
 			if(i+offset <= pmfs_inode_blk_size(pi)){
 				xmem = kmalloc(i, GFP_KERNEL);
 				copy_from_user(xmem, buf, i);
