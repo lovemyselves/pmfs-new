@@ -798,7 +798,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		bool new_block_flag = true;
 
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
-		if(!new_block_flag=ref_insert_node(&ref_root, ref_map_temp)){
+		if(!(new_block_flag=ref_insert_node(&ref_root, ref_map_temp))){
 			ref_map_temp->hma->count--;
 			printk("no new data");
 		}
