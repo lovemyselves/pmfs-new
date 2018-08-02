@@ -792,7 +792,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	// xmem = kmalloc(count, GFP_KERNEL);
 	// copy_from_user(xmem, buf, count);
-	for(j = 0; j < num_blocks; j++ ){
+	for(j = 1; j < num_blocks; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp;
 		unsigned k, dedup_ret = 1, data_remainder;
@@ -809,7 +809,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 
 		if(offset!=0){
-			printk("offfset = 0");
+			printk("offfset != 0");
 		}
 
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
@@ -900,10 +900,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		INIT_LIST_HEAD(&ref_map_temp->list);
 		list_add_tail(&ref_map_temp->list, &dedup_ref_list);
 
-		// printk("inode:%lu",(size_t)ref_map_temp->virt_addr);
-		// printk("index:%lu",ref_map_temp->index);
-		// printk("length:%lu",hash_map_addr_temp->length);
-		
 		i -= hash_map_addr_temp->length;	
 	}
 	
