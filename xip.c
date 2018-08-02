@@ -904,10 +904,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("index:%lu",ref_map_temp->index);
 		// printk("length:%lu",hash_map_addr_temp->length);
 		
-		if(dedup_ret == 0)
-			break;
-		else
-			i -= pmfs_inode_blk_size(pi);	
+		i -= hash_map_addr_temp->length;	
 	}
 	
 	/* don't zero-out the allocated blocks */
