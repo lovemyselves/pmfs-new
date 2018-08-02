@@ -808,6 +808,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("no new data");
 		}
 
+		if(offset){
+			printk("offfset != 0");
+		}
+
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
 		hash_map_addr_temp->flag = false;
