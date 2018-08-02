@@ -813,9 +813,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(i+offset <= pmfs_inode_blk_size(pi)){
 				xmem = kmalloc(i, GFP_KERNEL);
 				copy_from_user(xmem, buf, i);
+				hash_map_addr_temp->length = i;
 			}else{
 				xmem = kmalloc(pmfs_inode_blk_size(pi)-offset, GFP_KERNEL);
 				copy_from_user(xmem, buf, pmfs_inode_blk_size(pi)-offset);
+				hash_map_addr_temp->length = pmfs_inode_blk_size(pi) - offset;
 				i -= pmfs_inode_blk_size(pi) - offset;
 			}
 		}
