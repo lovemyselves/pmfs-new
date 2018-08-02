@@ -808,7 +808,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("no new data");
 		}
 
-		if(offset==0){
+		if(offset!=0){
 			printk("offfset = 0");
 		}
 
