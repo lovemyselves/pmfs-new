@@ -800,10 +800,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		bool hash_flag = true;
 		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
+		bool new_block_flag = true;
 
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
-		if(!ref_insert_node(&ref_root, ref_map_temp)){
+		if(new_block_flag=!ref_insert_node(&ref_root, ref_map_temp)){
 			ref_map_temp->hma->count--;
+			printk("no new data");
 		}
 
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
