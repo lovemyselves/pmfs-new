@@ -536,7 +536,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				j++;
 				// printk("new data block");
 				// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
-				// printk("a new data block");
+				printk("a new data block");
 				// printk("flush");
 				// printk("2 copied:%lu",copied);
 			}else
