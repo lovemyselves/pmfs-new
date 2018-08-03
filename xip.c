@@ -480,35 +480,22 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
 			/* add physical address */
 			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
-			// while(hash_map_addr_entry->hashing_md5 != buf){
-			// 	buf += 4096;
-			// 	i -= 4096;
-			// 	if(i<bytes)
-			// 		goto dedup;
-			// }
-			// printk("buf:%lu", (size_t)buf);
-			// printk("hash_map_addr_entry:%lu", (size_t)(hash_map_addr_entry->hashing_md5));
-			// printk("copied-bytes:%lu",copied-bytes);
+			
 			copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-			if(!hash_map_addr_entry->flag){
-				
-				copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-				
+			if(!hash_map_addr_entry->flag){	
 				if(hash_map_addr_entry->addr!=NULL)
 					kfree(hash_map_addr_entry->addr);
 				hash_map_addr_entry->addr = (void*)xmem;
 				hash_map_addr_entry->pfn = xpfn;
 				
 				new_list = new_list->next;
-				hash_map_addr_entry->flag = true;
 				hash_map_addr_entry->hashing_md5 = NULL;
-				
+				hash_map_addr_entry->flag = true;
 				j++;
 				// printk("new data block");
 				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 				printk("a new data block");
-			}else
-				printk("flag false!");
+			}
 		}else{
 			printk("ino:%lu",inode->i_ino);
 			printk("index:%lu",index);
