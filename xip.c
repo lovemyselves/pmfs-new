@@ -482,15 +482,13 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 					kfree(hash_map_addr_entry->addr);
 				hash_map_addr_entry->addr = (void*)xmem;
 				hash_map_addr_entry->pfn = xpfn;
-				
-				new_list = new_list->next;
 				hash_map_addr_entry->hashing_md5 = NULL;
 				hash_map_addr_entry->flag = true;
-				j++;
-				// printk("new data block");
-				pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
-				printk("a new data block");
 			}
+			pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+			j++;
+			printk("a new data block");
+			new_list = new_list->next;
 		}else{
 			printk("ino:%lu",inode->i_ino);
 			printk("index:%lu",index);
