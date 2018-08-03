@@ -820,6 +820,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hash_map_addr_temp->length = pmfs_inode_blk_size(pi) - offset;
 				i -= pmfs_inode_blk_size(pi) - offset;
 			}
+			goto direct_write_out;
 		}
 		else{
 			if(i <= pmfs_inode_blk_size(pi)){
