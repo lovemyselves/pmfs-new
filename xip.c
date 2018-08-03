@@ -446,13 +446,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		void *xmem;
 		unsigned long xpfn;
 		//dedup claiming start
-		// unsigned hashing = 0;
-		// unsigned long *temp = kmalloc(sizeof(unsigned long), GFP_KERNEL);
-		// size_t i = count;
 		
 		struct hash_map_addr *hash_map_addr_entry;//, *hash_map_addr_temp;
-		// hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-		//end
 
 		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 		index = pos >> sb->s_blocksize_bits;
@@ -463,8 +458,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
 		// status = 0;
 		
-		// if (status)
-		// 	break;
+		if (status)
+			break;
 
 		copied = bytes;
 
