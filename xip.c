@@ -136,11 +136,11 @@ bool ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				ref_map_entry->hma->count--;
-				// printk("new count:%lu",ref_map_new->hma->count);
-				ref_map_entry->hma = ref_map_new->hma;
+				// ref_map_entry->hma = ref_map_new->hma;
 				//  = ref_map_new->hma;
 				// rb_erase(*entry_node, ref_root);
 				// kfree(ref_map_entry);
+				ref_map_new = ref_map_entry;
 				return false;
 			}	
 		}		
