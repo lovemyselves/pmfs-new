@@ -681,12 +681,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		ref_map_temp->index = j+start_blk;
 
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp); 
-		// if(!insert_ret){
+		if(!insert_ret){
 		// 	ref_map_temp = insert_ret;
 		// 	if(ref_map_temp->hma->count!=0)
 		// 		printk("should alloc a new block for copy on write");
-		// 	printk("no new data");
-		// }
+			printk("no new data");
+		}
 
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
