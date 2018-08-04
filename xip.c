@@ -667,7 +667,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		unsigned k, block_len;
 		void *xmem = NULL;
-		bool hash_flag = true;
+		bool hash_flag = true, overwrite_flag = false;
 		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
 
@@ -688,33 +688,29 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("no new data");
 		}
 
-		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
-		hash_map_addr_temp->flag = false;
-
 		if(j==0 && offset!=0){
 			if(i+offset <= pmfs_inode_blk_size(pi))
 				block_len = i;
 			else
 				block_len = pmfs_inode_blk_size(pi)-offset;
-			
-			hash_map_addr_temp->length = block_len;
-			xmem = kmalloc(block_len, GFP_KERNEL);
-			copy_from_user(xmem, buf+count-i, block_len);
-			i -= block_len;
-			
-			hash_map_addr_temp->flag = true;
-			goto direct_write_out;
+			overwrite_flag = true;	
 		}
 		else{
 			if(i <= pmfs_inode_blk_size(pi))
 				block_len = i;
 			else
 				block_len = pmfs_inode_blk_size(pi);	
-			hash_map_addr_temp->length = block_len;
-			xmem = kmalloc(block_len, GFP_KERNEL);
-			copy_from_user(xmem, buf+count-i, block_len);
-			i -= block_len;
+		}
+		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
+		hash_map_addr_temp->flag = false;
+		hash_map_addr_temp->length = block_len;
+		xmem = kmalloc(block_len, GFP_KERNEL);
+		copy_from_user(xmem, buf+count-i, block_len);
+		i -= block_len;
+		if(overwrite_flag = true){
+			hash_map_addr_temp->flag = true;
+			goto direct_write_out;
 		}
 
 		if(short_hash(xmem, hash_map_addr_temp->length, &hashing))
