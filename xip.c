@@ -401,7 +401,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
 
-	// printk("++++++++++++++++++++++++++++++++++++++++++++");
 	do {
 		unsigned long index;
 		unsigned long offset;
@@ -434,28 +433,28 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
 
-		// if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
-		// 	/* add physical address */
-		// 	hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
+		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
+			/* add physical address */
+			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
 			
-		// 	// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-		// 	if(!hash_map_addr_entry->flag){	
-		// 		if(hash_map_addr_entry->addr!=NULL)
-		// 			kfree(hash_map_addr_entry->addr);
-		// 		hash_map_addr_entry->addr = (void*)xmem;
-		// 		hash_map_addr_entry->pfn = xpfn;
-		// 		hash_map_addr_entry->hashing_md5 = NULL;
-		// 		hash_map_addr_entry->flag = true;
-		// 	}
-		// 	// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
-		// 	j++;
-		// 	printk("a new data block");
-		// 	new_list = new_list->next;
-		// }else{
-		// 	printk("ino:%lu",inode->i_ino);
-		// 	printk("index:%lu",index);
-		// 	printk("no new");
-		// }
+			// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+			if(!hash_map_addr_entry->flag){	
+				if(hash_map_addr_entry->addr!=NULL)
+					kfree(hash_map_addr_entry->addr);
+				hash_map_addr_entry->addr = (void*)xmem;
+				hash_map_addr_entry->pfn = xpfn;
+				hash_map_addr_entry->hashing_md5 = NULL;
+				hash_map_addr_entry->flag = true;
+			}
+			// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+			j++;
+			printk("a new data block");
+			new_list = new_list->next;
+		}else{
+			printk("ino:%lu",inode->i_ino);
+			printk("index:%lu",index);
+			printk("no new");
+		}
 
 
 		/* if start or end dest address is not 8 byte aligned, 
@@ -482,14 +481,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			break;	
 	} while (count);
 
-	//dedup insert rbtree node start
-	// printk("============================================\n");
-	// printk("============================================");
-	//end
-	printk("+++++++++++++++++++j:%d+++++++++++++++++++++++++++++++++",j);
-
 	*ppos = pos;
-	// printk("pos:%lu", (size_t)pos);
 	
 	/*
  	* No need to use i_size_read() here, the i_size
@@ -498,8 +490,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	if (pos > inode->i_size) {
 		i_size_write(inode, pos);
 		pmfs_update_isize(inode, pi);
-		// printk("inode->i_size:%lu", (size_t)inode->i_size);
-		// printk("isize update!");
 	}
 
 	PMFS_END_TIMING(internal_write_t, write_time);
@@ -634,19 +624,17 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	offset = pos & (sb->s_blocksize - 1);
 	num_blocks = ((count + offset - 1) >> sb->s_blocksize_bits) + 1;
-	// printk("num_blocks:%lu",num_blocks);
 	/* offset in the actual block size block */
 	offset = pos & (pmfs_inode_blk_size(pi) - 1);
 	start_blk = pos >> sb->s_blocksize_bits;
 	end_blk = start_blk + num_blocks - 1;
 
 	block = pmfs_find_data_block(inode, start_blk);
-	// printk("block:%llu", block);
 
 	/* Referring to the inode's block size, not 4K */
 	same_block = (((count + offset - 1) >>
 			pmfs_inode_blk_shift(pi)) == 0) ? 1 : 0;
-	// printk("same_block:%d",same_block);	
+
 	if (block && same_block) {
 		PMFS_START_TIMING(xip_write_fast_t, xip_write_fast_time);
 		ret = pmfs_file_write_fast(sb, inode, pi, buf, count, pos,
@@ -799,17 +787,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 	
 	/* don't zero-out the allocated blocks */
-	// if(actual_num_blocks!=0){
-	// 	printk("\n");
-	// 	printk("num_blocks:%lu",num_blocks);
-	// 	printk("count:%lu",count);
-	// 	printk("len:%lu",len);
-	// 	printk("pos:%lu",(size_t)pos);
-	// 	printk("offset:%lu",(size_t)(pos & (sb->s_blocksize - 1)));
-	// 	printk("j:%lu==========================",actual_num_blocks);
-	// // 	num_blocks = actual_num_blocks;
-	// }
-
 	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
