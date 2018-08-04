@@ -430,37 +430,38 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
-		// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
-		// printk("index:%lu",index);
+
 		// if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
-		if(new_list->next!=&hash_map_addr_list && new_list->next!=NULL){
-			/* add physical address */
-			hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
+		// 	/* add physical address */
+		// 	hash_map_addr_entry = list_entry(new_list->next, struct hash_map_addr, list);
 			
-			copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
-			if(!hash_map_addr_entry->flag){	
-				if(hash_map_addr_entry->addr!=NULL)
-					kfree(hash_map_addr_entry->addr);
-				hash_map_addr_entry->addr = (void*)xmem;
-				hash_map_addr_entry->pfn = xpfn;
-				hash_map_addr_entry->hashing_md5 = NULL;
-				hash_map_addr_entry->flag = true;
-			}
-			pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
-			j++;
-			printk("a new data block");
-			new_list = new_list->next;
-		}else{
-			printk("ino:%lu",inode->i_ino);
-			printk("index:%lu",index);
-			printk("no new");
-		}
+		// 	// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
+		// 	if(!hash_map_addr_entry->flag){	
+		// 		if(hash_map_addr_entry->addr!=NULL)
+		// 			kfree(hash_map_addr_entry->addr);
+		// 		hash_map_addr_entry->addr = (void*)xmem;
+		// 		hash_map_addr_entry->pfn = xpfn;
+		// 		hash_map_addr_entry->hashing_md5 = NULL;
+		// 		hash_map_addr_entry->flag = true;
+		// 	}
+		// 	// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
+		// 	j++;
+		// 	printk("a new data block");
+		// 	new_list = new_list->next;
+		// }else{
+		// 	printk("ino:%lu",inode->i_ino);
+		// 	printk("index:%lu",index);
+		// 	printk("no new");
+		// }
+
+
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
 	 	 * (instead of movnti) to write. So flush those cachelines. */
-		// pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
+		pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
 	
 		// dedup:
         if (likely(copied > 0)) {
