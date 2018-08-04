@@ -680,7 +680,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		ref_map_temp->virt_addr = inode;
 		ref_map_temp->index = j+start_blk;
 
-		ref_insert_node(&ref_root, ref_map_temp); 
+		insert_ret = ref_insert_node(&ref_root, ref_map_temp); 
 		// if(!insert_ret){
 		// 	ref_map_temp = insert_ret;
 		// 	if(ref_map_temp->hma->count!=0)
