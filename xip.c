@@ -141,7 +141,7 @@ bool ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 				// rb_erase(*entry_node, ref_root);
 				// kfree(ref_map_entry);
 				ref_map_new = ref_map_entry;
-				printk("a exist index");
+				// printk("a exist index");
 				return false;
 			}	
 		}		
