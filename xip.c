@@ -450,14 +450,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			}
 			// pmfs_flush_edge_cachelines(pos, copied, xmem + offset);
 			j++;
-			printk("a new data block");
+			// printk("a new data block");
 			new_list = new_list->next;
-		}else{
-			printk("ino:%lu",inode->i_ino);
-			printk("index:%lu",index);
-			printk("no new");
 		}
-
 
 		/* if start or end dest address is not 8 byte aligned, 
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
