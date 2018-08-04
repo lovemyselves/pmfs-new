@@ -691,8 +691,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
 		hash_map_addr_temp->flag = false;
-		hash_map_addr_temp->addr = NULL;
-		hash_map_addr_temp->pfn = start_blk + j;
 
 		if(j==0 && offset!=0){
 			if(i+offset <= pmfs_inode_blk_size(pi)){
@@ -773,6 +771,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		actual_num_blocks++;
+		hash_map_addr_temp->addr = xmem;
+		hash_map_addr_temp->pfn = start_blk + j;
 		
 		find:
 		//less than 32, break;
