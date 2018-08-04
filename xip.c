@@ -116,7 +116,7 @@ struct hash_map_addr *rb_search_insert_node(
 	return NULL;
 }
 
-bool ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
+struct ref_map* ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 {
 	struct rb_node **entry_node = &(ref_root->rb_node);
 	struct rb_node *parent = NULL;
@@ -142,14 +142,14 @@ bool ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
 				kfree(ref_map_new);
 				// ref_map_new = ref_map_entry;
 				// printk("a exist index");
-				return false;
+				return ref_map_entry;
 			}	
 		}		
 	}
 	rb_link_node(&ref_map_new->node, parent, entry_node);
 	rb_insert_color(&ref_map_new->node, ref_root);
 
-	return true;
+	return NULL;
 }
 
 struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t index)
@@ -679,20 +679,20 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	for(j = 0; j < num_blocks; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
-		struct ref_map *ref_map_temp;
+		struct ref_map *ref_map_temp, insert_ret = NULL;
 		unsigned k, data_remainder;
 		void *xmem = NULL;
 		bool hash_flag = true;
 		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
-		bool new_block_flag = true;
 
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
 		ref_map_temp->virt_addr = inode;
 		ref_map_temp->index = j+start_blk;
 
-		if(!ref_insert_node(&ref_root, ref_map_temp)){
-			new_block_flag = false;
+		insert_ret = ref_insert_node(&ref_root, ref_map_temp); 
+		if(!insert_ret){
+			ref_map_temp = insert_ret;
 			if(ref_map_temp->hma->count!=0)
 				printk("should alloc a new block for copy on write");
 			printk("no new data");
@@ -788,8 +788,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		find:
 		//less than 32, break;
-		if(new_block_flag){
-			
+		if(!insert_ret){
 			ref_map_temp->hma = hash_map_addr_temp;
 			ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
 			ref_map_temp->pfn = &hash_map_addr_temp->pfn;
