@@ -708,7 +708,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		xmem = kmalloc(block_len, GFP_KERNEL);
 		copy_from_user(xmem, buf+count-i, block_len);
 		i -= block_len;
-		if(overwrite_flag = true){
+		if(overwrite_flag){
 			hash_map_addr_temp->flag = true;
 			goto direct_write_out;
 		}
