@@ -665,7 +665,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	for(j = 0; j < num_blocks; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
-		unsigned k, data_remainder;
+		unsigned k, block_len;
 		void *xmem = NULL;
 		bool hash_flag = true;
 		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
@@ -767,12 +767,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	;
 		// }
 
+		hash_map_addr_temp->addr = xmem;
+		hash_map_addr_temp->pfn = start_blk + j;
 		direct_write_out:
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		actual_num_blocks++;
-		hash_map_addr_temp->addr = xmem;
-		hash_map_addr_temp->pfn = start_blk + j;
 		
 		find:
 		//less than 32, break;
