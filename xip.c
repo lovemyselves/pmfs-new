@@ -725,6 +725,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		bool new_block_flag = true;
 
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
+		ref_map_temp->virt_addr = inode;
+		ref_map_temp->index = j+start_blk;
+
 		if(!ref_insert_node(&ref_root, ref_map_temp)){
 			new_block_flag = false;
 			if(ref_map_temp->hma->count!=0)
@@ -823,8 +826,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		find:
 		//less than 32, break;
 		if(new_block_flag){
-			ref_map_temp->virt_addr = inode;
-			ref_map_temp->index = j+start_blk;
+			
 			ref_map_temp->hma = hash_map_addr_temp;
 			ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
 			ref_map_temp->pfn = &hash_map_addr_temp->pfn;
