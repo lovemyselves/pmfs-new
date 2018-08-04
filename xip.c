@@ -693,32 +693,28 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->flag = false;
 
 		if(j==0 && offset!=0){
-			if(i+offset <= pmfs_inode_blk_size(pi)){
+			if(i+offset <= pmfs_inode_blk_size(pi))
 				block_len = i;
-				hash_map_addr_temp->length = block_len;
-				xmem = kmalloc(block_len, GFP_KERNEL);
-				copy_from_user(xmem, buf, block_len);
-				i -= block_len;
-			}else{
+			else
 				block_len = pmfs_inode_blk_size(pi)-offset;
-				hash_map_addr_temp->length = block_len;
-				xmem = kmalloc(block_len, GFP_KERNEL);
-				copy_from_user(xmem, buf, block_len);
-				i -= block_len;
-			}
+			
+			hash_map_addr_temp->length = block_len;
+			xmem = kmalloc(block_len, GFP_KERNEL);
+			copy_from_user(xmem, buf+count-i, block_len);
+			i -= block_len;
+			
 			hash_map_addr_temp->flag = true;
 			goto direct_write_out;
 		}
 		else{
-			if(i <= pmfs_inode_blk_size(pi)){
-				hash_map_addr_temp->length = i;
-				xmem = kmalloc(i, GFP_KERNEL);
-				copy_from_user(xmem, buf+count-i, i);
-			}else{
-				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
-				copy_from_user(xmem, buf+count-i, pmfs_inode_blk_size(pi));
-		    	i -= hash_map_addr_temp->length;	
-			}
+			if(i <= pmfs_inode_blk_size(pi))
+				block_len = i;
+			else
+				block_len = pmfs_inode_blk_size(pi);	
+			hash_map_addr_temp->length = block_len;
+			xmem = kmalloc(block_len, GFP_KERNEL);
+			copy_from_user(xmem, buf+count-i, block_len);
+			i -= block_len;
 		}
 
 		if(short_hash(xmem, hash_map_addr_temp->length, &hashing))
