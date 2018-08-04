@@ -677,7 +677,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp); 
 		if(insert_ret){
-		// 	ref_map_temp = insert_ret;
+			ref_map_temp = insert_ret;
 		// 	if(ref_map_temp->hma->count!=0)
 		// 		printk("should alloc a new block for copy on write");
 			printk("no new data");
