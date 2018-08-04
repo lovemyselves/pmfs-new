@@ -42,6 +42,8 @@ bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
+static struct kmem_cache *pmfs_dedup_cachep;
+
 size_t dedup_interval = 1;
 /*
 	dedup rbtree function
@@ -767,8 +769,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	;
 		// }
 
-		// printk("hashing:%lu",hashing);
-		// rb_insert_node(&root, hash_map_addr_temp);
 		direct_write_out:
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
