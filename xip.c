@@ -42,7 +42,7 @@ bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
-static struct kmem_cache *pmfs_dedup_cachep;
+// static struct kmem_cache *pmfs_dedup_cachep;
 
 size_t dedup_interval = 1;
 /*
@@ -993,9 +993,9 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 {
 	int rc, dedup_rc;
 	sector_t block = 0;
-	sector_t dedup_block = 0;
+	// sector_t dedup_block = 0;
 	struct inode *inode = mapping->host;
-	struct ref_map *ref_map_temp;
+	// struct ref_map *ref_map_temp;
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
 	dedup_rc = rc;
