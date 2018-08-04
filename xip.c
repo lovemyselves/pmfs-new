@@ -683,7 +683,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("should alloc a new block for copy on write");
 			else{
 				printk("shoud update in-place");
-				hash_map_addr_temp->count++;
+				hash_map_addr_temp->count = 1;
 			}
 			printk("no new data");
 		}
