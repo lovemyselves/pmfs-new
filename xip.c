@@ -441,9 +441,9 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			
 			// copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 			if(!hash_map_addr_entry->flag){	
-				if(hash_map_addr_entry->addr!=NULL)
-					kfree(hash_map_addr_entry->addr);
-				hash_map_addr_entry->addr = (void*)xmem;
+				// if(hash_map_addr_entry->addr!=NULL)
+				// 	kfree(hash_map_addr_entry->addr);
+				// hash_map_addr_entry->addr = (void*)xmem;
 				hash_map_addr_entry->pfn = xpfn;
 				hash_map_addr_entry->hashing_md5 = NULL;
 				hash_map_addr_entry->flag = true;
