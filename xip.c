@@ -708,7 +708,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(overwrite_flag == 2){
 			copy_from_user(xmem, buf+count-i, block_len);
 			// memcpy(xmem);
-			// memcpy(dedup_offset+ref_map_temp->phys_addr, xmem, block_len);
+			memcpy(dedup_offset+(ref_map_temp->phys_addr), xmem, block_len);
 			//hash zero
 			//del node from rbtree
 			// goto direct_write_out;
