@@ -687,6 +687,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("shoud update in-place");
 				hash_map_addr_temp->count = 1;
 				overwrite_flag = 2;
+				xmem = hash_map_addr_temp->addr;
 			}
 			printk("no new data");
 		}
@@ -696,7 +697,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			block_len = pmfs_inode_blk_size(pi)-dedup_offset;
 		if(overwrite_flag == 2){
-			copy_from_user(dedup_offset+hash_map_addr_temp->addr, buf+count-i, block_len);
+			copy_from_user(dedup_offset+xmem, buf+count-i, block_len);
 			//hash zero
 			//del node from rbtree
 			goto direct_write_out;
