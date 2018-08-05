@@ -679,13 +679,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp); 
 		if(insert_ret){
 			ref_map_temp = insert_ret;
-			hash_map_addr_temp = ref_map_temp->hma; 
-			printk("ref count:%lu", hash_map_addr_temp->count);
-			if(hash_map_addr_temp->count!=0)
+			// hash_map_addr_temp = ref_map_temp->hma; 
+			printk("ref count:%lu", ref_map_temp->hma->count);
+			if(ref_map_temp->hma->count!=0)
 				overwrite_flag = 1;
 			else{
 				printk("shoud update in-place");
-				hash_map_addr_temp->count = 1;
+				ref_map_temp->hma->count = 1;
 				overwrite_flag = 2;
 				xmem = ref_map_temp->phys_addr;
 			}
