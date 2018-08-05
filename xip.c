@@ -398,7 +398,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	ssize_t     written = 0;
 	struct pmfs_inode *pi;
 	timing_t memcpy_time, write_time;
-	int j = 0;
 
 	PMFS_START_TIMING(internal_write_t, write_time);
 	pi = pmfs_get_inode(sb, inode->i_ino);
@@ -411,7 +410,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		unsigned long xpfn;
 		//dedup claiming start
 		
-		struct hash_map_addr *hash_map_addr_entry;//, *hash_map_addr_temp;
+		// struct hash_map_addr *hash_map_addr_entry;//, *hash_map_addr_temp;
 
 		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 		index = pos >> sb->s_blocksize_bits;
