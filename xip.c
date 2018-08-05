@@ -684,10 +684,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			ref_map_temp = insert_ret;
 			// hash_map_addr_temp = ref_map_temp->hma; 
 			printk("ref count:%lu", ref_map_temp->hma->count);
-			if(ref_map_temp->hma->count!=0)
+			if(ref_map_temp->hma->count!=0){
 				overwrite_flag = 1;
+				printk("should update COW");
+			}	
 			else{
-				printk("shoud update in-place");
+				printk("should update in-place");
 				ref_map_temp->hma->count = 1;
 				overwrite_flag = 2;
 			}
