@@ -667,9 +667,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		unsigned k, block_len;
 		void *xmem = NULL;
-		bool hash_flag = true;
+		// bool hash_flag = true;
 		size_t overwrite_flag = 0;
-		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
+		// size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
 
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
@@ -685,7 +685,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				overwrite_flag = 1;
 			else{
 				printk("shoud update in-place");
-				hash_map_addr_temp->count = 1
+				hash_map_addr_temp->count = 1;
 				overwrite_flag = 2;
 			}
 			printk("no new data");
