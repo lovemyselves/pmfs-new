@@ -877,17 +877,17 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	// printk("err:%d",err);
 	
 	//dedup insert
-	ref_map_temp = ref_search_node(&ref_root, inode, (size_t)(vmf->pgoff));
-	if(ref_map_temp!=NULL)
-	{
-		// printk("pfn in fault:%lu",(size_t)(*ref_map_temp->pfn));
-		xip_pfn = *ref_map_temp->pfn;
-		err = 0;
-	}else
-		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
+	// ref_map_temp = ref_search_node(&ref_root, inode, (size_t)(vmf->pgoff));
+	// if(ref_map_temp!=NULL)
+	// {
+	// 	// printk("pfn in fault:%lu",(size_t)(*ref_map_temp->pfn));
+	// 	xip_pfn = *ref_map_temp->pfn;
+	// 	err = 0;
+	// }else
+	// 	err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	//end
 
-	// pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
+	err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 
 	if (unlikely(err)) {
 		pmfs_dbg("[%s:%d] get_xip_mem failed(OOM). vm_start(0x%lx),"
