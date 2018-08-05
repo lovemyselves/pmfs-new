@@ -690,17 +690,22 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("shoud update in-place");
 				ref_map_temp->hma->count = 1;
 				overwrite_flag = 2;
-				xmem = ref_map_temp->phys_addr;
 			}
 			printk("no new data");
 		}
-	
+
+		hash_map_addr_temp->length = block_len;
+		xmem = kmalloc(block_len, GFP_KERNEL);
+		copy_from_user(xmem, buf+count-i, block_len);
+		i -= block_len;
+
 		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
 			block_len = i;
 		else
 			block_len = pmfs_inode_blk_size(pi)-dedup_offset;
 		if(overwrite_flag == 2){
-			copy_from_user(dedup_offset+xmem, buf+count-i, block_len);
+			copy_from_user(xmem, buf+count-i, block_len);
+			memcpy(dedup_offset+ref_map_temp->phys_addr, xmem, block_len);
 			//hash zero
 			//del node from rbtree
 			// goto direct_write_out;
@@ -712,16 +717,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			ref_map_temp->hma->addr = xmem;
 			// goto direct_write_out;
 		}
+		dedup_offset = 0;
 		if(overwrite_flag!=0){
 			hash_map_addr_temp->flag = true;
 			goto direct_write_out;
 		}
-		dedup_offset = 0;
-		hash_map_addr_temp->length = block_len;
-		xmem = kmalloc(block_len, GFP_KERNEL);
-		copy_from_user(xmem, buf+count-i, block_len);
-		i -= block_len;
-		
 
 		if(short_hash(xmem, hash_map_addr_temp->length, &hashing))
 			printk("2hashing:%lu",hashing);
