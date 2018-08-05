@@ -687,7 +687,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("shoud update in-place");
 				hash_map_addr_temp->count = 1;
 				overwrite_flag = 2;
-				xmem = hash_map_addr_temp->addr;
+				xmem = ref_map_temp->phys_addr;
 			}
 			printk("no new data");
 		}
