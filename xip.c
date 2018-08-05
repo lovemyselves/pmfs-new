@@ -665,7 +665,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	for(j = 0; j < num_blocks; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
-		unsigned k, block_len;
+		unsigned block_len;
 		void *xmem = NULL;
 		// bool hash_flag = true;
 		size_t overwrite_flag = 0;
