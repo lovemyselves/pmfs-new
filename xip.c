@@ -704,13 +704,17 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			copy_from_user(dedup_offset+xmem, buf+count-i, block_len);
 			//hash zero
 			//del node from rbtree
-			goto direct_write_out;
+			// goto direct_write_out;
 		}else if(overwrite_flag == 1){
 			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
 			memcpy(xmem, ref_map_temp->phys_addr, dedup_offset + block_len);
 			copy_from_user(xmem+dedup_offset, buf+count-i, block_len);
 			ref_map_temp->phys_addr = xmem;
 			ref_map_temp->hma->addr = xmem;
+			// goto direct_write_out;
+		}
+		if(overwrite_flag!=0){
+			hash_map_addr_temp->flag = true;
 			goto direct_write_out;
 		}
 		dedup_offset = 0;
@@ -718,10 +722,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		xmem = kmalloc(block_len, GFP_KERNEL);
 		copy_from_user(xmem, buf+count-i, block_len);
 		i -= block_len;
-		if(overwrite_flag){
-			hash_map_addr_temp->flag = true;
-			goto direct_write_out;
-		}
+		
 
 		if(short_hash(xmem, hash_map_addr_temp->length, &hashing))
 			printk("2hashing:%lu",hashing);
