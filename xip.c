@@ -676,6 +676,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		ref_map_temp->virt_addr = inode;
 		ref_map_temp->index = j+start_blk;
 
+		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
+		hash_map_addr_temp->flag = false;
+
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp); 
 		if(insert_ret){
 			ref_map_temp = insert_ret;
@@ -710,9 +714,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			goto direct_write_out;
 		}
 		dedup_offset = 0;
-		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
-		hash_map_addr_temp->flag = false;
 		hash_map_addr_temp->length = block_len;
 		xmem = kmalloc(block_len, GFP_KERNEL);
 		copy_from_user(xmem, buf+count-i, block_len);
