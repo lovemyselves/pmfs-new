@@ -705,13 +705,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		xmem = kmalloc(block_len, GFP_KERNEL);
 		copy_from_user(xmem, buf+count-i, block_len);
 		
-		if(overwrite_flag == 2 & false){
+		if(overwrite_flag == 2){
 			copy_from_user(xmem, buf+count-i, block_len);
-			memcpy(dedup_offset+ref_map_temp->phys_addr, xmem, block_len);
+			// memcpy(xmem);
+			// memcpy(dedup_offset+ref_map_temp->phys_addr, xmem, block_len);
 			//hash zero
 			//del node from rbtree
 			// goto direct_write_out;
-		}else if(overwrite_flag == 1 & false){
+		}else if(overwrite_flag == 1){
 			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
 			memcpy(xmem, ref_map_temp->phys_addr, dedup_offset + block_len);
 			copy_from_user(xmem+dedup_offset, buf+count-i, block_len);
