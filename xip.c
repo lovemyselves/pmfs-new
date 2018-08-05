@@ -695,15 +695,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}		
 
 		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
-			block_len = i + dedup_offset;
+			block_len = i;
 		else
-			block_len = pmfs_inode_blk_size(pi);
+			block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 
 		hash_map_addr_temp->length = block_len;
 		xmem = kmalloc(block_len, GFP_KERNEL);
 		copy_from_user(xmem, buf+count-i, block_len);
 		
-		if(overwrite_flag == 2){
+		if(overwrite_flag == 2 & false){
 			void *mem_buf = kmalloc(block_len, GFP_KERNEL); 
 			memcpy(mem_buf, ref_map_temp->phys_addr, block_len);
 			copy_from_user(mem_buf + dedup_offset, buf+count-i, block_len-dedup_offset);
@@ -739,7 +739,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = xmem;
 		hash_map_addr_temp->pfn = start_blk + j;
-		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
+		// INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
 		if(find_flag == true && last_hit != NULL )
 		{	
