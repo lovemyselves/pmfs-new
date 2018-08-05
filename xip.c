@@ -596,7 +596,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	timing_t xip_write_time, xip_write_fast_time;
 
 	//dedup claiming start
-	size_t i,j;	
+	size_t i,j,dedup_offset;	
 	struct hash_map_addr *hash_map_addr_entry;
 	unsigned long actual_num_blocks = 0;
 	//end
@@ -661,13 +661,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	/* insert dedup code start*/
 
 	i = count;
-	
+	dedup_offset = offset;
 	for(j = 0; j < num_blocks; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		unsigned k, block_len;
 		void *xmem = NULL;
-		bool hash_flag = true, overwrite_flag = false;
+		bool hash_flag = true;
+		size_t overwrite_flag = 0;
 		size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
 
@@ -681,27 +682,31 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_temp = ref_map_temp->hma; 
 			printk("ref count:%lu", hash_map_addr_temp->count);
 			if(hash_map_addr_temp->count!=0)
-				printk("should alloc a new block for copy on write");
+				overwrite_flag = 1;
 			else{
 				printk("shoud update in-place");
-				hash_map_addr_temp->count = 1;
+				hash_map_addr_temp->count = 1
+				overwrite_flag = 2;
 			}
 			printk("no new data");
 		}
-
-		if(j==0 && offset!=0){
-			if(i+offset <= pmfs_inode_blk_size(pi))
-				block_len = i;
-			else
-				block_len = pmfs_inode_blk_size(pi)-offset;
-			overwrite_flag = true;	
+	
+		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
+			block_len = i;
+		else
+			block_len = pmfs_inode_blk_size(pi)-dedup_offset;
+		if(overwrite_flag == 2){
+			copy_from_user(dedup_offset+hash_map_addr_temp->addr, buf+count-i, block_len);
+			//hash zero
+			//del node from rbtree
+			goto direct_write_out;
+		}else if(overwrite_flag == 1){
+			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
+			memcpy(xmem, hash_map_addr_temp->addr, dedup_offset + block_len);
+			copy_from_user(xmem+dedup_offset, buf+count-i, block_len);
+			hash_map_addr_temp->addr = xmem;
 		}
-		else{
-			if(i <= pmfs_inode_blk_size(pi))
-				block_len = i;
-			else
-				block_len = pmfs_inode_blk_size(pi);	
-		}
+		dedup_offset = 0;
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
 		hash_map_addr_temp->flag = false;
