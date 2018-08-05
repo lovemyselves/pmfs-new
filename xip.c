@@ -693,7 +693,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				ref_map_temp->hma->count = 1;
 				overwrite_flag = 2;
 			}
-			printk("no new data");
 		}		
 
 		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
@@ -707,21 +706,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			copy_from_user(mem_buf + dedup_offset, buf+count-i, block_len);
 			ref_map_temp->phys_addr = mem_buf;
 			hash_map_addr_temp->count = 1;
-			hash_map_addr_temp->addr = xmem;
+			hash_map_addr_temp->addr = mem_buf;
 			INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
-
-			// memcpy(xmem);
-			// memcpy(dedup_offset+(ref_map_temp->phys_addr), xmem, block_len);
-			//hash zero
-			//del node from rbtree
-			// goto direct_write_out;
 		}else if(overwrite_flag == 1){
 			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
 			memcpy(xmem, ref_map_temp->phys_addr, dedup_offset + block_len);
 			copy_from_user(xmem+dedup_offset, buf+count-i, block_len);
 			ref_map_temp->phys_addr = xmem;
 			ref_map_temp->hma->addr = xmem;
-			// goto direct_write_out;
 		}
 		dedup_offset = 0;
 		i -= block_len;
@@ -862,7 +854,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	unsigned long xip_pfn;
 	int err;
 	//dedup insert code
-	struct ref_map *ref_map_temp;
+	// struct ref_map *ref_map_temp;
 
 	size = (i_size_read(inode) + PAGE_SIZE - 1) >> PAGE_SHIFT;
 	if (vmf->pgoff >= size) {
