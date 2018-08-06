@@ -727,7 +727,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				if(xmem!=NULL)
 					kfree(xmem);
 				hash_map_addr_temp = hash_map_addr_entry;
-				// printk("fast hit!");
+				printk("fast hit!");
 				/* add reference content */
 				dedup_interval = 0;
 				goto find;
@@ -746,7 +746,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(xmem!=NULL)
 				kfree(xmem);
 			hash_map_addr_temp = hash_map_addr_entry;
-			// printk("fit!");
+			printk("fit!");
 			goto find;
 			/*add reference content */
 		}
