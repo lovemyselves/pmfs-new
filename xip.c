@@ -42,6 +42,7 @@ bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
+DEFINE_SPINLOCK(in_place_lock);
 // static struct kmem_cache *pmfs_dedup_cachep;
 
 size_t dedup_interval = 1;
@@ -685,8 +686,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 		
+
 		if(overwrite_flag == 2){
+			spin_lock_irq(&in_place_lock);
 			copy_from_user(ref_map_temp->hma->addr + dedup_offset, buf+count-i, block_len);
+			spin_unlock_irq(&in_place_lock);
 		}else if(overwrite_flag == 1){
 			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
 			memcpy(xmem, *ref_map_temp->phys_addr, dedup_offset + block_len);
