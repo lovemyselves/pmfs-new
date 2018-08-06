@@ -695,7 +695,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_temp->length = dedup_offset + block_len;
 		}else{
 			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
-			copy_from_user(xmem + dedup+offset, buf+count-i, block_len);
+			copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 			hash_map_addr_temp->addr = xmem;
 			hash_map_addr_temp->length = block_len + dedup_offset;
 		}
