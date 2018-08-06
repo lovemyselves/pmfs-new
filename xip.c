@@ -703,7 +703,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(overwrite_flag == 2){
 			void *mem_buf = kmalloc(block_len+dedup_offset, GFP_KERNEL); 
 			// memcpy(mem_buf, ref_map_temp->phys_addr, block_len+dedup_offset);
-			copy_from_user(mem_buf + dedup_offset, buf+count-i, block_len);
+			// copy_from_user(mem_buf + dedup_offset, buf+count-i, block_len);
 			ref_map_temp->phys_addr = mem_buf;
 			hash_map_addr_temp->count = 1;
 			hash_map_addr_temp->addr = mem_buf;
