@@ -664,7 +664,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->flag = false;
-
+        
+		spin_lock_irq(&in_place_lock);
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp); 
 		if(insert_ret){
 			ref_map_temp = insert_ret;
@@ -688,9 +689,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 
 		if(overwrite_flag == 2){
-			spin_lock_irq(&in_place_lock);
 			copy_from_user(ref_map_temp->hma->addr + dedup_offset, buf+count-i, block_len);
-			spin_unlock_irq(&in_place_lock);
 		}else if(overwrite_flag == 1){
 			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
 			memcpy(xmem, *ref_map_temp->phys_addr, dedup_offset + block_len);
@@ -703,6 +702,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_temp->addr = xmem;
 			hash_map_addr_temp->length = block_len + dedup_offset;
 		}
+		spin_unlock_irq(&in_place_lock);
 		dedup_offset = 0;
 		
 		if(overwrite_flag==2){
