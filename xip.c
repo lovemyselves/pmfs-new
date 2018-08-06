@@ -709,11 +709,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_temp->addr = mem_buf;
 			INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 		}else if(overwrite_flag == 1){
-			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
-			memcpy(xmem, ref_map_temp->phys_addr, dedup_offset + block_len);
-			copy_from_user(xmem+dedup_offset, buf+count-i, block_len);
-			ref_map_temp->phys_addr = xmem;
-			ref_map_temp->hma->addr = xmem;
+			// xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
+			// memcpy(xmem, ref_map_temp->phys_addr, dedup_offset + block_len);
+			// copy_from_user(xmem+dedup_offset, buf+count-i, block_len);
+			// ref_map_temp->phys_addr = xmem;
+			// ref_map_temp->hma->addr = xmem;
+			;
 		}
 		dedup_offset = 0;
 		i -= block_len;
@@ -733,7 +734,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->addr = xmem;
 		hash_map_addr_temp->pfn = start_blk + j;
-		// INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
+		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
 		if(find_flag == true && last_hit != NULL )
 		{	
