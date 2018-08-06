@@ -676,7 +676,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		ref_map_temp->index = j+start_blk;
 
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-		hash_map_addr_temp->length = pmfs_inode_blk_size(pi);
 		hash_map_addr_temp->flag = false;
 
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp); 
@@ -687,7 +686,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(ref_map_temp->hma->count!=0){
 				overwrite_flag = 1;
 				printk("should update COW");
-			}	
+			}
 			else{
 				printk("should update in-place");
 				ref_map_temp->hma->count = 1;
@@ -703,13 +702,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(overwrite_flag == 2){
 			copy_from_user(ref_map_temp->hma->addr + dedup_offset, buf+count-i, block_len);
 		}else if(overwrite_flag == 1){
-			void *cow_mem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
-			memcpy(cow_mem, *ref_map_temp->phys_addr, dedup_offset + block_len);
-			copy_from_user(cow_mem+dedup_offset, buf+count-i, block_len);
-			*ref_map_temp->phys_addr = cow_mem;
-			hash_map_addr_temp->addr = cow_mem;
+			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
+			memcpy(xmem, *ref_map_temp->phys_addr, dedup_offset + block_len);
+			copy_from_user(xmem+dedup_offset, buf+count-i, block_len);
+			hash_map_addr_temp->addr = xmem;
 			hash_map_addr_temp->length = dedup_offset + block_len;
-			// ref_map_temp->hma->addr = xmem;
 		}else{
 			xmem = kmalloc(block_len, GFP_KERNEL);
 			copy_from_user(xmem, buf+count-i, block_len);
@@ -718,7 +715,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		dedup_offset = 0;
 		
-		if(overwrite_flag!=0){
+		if(overwrite_flag==2){
 			hash_map_addr_temp->flag = true;
 			goto direct_write_out;
 		}
@@ -788,6 +785,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 			INIT_LIST_HEAD(&ref_map_temp->list);
 			list_add_tail(&ref_map_temp->list, &dedup_ref_list);
+		}else if(overwrite_flag == 1){
+			ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
+			ref_map_temp->hma = hash_map_addr_temp;
 		}
 		i -= block_len;
 	}
