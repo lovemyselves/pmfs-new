@@ -666,7 +666,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->flag = false;
         
 		spin_lock_irq(&in_place_lock);
-		insert_ret = ref_insert_node(&ref_root, ref_map_temp); 
+		insert_ret = ref_insert_node(&ref_root, ref_map_temp);
+		spin_unlock_irq(&in_place_lock);
+		printk("pos 1");
 		if(insert_ret){
 			ref_map_temp = insert_ret;
 			// hash_map_addr_temp = ref_map_temp->hma; 
@@ -680,14 +682,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				ref_map_temp->hma->count = 1;
 				overwrite_flag = 2;
 			}
-		}		
+		}
+		printk("pos 2");		
 
 		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
 			block_len = i;
 		else
 			block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 		
-
 		if(overwrite_flag == 2){
 			copy_from_user(ref_map_temp->hma->addr + dedup_offset, buf+count-i, block_len);
 		}else if(overwrite_flag == 1){
@@ -702,7 +704,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_temp->addr = xmem;
 			hash_map_addr_temp->length = block_len + dedup_offset;
 		}
-		spin_unlock_irq(&in_place_lock);
+
+		printk("pos 3");
+		
 		dedup_offset = 0;
 		
 		if(overwrite_flag==2){
@@ -718,6 +722,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		hash_map_addr_temp->pfn = start_blk + j;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
+
+		printk("pos 4");
 
 		if(find_flag == true && last_hit != NULL )
 		{	
@@ -762,10 +768,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		
 		direct_write_out:
+		printk("pos 5");
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		actual_num_blocks++;
-		
+		printk("pos 6");
 		find:
 		//less than 32, break;
 		if(!insert_ret){
