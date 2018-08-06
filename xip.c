@@ -717,7 +717,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			;
 		}
 		dedup_offset = 0;
-		i -= block_len;
+		
 		if(overwrite_flag!=0){
 			hash_map_addr_temp->flag = true;
 			goto direct_write_out;
@@ -793,6 +793,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			INIT_LIST_HEAD(&ref_map_temp->list);
 			list_add_tail(&ref_map_temp->list, &dedup_ref_list);
 		}
+		i -= block_len;
 	}
 	
 	/* don't zero-out the allocated blocks */
