@@ -77,7 +77,6 @@ struct hash_map_addr *rb_search_insert_node(
 	struct rb_node *parent = NULL;
 	struct hash_map_addr *hash_map_addr_entry;
 	struct list_head *hashing_list_temp;
-	// bool test_printk_flag = true;
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -93,27 +92,19 @@ struct hash_map_addr *rb_search_insert_node(
 				){
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp 
 				/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
-					// not find duplication, return NULL
-					// printk("hash collision and not find duplication, add new node");
 					list_add_tail(&hash_map_addr_new->hashing_list, hashing_list_temp);
 					return NULL; 
 				}
 				else{
 					hash_map_addr_entry = list_entry(
 						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
-					// if(test_printk_flag){
-					// 	printk("This hash value has multiple nodes!");
-					// 	test_printk_flag = false;
-					// }
 				}	
 			}
-			// printk("same data block, dedup");
 			return hash_map_addr_entry;
 		}	
 	}
 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
 	rb_insert_color(&hash_map_addr_new->node, root);
-	// printk("new node in rbtree");
 	
 	return NULL;
 }
@@ -138,12 +129,7 @@ struct ref_map* ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_ma
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				ref_map_entry->hma->count--;
-				// ref_map_entry->hma = ref_map_new->hma;
-				//  = ref_map_new->hma;
-				// rb_erase(*entry_node, ref_root);
 				kfree(ref_map_new);
-				// ref_map_new = ref_map_entry;
-				// printk("a exist index");
 				return ref_map_entry;
 			}	
 		}		
