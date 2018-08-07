@@ -42,8 +42,8 @@ bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
-DEFINE_SPINLOCK(in_place_lock);
 // static struct kmem_cache *pmfs_dedup_cachep;
+struct crypto_hash *tfm = crypto_alloc_hash("sha1", 0, CRYPTO_ALG_ASYNC);
 
 size_t dedup_interval = 1;
 /*
