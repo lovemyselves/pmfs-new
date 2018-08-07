@@ -695,7 +695,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(overwrite_flag == 2){
 			copy_from_user(ref_map_temp->hma->addr + dedup_offset, buf+count-i, block_len);
 		}else if(overwrite_flag == 1){
-			xmem = kmalloc(dedup_offset + block_len, GFP_KERNEL);
+			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			memcpy(xmem, *ref_map_temp->phys_addr, dedup_offset + block_len);
 			copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 			hash_map_addr_temp->addr = xmem;
