@@ -57,17 +57,17 @@ char *do_digest(char* code, size_t len){
 	struct shash_request *req;
 	
 	tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
-	// if (IS_ERR(tfm))
-	// 	fail();
+	if (IS_ERR(tfm))
+		fail();
 
-	// ahash_request_set_callback(req, 0, NULL, NULL);
-	// ahash_request_set_crypt(req, sg, result, 2);
+	shash_request_set_callback(req, 0, NULL, NULL);
+	shash_request_set_crypt(req, sg, result, 2);
 
-	// if (crypto_ahash_digest(req))
-	// 	fail();
+	if (crypto_shash_digest(req))
+		fail();
 	
-	// ahash_request_free(req);
-	// crypto_free_ahash(tfm);
+	shash_request_free(req);
+	crypto_free_shash(tfm);
 	
 	return result;
 }
