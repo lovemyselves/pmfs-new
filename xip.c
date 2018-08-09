@@ -94,16 +94,16 @@ static struct sdescinit_sdesc(struct crypto_shash *alg)
 static int calc_hash(struct crypto_shashalg,
              const unsigned chardata, unsigned int datalen,
              unsigned chardigest) {
-    struct sdescsdesc;
+    struct sdesc sdesc;
     int ret;
 
-    sdesc = init_sdesc(alg);
+    sdesc = init_sdesc(crypto_shashalg);
     if (IS_ERR(sdesc)) {
-        pr_info("trusted_key: can't alloc %s\n", hash_alg);
+        pr_info("trusted_key: can't alloc %s\n", crypto_shashalg);
         return PTR_ERR(sdesc);
     }
 
-    ret = crypto_shash_digest(&sdesc->shash, data, datalen, digest);
+    ret = crypto_shash_digest(&sdesc->shash, chardata, datalen, chardigest);
     kfree(sdesc);
     return ret;
 }
