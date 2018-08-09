@@ -50,7 +50,7 @@ size_t dedup_interval = 1;
 struct scatterlist  sg[2];
 char result[128];
 struct crypto_hash *tfm;
-struct hash_desc desc;
+struct shash_desc *desc;
 /*
 	dedup rbtree function
 */
