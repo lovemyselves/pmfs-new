@@ -71,41 +71,42 @@ char *do_digest(char* code, size_t len){
 	
 	return result;
 }
-// struct sdesc {
-//     struct shash_desc shash;
-//     char ctx[];
-// };
 
-// static struct sdescinit_sdesc(struct crypto_shash *alg)
-// {
-//     struct sdescsdesc;
-//     int size;
+struct sdesc {
+    struct shash_desc shash;
+    char ctx[];
+};
 
-//     size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
-//     sdesc = kmalloc(size, GFP_KERNEL);
-//     if (!sdesc)
-//         return ERR_PTR(-ENOMEM);
-//     sdesc->shash.tfm = alg;
-//     sdesc->shash.flags = 0x0;
-//     return sdesc;
-// }
+static struct sdescinit_sdesc(struct crypto_shash *alg)
+{
+    struct sdescsdesc;
+    int size;
 
-// static int calc_hash(struct crypto_shashalg,
-//              const unsigned chardata, unsigned int datalen,
-//              unsigned chardigest) {
-//     struct sdescsdesc;
-//     int ret;
+    size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
+    sdesc = kmalloc(size, GFP_KERNEL);
+    if (!sdesc)
+        return ERR_PTR(-ENOMEM);
+    sdesc->shash.tfm = alg;
+    sdesc->shash.flags = 0x0;
+    return sdesc;
+}
 
-//     sdesc = init_sdesc(alg);
-//     if (IS_ERR(sdesc)) {
-//         pr_info("trusted_key: can't alloc %s\n", hash_alg);
-//         return PTR_ERR(sdesc);
-//     }
+static int calc_hash(struct crypto_shashalg,
+             const unsigned chardata, unsigned int datalen,
+             unsigned chardigest) {
+    struct sdescsdesc;
+    int ret;
 
-//     ret = crypto_shash_digest(&sdesc->shash, data, datalen, digest);
-//     kfree(sdesc);
-//     return ret;
-// }
+    sdesc = init_sdesc(alg);
+    if (IS_ERR(sdesc)) {
+        pr_info("trusted_key: can't alloc %s\n", hash_alg);
+        return PTR_ERR(sdesc);
+    }
+
+    ret = crypto_shash_digest(&sdesc->shash, data, datalen, digest);
+    kfree(sdesc);
+    return ret;
+}
 
 struct hash_map_addr *rb_search_insert_node(
 	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
