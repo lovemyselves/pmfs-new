@@ -47,20 +47,16 @@ static LIST_HEAD(dedup_ref_list);
 // static struct kmem_cache *pmfs_dedup_cachep;
 
 size_t dedup_interval = 1;
-struct scatterlist  sg[2];
-char result[128];
-struct crypto_hash *tfm;
-struct shash_desc *desc;
 /*
 	dedup rbtree function
 */
-// char *do_digest(char* code, size_t len){
-// 	struct scatterlist sg[2];
-// 	char result[128];
-// 	struct crypto_ahash *tfm;
-// 	struct ahash_request *req;
+char *do_digest(char* code, size_t len){
+	struct scatterlist sg[2];
+	char result[128];
+	struct crypto_shash *tfm;
+	struct ahash_request *req;
 	
-// 	tfm = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
+	tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
 // 	if (IS_ERR(tfm))
 // 		fail();
 
