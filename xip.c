@@ -23,6 +23,8 @@
 #include <linux/string.h>
 #include <linux/module.h>
 #include <linux/crypto.h>
+#include <crypto/internal/hash.h>
+#include <crypto/scatterwalk.h>
 #include <linux/scatterlist.h>
 #include <linux/err.h>
 #include <linux/gfp.h>
