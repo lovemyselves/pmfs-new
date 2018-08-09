@@ -88,7 +88,7 @@ char *do_digest(char* code, size_t len){
 //     sdesc->shash.tfm = alg;
 //     sdesc->shash.flags = 0x0;
 //     return sdesc;
-// }
+}
 
 // static int calc_hash(struct crypto_shashalg,
 //              const unsigned chardata, unsigned int datalen,
