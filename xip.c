@@ -97,7 +97,7 @@ static int calc_hash(struct crypto_shash *alg,
     struct sdesc *sdesc;
     int ret;
 
-    sdesc = init_sdesc(crypto_shashalg);
+    sdesc = init_sdesc(alg);
     if (IS_ERR(sdesc)) {
         pr_info("trusted_key: can't alloc %s\n", alg);
         return PTR_ERR(sdesc);
