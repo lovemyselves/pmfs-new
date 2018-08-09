@@ -77,9 +77,9 @@ struct sdesc {
     char ctx[];
 };
 
-static struct sdescinit_sdesc(struct crypto_shash *alg)
+static struct sdesc *init_sdesc(struct crypto_shash *alg)
 {
-    struct sdescsdesc;
+    struct sdesc *sdesc;
     int size;
 
     size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
@@ -94,7 +94,7 @@ static struct sdescinit_sdesc(struct crypto_shash *alg)
 static int calc_hash(struct crypto_shashalg,
              const unsigned chardata, unsigned int datalen,
              unsigned chardigest) {
-    struct sdesc sdesc;
+    struct sdesc *sdesc;
     int ret;
 
     sdesc = init_sdesc(crypto_shashalg);
