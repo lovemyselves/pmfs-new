@@ -68,7 +68,6 @@ char *do_digest(char* code, size_t len){
 	
 	// ahash_request_free(req);
 	// crypto_free_ahash(tfm);
-	result = NULL;
 	
 	return result;
 }
