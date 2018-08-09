@@ -60,53 +60,78 @@ char *do_digest(char* code, size_t len){
 	if (IS_ERR(tfm))
 		fail();
 
-	shash_request_set_callback(req, 0, NULL, NULL);
-	shash_request_set_crypt(req, sg, result, 2);
+	// ahash_request_set_callback(req, 0, NULL, NULL);
+	// ahash_request_set_crypt(req, sg, result, 2);
 
-	if (crypto_shash_digest(req))
-		fail();
+	// if (crypto_ahash_digest(req))
+	// 	fail();
 	
-	shash_request_free(req);
-	crypto_free_shash(tfm);
+	// ahash_request_free(req);
+	// crypto_free_ahash(tfm);
 	
 	return result;
 }
 
-struct sdesc {
-    struct shash_desc shash;
-    char ctx[];
-};
-
-static struct sdesc *init_sdesc(struct crypto_shash *alg)
+static int
+plaintext_to_sha1(unsigned char *hash, const char *plaintext, unsigned int len)
 {
-    struct sdesc *sdesc;
-    int size;
-
-    size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
-    sdesc = kmalloc(size, GFP_KERNEL);
-    if (!sdesc)
-        return ERR_PTR(-ENOMEM);
-    sdesc->shash.tfm = alg;
-    sdesc->shash.flags = 0x0;
-    return sdesc;
+  struct crypto_shash *tfm;
+  struct scatterlist sg;
+//   if (len > PAGE_SIZE) {
+//     seclvl_printk(0, KERN_ERR, "Plaintext password too large (%d "
+//             "characters).  Largest possible is %lu "
+//             "bytes.\n", len, PAGE_SIZE);
+//     return -EINVAL;
+//   }
+  tfm = crypto_alloc_shash("sha1", CRYPTO_TFM_REQ_MAY_SLEEP);
+//   if (tfm == NULL) {
+//     seclvl_printk(0, KERN_ERR,
+//             "Failed to load transform for SHA1\n");
+//     return -EINVAL;
+//   }
+  sg_init_one(&sg, (u8 *)plaintext, len);
+  crypto_digest_init(tfm);
+  crypto_digest_update(tfm, &sg, 1);
+  crypto_digest_final(tfm, hash);
+  crypto_free_shash(tfm);
+  return 0;
 }
 
-static int calc_hash(struct crypto_shash *alg,
-             const unsigned char data, unsigned int datalen,
-             unsigned char digest) {
-    struct sdesc *sdesc;
-    int ret;
+// struct sdesc {
+//     struct shash_desc shash;
+//     char ctx[];
+// };
 
-    sdesc = init_sdesc(alg);
-    if (IS_ERR(sdesc)) {
-        pr_info("trusted_key: can't alloc %s\n", alg);
-        return PTR_ERR(sdesc);
-    }
+// static struct sdesc *init_sdesc(struct crypto_shash *alg)
+// {
+//     struct sdesc *sdesc;
+//     int size;
 
-    ret = crypto_shash_digest(&sdesc->shash, data, datalen, digest);
-    kfree(sdesc);
-    return ret;
-}
+//     size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
+//     sdesc = kmalloc(size, GFP_KERNEL);
+//     if (!sdesc)
+//         return ERR_PTR(-ENOMEM);
+//     sdesc->shash.tfm = alg;
+//     sdesc->shash.flags = 0x0;
+//     return sdesc;
+// }
+
+// static int calc_hash(struct crypto_shash *alg,
+//              const unsigned char data, unsigned int datalen,
+//              unsigned char digest) {
+//     struct sdesc *sdesc;
+//     int ret;
+
+//     sdesc = init_sdesc(alg);
+//     if (IS_ERR(sdesc)) {
+//         pr_info("trusted_key: can't alloc %s\n", alg);
+//         return PTR_ERR(sdesc);
+//     }
+
+//     ret = crypto_shash_digest(&sdesc->shash, data, datalen, digest);
+//     kfree(sdesc);
+//     return ret;
+// }
 
 struct hash_map_addr *rb_search_insert_node(
 	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
