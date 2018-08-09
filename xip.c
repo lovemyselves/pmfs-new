@@ -91,19 +91,19 @@ static struct sdesc *init_sdesc(struct crypto_shash *alg)
     return sdesc;
 }
 
-static int calc_hash(struct crypto_shashalg,
-             const unsigned chardata, unsigned int datalen,
-             unsigned chardigest) {
+static int calc_hash(struct crypto_shash *alg,
+             const unsigned char data, unsigned int datalen,
+             unsigned char digest) {
     struct sdesc *sdesc;
     int ret;
 
     sdesc = init_sdesc(crypto_shashalg);
     if (IS_ERR(sdesc)) {
-        pr_info("trusted_key: can't alloc %s\n", crypto_shashalg);
+        pr_info("trusted_key: can't alloc %s\n", alg);
         return PTR_ERR(sdesc);
     }
 
-    ret = crypto_shash_digest(&sdesc->shash, chardata, datalen, chardigest);
+    ret = crypto_shash_digest(&sdesc->shash, data, datalen, digest);
     kfree(sdesc);
     return ret;
 }
