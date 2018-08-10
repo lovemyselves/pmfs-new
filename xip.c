@@ -677,7 +677,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// unsigned char *digest = kmalloc(sizeof(u8), GFP_KERNEL);
 
 	struct scatterlist sg;
-	struct hash_desc desc;
+	struct hash_desc *desc;
 	char *plaintext = "plaintext goes here";
 	size_t len = strlen(plaintext);
 	u8 hashval[20];
