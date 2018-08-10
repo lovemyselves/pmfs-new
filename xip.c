@@ -56,9 +56,9 @@ struct sdesc {
     char ctx[];
 };
 
-static struct sdescinit_sdesc(struct crypto_shash *alg)
+static struct sdesc *init_sdesc(struct crypto_shash *alg)
 {
-    struct sdescsdesc;
+    struct sdesc *sdesc;
     int size;
 
     size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
