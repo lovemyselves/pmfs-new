@@ -744,7 +744,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->pfn = start_blk + j;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
-		calc_hash(alg, buf, block_len, digest);
+		calc_hash(alg, xmem, block_len, digest);
+		printk("digest:%s",digest);
 
 		// printk("pos 4");
 
