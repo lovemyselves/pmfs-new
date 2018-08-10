@@ -673,8 +673,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		size_t overwrite_flag = 0;
 		// size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
-		struct crypto_shash *alg;
-		unsigned char *digest = kmalloc(sizeof(u8), GFP_KERNEL);
+		// struct crypto_shash *alg;
+		// unsigned char *digest = kmalloc(sizeof(u8), GFP_KERNEL);
+
+	struct scatterlist sg;
+	struct hash_desc desc;
+	char *plaintext = "plaintext goes here";
+	size_t len = strlen(plaintext);
+	u8 hashval[20];
 		
 
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
@@ -744,8 +750,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->pfn = start_blk + j;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
-		calc_hash(alg, xmem, block_len, digest);
-		printk("digest:%s",digest);
+		// calc_hash(alg, xmem, block_len, digest);
+		// printk("digest:%s",digest);
 
 		// printk("pos 4");
 
