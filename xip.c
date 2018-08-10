@@ -90,9 +90,11 @@ plaintext_to_sha1(unsigned char *hash, const char *plaintext, unsigned int len)
 //     return -EINVAL;
 //   }
   sg_init_one(&sg, (u8 *)plaintext, len);
-  crypto_digest_init(tfm);
-  crypto_digest_update(tfm, &sg, 1);
-  crypto_digest_final(tfm, hash);
+//   crypto_digest_init(tfm);
+  BUG_ON(crypto_tfm_alg_type(tfm) != CRYPTO_ALG_TYPE_DIGEST);
+  tfm->crt_digest.dit_init(tfm);
+//   crypto_digest_update(tfm, &sg, 1);
+//   crypto_digest_final(tfm, hash);
 //   crypto_free_shash(tfm);
   return 0;
 }
