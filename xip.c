@@ -51,32 +51,40 @@ size_t dedup_interval = 1;
 	dedup rbtree function
 */
 
-static int
-plaintext_to_sha1(unsigned char *hash, const char *plaintext, unsigned int len)
+struct sdesc {
+    struct shash_desc shash;
+    char ctx[];
+};
+
+static struct sdescinit_sdesc(struct crypto_shash *alg)
 {
-  struct crypto_tfm *tfm;
-  struct scatterlist sg;
-//   if (len > PAGE_SIZE) {
-//     seclvl_printk(0, KERN_ERR, "Plaintext password too large (%d "
-//             "characters).  Largest possible is %lu "
-//             "bytes.\n", len, PAGE_SIZE);
-//     return -EINVAL;
-//   }
-  tfm = crypto_alloc_shash("sha1", 0, CRYPTO_TFM_REQ_MAY_SLEEP);
-//   tfm = crypto_alloc_tfm("sha1",0);
-//   if (tfm == NULL) {
-//     seclvl_printk(0, KERN_ERR,
-//             "Failed to load transform for SHA1\n");
-//     return -EINVAL;
-//   }
-//   sg_init_one(&sg, (u8 *)plaintext, len);
-//   crypto_digest_init(tfm);
-//   BUG_ON(crypto_tfm_alg_type(tfm) != CRYPTO_ALG_TYPE_DIGEST);
-//   tfm->crt_digest.dit_init(tfm);
-//   crypto_digest_update(tfm, &sg, 1);
-//   crypto_digest_final(tfm, hash);
-//   crypto_free_shash(tfm);
-  return 0;
+    struct sdescsdesc;
+    int size;
+
+    size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
+    sdesc = kmalloc(size, GFP_KERNEL);
+    if (!sdesc)
+        return ERR_PTR(-ENOMEM);
+    sdesc->shash.tfm = alg;
+    sdesc->shash.flags = 0x0;
+    return sdesc;
+}
+
+static int calc_hash(struct crypto_shash *alg,
+             const unsigned char *data, unsigned int datalen,
+             unsigned char *digest) {
+    struct sdesc *sdesc;
+    int ret;
+
+    sdesc = init_sdesc(alg);
+    if (IS_ERR(sdesc)) {
+        pr_info("trusted_key: can't alloc %s\n", alg);
+        return PTR_ERR(sdesc);
+    }
+
+    ret = crypto_shash_digest(&sdesc->shash, data, datalen, digest);
+    kfree(sdesc);
+    return ret;
 }
 
 struct hash_map_addr *rb_search_insert_node(
