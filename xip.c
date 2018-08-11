@@ -204,7 +204,7 @@ bool short_hash(char *xmem, size_t len, size_t *hashing)
 	return true;
 }
 
-bool strength_hash(char result, char* data, size_t len){
+bool strength_hash(char *result, char* data, size_t len){
 	struct scatterlist sg[2];
 	// char result[128];
 	struct crypto_ahash *tfm;
@@ -218,13 +218,13 @@ bool strength_hash(char result, char* data, size_t len){
 
 	req = ahash_request_alloc(tfm, GFP_ATOMIC);
 	if (!req)
-		fail();
+		return false;
 
 	ahash_request_set_callback(req, 0, NULL, NULL);
 	ahash_request_set_crypt(req, sg, result, 2);
 	
 	if (crypto_ahash_digest(req))
-		fail();
+		return false;
 
 	ahash_request_free(req);
 	crypto_free_ahash(tfm);
