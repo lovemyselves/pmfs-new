@@ -20,15 +20,16 @@
 #include "xip.h"
 /*dedup new add include*/
 #include <linux/kernel.h>
-#include <linux/string.h>
+// #include <linux/string.h>
 #include <linux/module.h>
 #include <linux/crypto.h>
-#include <crypto/internal/hash.h>
-#include <crypto/scatterwalk.h>
+#include <crypto/hash.h>
+// #include <crypto/internal/hash.h>
+// #include <crypto/scatterwalk.h>
 #include <linux/scatterlist.h>
 #include <linux/err.h>
-#include <linux/gfp.h>
-#include <linux/slab.h>
+// #include <linux/gfp.h>
+// #include <linux/slab.h>
 #include "dedup.c"
 
 /* dedup claim start */
@@ -51,41 +52,41 @@ size_t dedup_interval = 1;
 	dedup rbtree function
 */
 
-struct sdesc {
-    struct shash_desc shash;
-    char ctx[];
-};
+// struct sdesc {
+//     struct shash_desc shash;
+//     char ctx[];
+// };
 
-static struct sdesc *init_sdesc(struct crypto_shash *alg)
-{
-    struct sdesc *sdesc;
-    int size;
+// static struct sdesc *init_sdesc(struct crypto_shash *alg)
+// {
+//     struct sdesc *sdesc;
+//     int size;
 
-    size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
-    sdesc = kmalloc(size, GFP_KERNEL);
-    if (!sdesc)
-        return ERR_PTR(-ENOMEM);
-    sdesc->shash.tfm = alg;
-    sdesc->shash.flags = 0x0;
-    return sdesc;
-}
+//     size = sizeof(struct shash_desc) + crypto_shash_descsize(alg);
+//     sdesc = kmalloc(size, GFP_KERNEL);
+//     if (!sdesc)
+//         return ERR_PTR(-ENOMEM);
+//     sdesc->shash.tfm = alg;
+//     sdesc->shash.flags = 0x0;
+//     return sdesc;
+// }
 
-static int calc_hash(struct crypto_shash *alg,
-             const unsigned char *data, unsigned int datalen,
-             unsigned char *digest) {
-    struct sdesc *sdesc;
-    int ret;
+// static int calc_hash(struct crypto_shash *alg,
+//              const unsigned char *data, unsigned int datalen,
+//              unsigned char *digest) {
+//     struct sdesc *sdesc;
+//     int ret;
 
-    sdesc = init_sdesc(alg);
-    if (IS_ERR(sdesc)) {
-        pr_info("trusted_key: can't alloc %s\n", alg);
-        return PTR_ERR(sdesc);
-    }
+//     sdesc = init_sdesc(alg);
+//     if (IS_ERR(sdesc)) {
+//         pr_info("trusted_key: can't alloc %s\n", alg);
+//         return PTR_ERR(sdesc);
+//     }
 
-    ret = crypto_shash_digest(&sdesc->shash, data, datalen, digest);
-    kfree(sdesc);
-    return ret;
-}
+//     ret = crypto_shash_digest(&sdesc->shash, data, datalen, digest);
+//     kfree(sdesc);
+//     return ret;
+// }
 
 struct hash_map_addr *rb_search_insert_node(
 	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
