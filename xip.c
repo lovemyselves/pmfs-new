@@ -229,12 +229,12 @@ bool strength_hash(char *result, char* data, size_t len){
 	// ahash_request_free(req);
 	// crypto_free_ahash(tfm);
 	struct scatterlist *sg;
-	struct hash_desc *desc;
+	struct ahash_desc *desc;
 
 	sg = kmalloc(sizeof(*sg), GFP_KERNEL);
 	desc = kmalloc(sizeof(*desc), GFP_KERNEL);
-	
-	sg_init_one(&sg, data, len);
+
+	sg_init_one(sg, data, len);
 	desc->tfm = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
 
 	return true;
