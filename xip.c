@@ -204,6 +204,32 @@ bool short_hash(char *xmem, size_t len, size_t *hashing)
 	return true;
 }
 
+bool strength_hash(char result, char* data, size_t len){
+	struct scatterlist sg[2];
+	// char result[128];
+	struct crypto_ahash *tfm;
+	struct ahash_request *req;
+
+	tfm = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
+	if (IS_ERR(tfm))
+		fail();
+		
+	/* ... set up the scatterlists ... */
+
+	req = ahash_request_alloc(tfm, GFP_ATOMIC);
+	if (!req)
+		fail();
+
+	ahash_request_set_callback(req, 0, NULL, NULL);
+	ahash_request_set_crypt(req, sg, result, 2);
+	
+	if (crypto_ahash_digest(req))
+		fail();
+
+	ahash_request_free(req);
+	crypto_free_ahash(tfm);
+}
+
 /* claim end */
 
 static ssize_t
@@ -677,12 +703,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// struct crypto_shash *alg;
 		// unsigned char *digest = kmalloc(sizeof(u8), GFP_KERNEL);
 
-	struct scatterlist sg;
-	struct hash_desc *desc;
-	char *plaintext = "plaintext goes here";
-	size_t len = strlen(plaintext);
-	u8 hashval[20];
-		
+		// struct scatterlist sg;
+		// struct hash_desc *desc;
+		// char *plaintext = "plaintext goes here";
+		// size_t len = strlen(plaintext);
+		// u8 hashval[20];
 
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
 		ref_map_temp->virt_addr = inode;
