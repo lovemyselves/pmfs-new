@@ -212,7 +212,7 @@ bool strength_hash(char *result, char* data, size_t len){
 
 	tfm = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(tfm))
-		fail();
+		return false;
 		
 	/* ... set up the scatterlists ... */
 
