@@ -238,7 +238,7 @@ bool strength_hash(char *result, char* data, size_t len){
 	desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
 
 	crypto_shash_init(desc);
-	crypto_shash_update(desc, sg, len);
+	crypto_shash_update(desc, data, len);
 	crypto_shash_final(desc, result);
 	crypto_free_shash(desc->tfm);
 
