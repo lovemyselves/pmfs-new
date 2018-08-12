@@ -238,9 +238,9 @@ bool strength_hash(char *result, char* data, size_t len){
 	desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
 
 	crypto_shash_init(desc);
-	crypto_shash_udpate(desc, sg, len);
+	crypto_shash_update(desc, sg, len);
 	crypto_shash_final(desc, result);
-	crypto_free_shash(desc.tfm);
+	crypto_free_shash(desc->tfm);
 
 	return true;
 }
@@ -783,7 +783,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			goto direct_write_out;
 		}
 
-		if(short_hash(&hashing, hash_map_addr->addr, hash_map_addr_temp->length))
+		if(short_hash(&hashing, hash_map_addr_temp->addr, hash_map_addr_temp->length))
 			printk("2hashing:%lu",hashing);
 	
 		hash_map_addr_temp->hashing = hashing;
@@ -792,7 +792,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->pfn = start_blk + j;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
-		if(strength_hash(strength_hashval, hash_map_addr->addr, hash_map_addr_temp->length))
+		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length))
 			printk("strength_hashval:%s", strength_hashval);
 
 		// calc_hash(alg, xmem, block_len, digest);
