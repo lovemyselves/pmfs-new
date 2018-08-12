@@ -228,13 +228,13 @@ bool strength_hash(char *result, char* data, size_t len){
 
 	// ahash_request_free(req);
 	// crypto_free_ahash(tfm);
-	struct scatterlist *sg;
+	// struct scatterlist *sg;
 	struct shash_desc *desc;
 
-	sg = kmalloc(sizeof(*sg), GFP_KERNEL);
+	// sg = kmalloc(sizeof(*sg), GFP_KERNEL);
 	desc = kmalloc(sizeof(*desc), GFP_KERNEL);
 
-	sg_init_one(sg, data, len);
+	// sg_init_one(sg, data, len);
 	desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
 
 	crypto_shash_init(desc);
@@ -792,8 +792,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->pfn = start_blk + j;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
-		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length))
+		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length)){
+			int k;
 			printk("strength_hashval:%s", strength_hashval);
+			for(k=0;k<16;k++){
+				putchar(strength_hashval+k);
+			}
+		}
 
 		// calc_hash(alg, xmem, block_len, digest);
 		// printk("digest:%s",digest);
