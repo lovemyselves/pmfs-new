@@ -713,7 +713,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pos 1");
 		if(insert_ret){
 			ref_map_temp = insert_ret;
-			// hash_map_addr_temp = ref_map_temp->hma; 
 			printk("ref count:%lu", ref_map_temp->hma->count);
 			if(ref_map_temp->hma->count!=0){
 				overwrite_flag = 1;
@@ -723,6 +722,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("should update in-place");
 				ref_map_temp->hma->count = 1;
 				overwrite_flag = 2;
+				kfree(hash_map_addr_temp);
+				hash_map_addr_temp = ref_map_temp->hma;
+				hash_map_addr_temp->flag = false;
 			}
 		}
 		// printk("pos 2");		
@@ -753,10 +755,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		dedup_offset = 0;
 		
-		if(overwrite_flag==2){
-			hash_map_addr_temp->flag = true;
-			goto direct_write_out;
-		}
+		// if(overwrite_flag==2){
+		// 	hash_map_addr_temp->flag = true;
+		// 	// goto direct_write_out;
+		// }
 
 		if(short_hash(&hashing, hash_map_addr_temp->addr, hash_map_addr_temp->length))
 			printk("2hashing:%lu",hashing);
@@ -776,10 +778,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("%d", (int)*(strength_hashval+k));
 			}
 		}
-
-		// calc_hash(alg, xmem, block_len, digest);
-		// printk("digest:%s",digest);
-
 		// printk("pos 4");
 
 		if(find_flag == true && last_hit != NULL )
@@ -824,7 +822,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// }
 
 		
-		direct_write_out:
+		// direct_write_out:
 		// printk("pos 5");
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
