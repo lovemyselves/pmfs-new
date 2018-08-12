@@ -706,9 +706,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->flag = false;
-		if(hash_map_addr_temp->hashing_md5 == NULL)
-			printk("md5 hashing has not finished");
-        
+		hash_map_addr_temp->hashing_md5 = NULL;
 		
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp);
 		
