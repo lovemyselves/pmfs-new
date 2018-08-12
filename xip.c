@@ -212,8 +212,7 @@ bool strength_hash(char *result, char* data, size_t len){
 	if(desc->tfm == NULL)
 		return false;
 
-	if(!crypto_shash_init(desc))
-		return false;
+	crypto_shash_init(desc);
 	crypto_shash_update(desc, data, len);
 	crypto_shash_final(desc, result);
 	crypto_free_shash(desc->tfm);
