@@ -205,39 +205,15 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 }
 
 bool strength_hash(char *result, char* data, size_t len){
-	// struct scatterlist sg[2];
-	// // char result[128];
-	// struct crypto_ahash *tfm;
-	// struct ahash_request *req;
-
-	// tfm = crypto_alloc_ahash("md5", 0, CRYPTO_ALG_ASYNC);
-	// if (IS_ERR(tfm))
-	// 	return false;
-		
-	// /* ... set up the scatterlists ... */
-
-	// req = ahash_request_alloc(tfm, GFP_ATOMIC);
-	// if (!req)
-	// 	return false;
-
-	// ahash_request_set_callback(req, 0, NULL, NULL);
-	// ahash_request_set_crypt(req, sg, result, 2);
-	
-	// if (crypto_ahash_digest(req))
-	// 	return false;
-
-	// ahash_request_free(req);
-	// crypto_free_ahash(tfm);
-	// struct scatterlist *sg;
 	struct shash_desc *desc;
-
-	// sg = kmalloc(sizeof(*sg), GFP_KERNEL);
 	desc = kmalloc(sizeof(*desc), GFP_KERNEL);
-
-	// sg_init_one(sg, data, len);
 	desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
 
-	crypto_shash_init(desc);
+	if(tfm == NULL)
+		return false;
+
+	if(!crypto_shash_init(desc))
+		return false;
 	crypto_shash_update(desc, data, len);
 	crypto_shash_final(desc, result);
 	crypto_free_shash(desc->tfm);
@@ -731,6 +707,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 		hash_map_addr_temp->flag = false;
+		if(hash_map_addr_temp->hashing_md5 == NULL)
+			printk("md5 hashing has not finished");
         
 		
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp);
