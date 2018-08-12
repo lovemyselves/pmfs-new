@@ -792,7 +792,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->pfn = start_blk + j;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
-		if(strength_hash(strength_hashval, buf+count-i, hash_map_addr_temp->length)){
+		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length)){
 			int k;
 			for(k=0;k<16;k++){
 				printk("%d", (int)*(strength_hashval+k));
