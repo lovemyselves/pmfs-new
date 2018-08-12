@@ -796,7 +796,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			int k;
 			printk("strength_hashval:%s", strength_hashval);
 			for(k=0;k<16;k++){
-				printk("%c", *(strength_hashval+k));
+				printk("%d", (int)*(strength_hashval+k));
 			}
 		}
 
