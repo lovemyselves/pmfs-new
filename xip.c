@@ -209,7 +209,7 @@ bool strength_hash(char *result, char* data, size_t len){
 	desc = kmalloc(sizeof(*desc), GFP_KERNEL);
 	desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
 
-	if(tfm == NULL)
+	if(desc->tfm == NULL)
 		return false;
 
 	if(!crypto_shash_init(desc))
