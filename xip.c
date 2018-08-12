@@ -182,7 +182,7 @@ struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t in
 	return NULL;
 }
 
-bool short_hash(char *xmem, size_t len, size_t *hashing)
+bool short_hash(size_t *hashing, char *xmem, size_t len)
 {
 	size_t trace = len >> 3;
 	size_t data_remainder = len & (sizeof(size_t)-1);
@@ -236,6 +236,11 @@ bool strength_hash(char *result, char* data, size_t len){
 
 	sg_init_one(sg, data, len);
 	desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
+
+	crypto_shash_init(desc);
+	crypto_shash_udpate(desc, sg, len);
+	crypto_shash_final(desc, result);
+	crypto_free_shash(desc.tfm);
 
 	return true;
 }
@@ -710,6 +715,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		size_t overwrite_flag = 0;
 		// size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
+		char* strength_hashval = kmalloc(sizeof(char)<<4, GFP_KERNEL);
 		// struct crypto_shash *alg;
 		// unsigned char *digest = kmalloc(sizeof(u8), GFP_KERNEL);
 
@@ -777,7 +783,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			goto direct_write_out;
 		}
 
-		if(short_hash(xmem, hash_map_addr_temp->length, &hashing))
+		if(short_hash(&hashing, hash_map_addr->addr, hash_map_addr_temp->length))
 			printk("2hashing:%lu",hashing);
 	
 		hash_map_addr_temp->hashing = hashing;
@@ -785,6 +791,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		hash_map_addr_temp->pfn = start_blk + j;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
+
+		if(strength_hash(strength_hashval, hash_map_addr->addr, hash_map_addr_temp->length))
+			printk("strength_hashval:%s", strength_hashval);
 
 		// calc_hash(alg, xmem, block_len, digest);
 		// printk("digest:%s",digest);
