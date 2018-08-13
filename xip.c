@@ -691,14 +691,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
 		char* strength_hashval = kmalloc(sizeof(char)<<4, GFP_KERNEL);
-		// struct crypto_shash *alg;
-		// unsigned char *digest = kmalloc(sizeof(u8), GFP_KERNEL);
-
-		// struct scatterlist sg;
-		// struct hash_desc *desc;
-		// char *plaintext = "plaintext goes here";
-		// size_t len = strlen(plaintext);
-		// u8 hashval[20];
 
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
 		ref_map_temp->virt_addr = inode;
@@ -819,7 +811,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	// printk("dedup_interval:%lu",dedup_interval);
 		// 	;
 		// }
-
 		
 		direct_write_out:
 		// printk("pos 5");
