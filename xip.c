@@ -105,11 +105,11 @@ struct hash_map_addr *rb_search_insert_node(
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
-			while(hash_map_addr_new->length != hash_map_addr_entry->length //||
-				//memcmp(hash_map_addr_new->addr,hash_map_addr_entry->addr,hash_map_addr_new->length)!=0
+			while(hash_map_addr_new->length != hash_map_addr_entry->length ||
+				memcmp(hash_map_addr_new->hashing_md5, hash_map_addr_entry->hashing_md5, sizeof(char)<<4)
 				){
 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp 
-				/* ||hash_map_addr_entry->hashing_list.next == NULL */ ){
+				|| hash_map_addr_entry->hashing_list.next == NULL){
 					list_add_tail(&hash_map_addr_new->hashing_list, hashing_list_temp);
 					return NULL; 
 				}
