@@ -695,10 +695,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
 		ref_map_temp->virt_addr = inode;
 		ref_map_temp->index = j+start_blk;
-
-		hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-		hash_map_addr_temp->flag = false;
-		hash_map_addr_temp->hashing_md5 = NULL;
 		
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp);
 		
@@ -714,11 +710,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("should update in-place");
 				ref_map_temp->hma->count = 1;
 				overwrite_flag = 2;
-				hash_map_addr_temp = ref_map_temp->hma;
-				hash_map_addr_temp->flag = false;
 			}
 		}else{
 			printk("new data block");
+		}
+
+		if(overwrite_flag!=2){
+			hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
+			hash_map_addr_temp->flag = false;
+			hash_map_addr_temp->hashing_md5 = NULL;
 		}
 		// printk("pos 2");		
 
@@ -749,7 +749,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dedup_offset = 0;
 		
 		if(overwrite_flag==2){
-			hash_map_addr_temp->flag = true;
 			goto direct_write_out;
 		}
 
@@ -809,10 +808,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	;
 		// }
 		
-		direct_write_out:
 		// printk("pos 5");
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		direct_write_out:
 		actual_num_blocks++;
 		// printk("pos 6");
 		find:
