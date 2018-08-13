@@ -717,6 +717,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				hash_map_addr_temp = ref_map_temp->hma;
 				hash_map_addr_temp->flag = false;
 			}
+		}else{
+			pirntk("new data block");
 		}
 		// printk("pos 2");		
 
