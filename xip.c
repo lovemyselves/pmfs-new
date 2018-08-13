@@ -763,13 +763,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
 		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length)){
-			int k;
-
+			printk("strength_hash:%c",*strength_hashval);
 			hash_map_addr_temp->hashing_md5 = (void *)strength_hashval;
-
-			for(k=0;k<16;k++){
-				printk("%d", (int)*(strength_hashval+k));
-			}
 		}
 		// printk("pos 4");
 
