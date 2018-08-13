@@ -754,10 +754,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		dedup_offset = 0;
 		
-		// if(overwrite_flag==2){
-		// 	hash_map_addr_temp->flag = true;
-		// 	// goto direct_write_out;
-		// }
+		if(overwrite_flag==2){
+			hash_map_addr_temp->flag = true;
+			goto direct_write_out;
+		}
 
 		if(short_hash(&hashing, hash_map_addr_temp->addr, hash_map_addr_temp->length))
 			printk("2hashing:%lu",hashing);
@@ -821,7 +821,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// }
 
 		
-		// direct_write_out:
+		direct_write_out:
 		// printk("pos 5");
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
