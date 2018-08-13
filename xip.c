@@ -722,7 +722,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("should update in-place");
 				ref_map_temp->hma->count = 1;
 				overwrite_flag = 2;
-				kfree(hash_map_addr_temp);
 				hash_map_addr_temp = ref_map_temp->hma;
 				hash_map_addr_temp->flag = false;
 			}
