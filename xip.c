@@ -184,9 +184,9 @@ struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t in
 
 bool short_hash(size_t *hashing, char *xmem, size_t len)
 {
-	size_t trace = len >> 3;
+	// size_t trace = len >> 3;
 	size_t data_remainder = len & (sizeof(size_t)-1);
-	size_t k,hash_offset=0;
+	size_t k;//,hash_offset=0;
 
 	size_t thin_internal = len >> 10;
 	size_t thick_internal_count = (len&1023) >> 3;
