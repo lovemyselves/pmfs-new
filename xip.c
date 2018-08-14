@@ -735,7 +735,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_temp->flag = false;
 			hash_map_addr_temp->hashing_md5 = NULL;
 		}
-		// printk("pos 2");		
+		printk("pos 2");		
 
 		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
 			block_len = i;
@@ -759,7 +759,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_temp->length = block_len + dedup_offset;
 		}
 		// spin_unlock_irq(&in_place_lock);
-		// printk("pos 3");
+		printk("pos 3");
 		
 		dedup_offset = 0;
 		
@@ -780,7 +780,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("strength_hash:%c",*strength_hashval);
 			hash_map_addr_temp->hashing_md5 = (void *)strength_hashval;
 		}
-		// printk("pos 4");
+		printk("pos 4");
 
 		if(find_flag == true && last_hit != NULL )
 		{	
@@ -823,12 +823,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	;
 		// }
 		
-		// printk("pos 5");
+		printk("pos 5");
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		direct_write_out:
 		actual_num_blocks++;
-		// printk("pos 6");
+		printk("pos 6");
 		find:
 		//less than 32, break;
 		if(!insert_ret){
