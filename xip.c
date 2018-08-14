@@ -188,6 +188,9 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	size_t data_remainder = len & (sizeof(size_t)-1);
 	size_t k,hash_offset=0;
 
+	size_t thin_internal = len >> 10;
+	size_t thick_internal_count = (len&1023) >> 3;
+
 	if(*hashing!=0)
 		return false;
 				 
@@ -200,6 +203,17 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 			*hashing ^= (*hashing >> 2);
 			hash_offset += sizeof(size_t);
 	}
+
+	for(k=0;k<len;){
+		*hashing += *(size_t*)(xmem + k);
+		*hashing += (*hashing << 3);
+		*hashing ^= (*hashing >> 2);
+		if(thick_internal_count>0){
+			k += sizeof(size_t);	
+		}
+		k += (thin_internal<<3);
+	}
+	printk("sizeof(size_t):",sizeof(size_t));
 	
 	return true;
 }
