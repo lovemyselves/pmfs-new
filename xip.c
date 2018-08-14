@@ -204,7 +204,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	// 		hash_offset += sizeof(size_t);
 	// }
 
-	for(k=0;k<len;){
+	for(k=0;(k+sizeof(size_t))<len;){
 		*hashing += *(size_t*)(xmem + k);
 		*hashing += (*hashing << 3);
 		*hashing ^= (*hashing >> 2);
