@@ -210,10 +210,11 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 		*hashing ^= (*hashing >> 2);
 		if(thick_internal_count>0){
 			k += sizeof(size_t);	
+			thick_internal_count--;
 		}
 		k += (thin_internal<<3);
 	}
-	printk("sizeof(size_t):%d",sizeof(size_t));
+	printk("sizeof(size_t):%lu",sizeof(size_t));
 	
 	return true;
 }
