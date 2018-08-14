@@ -213,7 +213,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 		}
 		k += (thin_internal<<3);
 	}
-	printk("sizeof(size_t):",sizeof(size_t));
+	printk("sizeof(size_t):%d",sizeof(size_t));
 	
 	return true;
 }
