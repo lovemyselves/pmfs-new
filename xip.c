@@ -834,7 +834,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(!insert_ret){
 			ref_map_temp->hma = hash_map_addr_temp;
 			ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
-			ref_map_temp->pfn = &hash_map_addr_temp->pfn;
+			// ref_map_temp->pfn = &hash_map_addr_temp->pfn;
 		
 			INIT_LIST_HEAD(&ref_map_temp->list);
 			list_add_tail(&ref_map_temp->list, &dedup_ref_list);
