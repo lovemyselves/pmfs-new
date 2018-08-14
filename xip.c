@@ -197,12 +197,12 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	if(data_remainder!=0)
 		memcpy(hashing, xmem+len-data_remainder, data_remainder);
 	
-	for(k=0;k<trace;k++){
-			*hashing += *(size_t*)(xmem + hash_offset);
-			*hashing += (*hashing << 3);
-			*hashing ^= (*hashing >> 2);
-			hash_offset += sizeof(size_t);
-	}
+	// for(k=0;k<trace;k++){
+	// 		*hashing += *(size_t*)(xmem + hash_offset);
+	// 		*hashing += (*hashing << 3);
+	// 		*hashing ^= (*hashing >> 2);
+	// 		hash_offset += sizeof(size_t);
+	// }
 
 	for(k=0;k<len;){
 		*hashing += *(size_t*)(xmem + k);
