@@ -214,7 +214,6 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 		}
 		k += (thin_internal<<3);
 	}
-	printk("sizeof(size_t):%lu",sizeof(size_t));
 	
 	return true;
 }
