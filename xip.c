@@ -771,7 +771,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
-		hash_map_addr-temp->pfn = 0;
+		hash_map_addr_temp->pfn = 0;
 		
 		hash_map_addr_temp->pfn = start_blk + j;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
