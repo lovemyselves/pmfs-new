@@ -517,10 +517,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
  	* No need to use i_size_read() here, the i_size
  	* cannot change under us because we hold i_mutex.
  	*/
-	// if (pos > inode->i_size) {
-	// 	i_size_write(inode, pos);
-	// 	pmfs_update_isize(inode, pi);
-	// }
+	if (pos > inode->i_size) {
+		i_size_write(inode, pos);
+		pmfs_update_isize(inode, pi);
+	}
 
 	PMFS_END_TIMING(internal_write_t, write_time);
 	return written ? written : status;
@@ -771,6 +771,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
+		hash_map_addr-temp->pfn = 0;
 		
 		hash_map_addr_temp->pfn = start_blk + j;
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
