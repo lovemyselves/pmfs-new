@@ -471,7 +471,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				pos += status;
 				buf += status;
 				// printk("status:%lu",status);
-				printk("pos:%llu",pos);
 			}
 		}
 		if (unlikely(copied != bytes))
@@ -480,17 +479,17 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status < 0)
 			break;	
 	} while (count);
-	printk("pos:%llu",pos);
+
 	*ppos = pos;
 	
 	/*
  	* No need to use i_size_read() here, the i_size
  	* cannot change under us because we hold i_mutex.
  	*/
-	if (pos > inode->i_size) {
-		i_size_write(inode, pos);
-		pmfs_update_isize(inode, pi);
-	}
+	// if (pos > inode->i_size) {
+	// 	i_size_write(inode, pos);
+	// 	pmfs_update_isize(inode, pi);
+	// }
 
 	PMFS_END_TIMING(internal_write_t, write_time);
 	return written ? written : status;
@@ -853,7 +852,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// 	printk("inode->i_size:%lu", (size_t)inode->i_size);
 	// 	printk("isize update!");
 	// }
-	if (pos > inode->i_size) {
+	if (*ppos > inode->i_size) {
 		i_size_write(inode, pos);
 		pmfs_update_isize(inode, pi);
 	}
