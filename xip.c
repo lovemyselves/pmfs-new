@@ -702,6 +702,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 			hash_map_addr_temp->flag = false;
 			hash_map_addr_temp->hashing_md5 = NULL;
+			hash_map_addr_temp->pfn = 0;
+			hash_map_addr_temp->addr = NULL;
 		}
 		printk("pos 2");		
 
@@ -803,7 +805,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(overwrite_flag == 0){
 			ref_map_temp->hma = hash_map_addr_temp;
 			ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
-			// ref_map_temp->pfn = &hash_map_addr_temp->pfn;
+			ref_map_temp->pfn = &hash_map_addr_temp->pfn;
 		
 			INIT_LIST_HEAD(&ref_map_temp->list);
 			list_add_tail(&ref_map_temp->list, &dedup_ref_list);
