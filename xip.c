@@ -51,8 +51,10 @@ size_t dedup_interval = 1;
 /*
 	dedup rbtree function
 */
-void alloc_block_metadata(struct super_block *sb, unsigned long *blocknr){
+unsigned long *alloc_block_metadata(struct super_block *sb){
+	unsigned long blocknr;
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+	return &blocknr;
 }
 
 struct hash_map_addr *rb_search_insert_node(
