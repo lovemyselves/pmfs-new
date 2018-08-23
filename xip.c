@@ -51,10 +51,10 @@ size_t dedup_interval = 1;
 /*
 	dedup rbtree function
 */
-unsigned long *alloc_block_metadata(struct super_block *sb){
+unsigned long alloc_block_metadata(struct super_block *sb){
 	unsigned long blocknr;
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-	return &blocknr;
+	return blocknr;
 }
 
 struct hash_map_addr *rb_search_insert_node(
@@ -803,7 +803,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(overwrite_flag == 0){
 			ref_map_temp->hma = hash_map_addr_temp;
 			ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
-			ref_map_temp->pfn = &hash_map_addr_temp->pfn;
+			// ref_map_temp->pfn = &hash_map_addr_temp->pfn;
 		
 			INIT_LIST_HEAD(&ref_map_temp->list);
 			list_add_tail(&ref_map_temp->list, &dedup_ref_list);
