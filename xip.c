@@ -471,7 +471,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				pos += status;
 				buf += status;
 				// printk("status:%lu",status);
-				printk("pos:%lu",pos);
+				printk("pos:%llu",pos);
 			}
 		}
 		if (unlikely(copied != bytes))
@@ -480,7 +480,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status < 0)
 			break;	
 	} while (count);
-
+	printk("pos:%llu",pos);
 	*ppos = pos;
 	
 	/*
