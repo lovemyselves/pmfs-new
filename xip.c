@@ -742,9 +742,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->pfn = 0;
-		
-		hash_map_addr_temp->pfn = start_blk + j;
+		hash_map_addr_temp->pfn = alloc_block_metadata(sb);
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
 		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length)){
@@ -842,17 +840,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 	// }
 
-	// printk("actual_num_blocks:%lu", actual_num_blocks);
 	printk("before __write, ppos in pmfs_xip_file_write:%llu", *ppos);
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
-	printk("count:%lu",count);
-	printk("after __write, ppos in pmfs_xip_file_write:%llu", *ppos);
-	// if (pos+count > inode->i_size) {
-	// 	i_size_write(inode, pos+count);
-	// 	pmfs_update_isize(inode, pi);
-	// 	printk("inode->i_size:%lu", (size_t)inode->i_size);
-	// 	printk("isize update!");
-	// }
+
 	if (pos + count > inode->i_size) {
 		i_size_write(inode, count+pos);
 		pmfs_update_isize(inode, pi);
