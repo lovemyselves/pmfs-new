@@ -852,10 +852,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// 	printk("inode->i_size:%lu", (size_t)inode->i_size);
 	// 	printk("isize update!");
 	// }
-	if (*ppos > inode->i_size) {
-		i_size_write(inode, pos);
-		pmfs_update_isize(inode, pi);
-	}
+	// if (*ppos > inode->i_size) {
+	// 	i_size_write(inode, pos);
+	// 	pmfs_update_isize(inode, pi);
+	// }
 
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
