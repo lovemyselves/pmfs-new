@@ -853,8 +853,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// 	printk("inode->i_size:%lu", (size_t)inode->i_size);
 	// 	printk("isize update!");
 	// }
-	if (*ppos > inode->i_size) {
-		i_size_write(inode, *ppos);
+	if (pos + count > inode->i_size) {
+		i_size_write(inode, count+pos);
 		pmfs_update_isize(inode, pi);
 	}
 
