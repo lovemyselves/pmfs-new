@@ -181,11 +181,11 @@ int pmfs_new_block(struct super_block *sb, unsigned long *blocknr,
 		new_block_low = (i->block_high + num_blocks) & ~(num_blocks - 1);
 		new_block_high = new_block_low + num_blocks - 1;
 
-		printk("num_blocks:%lu", num_blocks);
-		printk("new_block_low:%lu", new_block_low);
-		printk("i->block_high:%lu", i->block_high);
-		printk("new_block_high:%lu", new_block_high);
-		printk("next_block_low:%lu", next_block_low);
+		// printk("num_blocks:%lu", num_blocks);
+		// printk("new_block_low:%lu", new_block_low);
+		// printk("i->block_high:%lu", i->block_high);
+		// printk("new_block_high:%lu", new_block_high);
+		// printk("next_block_low:%lu", next_block_low);
 
 		if (new_block_high >= next_block_low) {
 			/* Does not fit - skip to next blocknode */
@@ -280,7 +280,7 @@ int pmfs_new_block(struct super_block *sb, unsigned long *blocknr,
 			size = 0x1 << 30;
 		memset_nt(bp, 0, size);
 		pmfs_memlock_block(sb, bp);
-		printk("hutubin");
+		// printk("hutubin");
 	}
 	*blocknr = new_block_low;
 
