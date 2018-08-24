@@ -843,9 +843,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// }
 
 	// printk("actual_num_blocks:%lu", actual_num_blocks);
+	printk("before __write, ppos in pmfs_xip_file_write:%llu", *ppos);
 	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	printk("count:%lu",count);
-	printk("ppos in pmfs_xip_file_write:%llu",*ppos);
+	printk("after __write, ppos in pmfs_xip_file_write:%llu", *ppos);
 	// if (pos+count > inode->i_size) {
 	// 	i_size_write(inode, pos+count);
 	// 	pmfs_update_isize(inode, pi);
