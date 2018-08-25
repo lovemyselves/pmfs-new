@@ -280,7 +280,6 @@ int pmfs_new_block(struct super_block *sb, unsigned long *blocknr,
 			size = 0x1 << 30;
 		memset_nt(bp, 0, size);
 		pmfs_memlock_block(sb, bp);
-		// printk("hutubin");
 	}
 	*blocknr = new_block_low;
 
