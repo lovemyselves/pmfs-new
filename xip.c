@@ -486,10 +486,10 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
  	* No need to use i_size_read() here, the i_size
  	* cannot change under us because we hold i_mutex.
  	*/
-	// if (pos > inode->i_size) {
-	// 	i_size_write(inode, pos);
-	// 	pmfs_update_isize(inode, pi);
-	// }
+	if (pos > inode->i_size) {
+		i_size_write(inode, pos);
+		pmfs_update_isize(inode, pi);
+	}
 
 	PMFS_END_TIMING(internal_write_t, write_time);
 	return written ? written : status;
@@ -819,6 +819,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	if(actual_num_blocks!=0){
 		written = count;
+		*ppos = pos + count;
+		if (*ppos > inode->i_size) {
+		i_size_write(inode, count+pos);
+		pmfs_update_isize(inode, pi);
+	}
 	}else{
 	/* don't zero-out the allocated blocks */
 	pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
@@ -844,10 +849,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 	// printk("before __write, ppos in pmfs_xip_file_write:%llu", *ppos);
 
-	if (pos + count > inode->i_size) {
-		i_size_write(inode, count+pos);
-		pmfs_update_isize(inode, pi);
-	}
+	
 
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
