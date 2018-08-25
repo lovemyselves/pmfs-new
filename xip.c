@@ -743,7 +743,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->pfn = alloc_block_metadata(sb);
-		printk("hash_map_addr_temp->pfn:%lu", hash_map_addr_temp->pfn);
+		printk("hash_map_addr_temp->pfn:%lu", hash_map_addr_temp->pfn << PAGE_SHIFT);
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
 		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length)){
