@@ -818,7 +818,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 	
 	/* don't zero-out the allocated blocks */
-	pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
+	// pmfs_alloc_blocks(trans, inode, start_blk, num_blocks, false);
 
 	/* We avoid zeroing the alloc'd range, which is going to be overwritten
 	 * by this system call anyway */
@@ -834,15 +834,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			(pmfs_find_data_block(inode, end_blk) == 0))
 		new_eblk = true;
 
-	// if(actual_num_blocks!=0){
-	// 	pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
-	/* now zero out the edge blocks which will be partially written */
-	pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
-	pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
-	// }
-
-	printk("before __write, ppos in pmfs_xip_file_write:%llu", *ppos);
-	written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
+	if(actual_num_blocks!=0){
+	written = count;
+	}else{
+		pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
+		/* now zero out the edge blocks which will be partially written */
+		pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
+		pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
+		written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
+	}
+	// printk("before __write, ppos in pmfs_xip_file_write:%llu", *ppos);
 
 	if (pos + count > inode->i_size) {
 		i_size_write(inode, count+pos);
