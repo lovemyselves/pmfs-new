@@ -34,6 +34,7 @@
 #include <linux/list.h>
 #include <linux/dax.h>
 #include "pmfs.h"
+#include "dedup.c"
 
 int measure_timing = 0;
 int support_clwb = 0;
@@ -464,16 +465,10 @@ static struct pmfs_inode *pmfs_init(struct super_block *sb,
 	PERSISTENT_BARRIER();
 
 	printk("pmfs init");
-	init_dedup_module(sb);
+	if(init_dedup_module(sb)){
+		printk("dedup init");
+	}
 	return root_i;
-}
-
-bool init_dedup_module(struct super_block *sb){
-	struct pmfs_blocknode *p;
-
-	p  = pmfs_alloc_blocknode(sb);
-	printk("p:%lu",p);
-	return true;
 }
 
 static inline void set_default_opts(struct pmfs_sb_info *sbi)
