@@ -462,6 +462,8 @@ static struct pmfs_inode *pmfs_init(struct super_block *sb,
 	pmfs_flush_buffer(de, PMFS_DIR_REC_LEN(2), false);
 	PERSISTENT_MARK();
 	PERSISTENT_BARRIER();
+
+	printk("pmfs init");
 	return root_i;
 }
 
@@ -1033,6 +1035,7 @@ static struct dentry *pmfs_mount(struct file_system_type *fs_type,
 				  int flags, const char *dev_name, void *data)
 {	
 	printk("pmfs mount");
+	
 	return mount_bdev(fs_type, flags, dev_name, data, pmfs_fill_super);
 }
 
