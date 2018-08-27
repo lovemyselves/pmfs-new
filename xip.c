@@ -794,6 +794,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// }
 		
 		printk("pos 5");
+		printk("sizeof(hash_map_addr_temp):%lu",sizeof(*hash_map_addr_temp));
+		printk("sizeof(xmem):%lu",sizeof(*xmem));
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		direct_write_out:
