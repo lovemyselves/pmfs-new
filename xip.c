@@ -698,13 +698,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			printk("new data block");
 		}
 
-		// if(overwrite_flag!=2){
+		if(overwrite_flag!=2){
 			hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
 			hash_map_addr_temp->flag = false;
 			hash_map_addr_temp->hashing_md5 = NULL;
 			hash_map_addr_temp->pfn = 0;
 			hash_map_addr_temp->addr = NULL;
-		// }
+		}else{
+			hash_map_addr_temp = NULL;
+		}
 		printk("pos 2");		
 
 		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
