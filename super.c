@@ -70,6 +70,8 @@ static bool init_dedup_module(struct super_block *sb){
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	printk("blocknr:%lu", blocknr);
 
+	pmfs_get_block(sb, pmfs_get_block_off(sb, blocknr, PMFS_BLOCK_TYPE_4K));
+	
 	return true;
 }
 
