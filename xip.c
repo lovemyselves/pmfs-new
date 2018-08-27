@@ -796,11 +796,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// }
 		
 		printk("pos 5");
-		printk("sizeof(hash_map_addr_temp):%lu",sizeof(struct hash_map_addr));
-		printk("sizeof(struct rb_node node):%lu",sizeof(struct rb_node));
-		printk("sizeof(struct list_head):%lu",sizeof(struct list_head));
-    ;
-		printk("sizeof(xmem):%lu",sizeof(char)<<10);
+		// printk("sizeof(hash_map_addr_temp):%lu",sizeof(struct hash_map_addr));
+		// printk("sizeof(struct rb_node node):%lu",sizeof(struct rb_node));
+		// printk("sizeof(struct list_head):%lu",sizeof(struct list_head));
+		// printk("sizeof(xmem):%lu",sizeof(char)<<10);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		direct_write_out:
