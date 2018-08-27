@@ -53,20 +53,20 @@ unsigned int pmfs_dbgmask = 0;
 #ifdef CONFIG_PMFS_TEST
 static void *first_pmfs_super;
 
-static int init_dedup_module(struct super_block *sb){
-	struct pmfs_blocknode *p;
-
-	p  = pmfs_alloc_blocknode(sb);
-	printk("p:%lu",p);
-	return true;
-}
-
 struct pmfs_super_block *get_pmfs_super(void)
 {
 	return (struct pmfs_super_block *)first_pmfs_super;
 }
 EXPORT_SYMBOL(get_pmfs_super);
 #endif
+
+static void init_dedup_module(struct super_block *sb){
+	struct pmfs_blocknode *p;
+
+	p  = pmfs_alloc_blocknode(sb);
+	printk("p:%lu",p);
+	return true;
+}
 
 void pmfs_error_mng(struct super_block *sb, const char *fmt, ...)
 {
@@ -472,9 +472,9 @@ static struct pmfs_inode *pmfs_init(struct super_block *sb,
 	PERSISTENT_BARRIER();
 
 	printk("pmfs init");
-	if(init_dedup_module(sb)){
-		printk("dedup init");
-	}
+	init_dedup_module(sb);
+	printk("dedup init");
+	
 	return root_i;
 }
 
