@@ -813,8 +813,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}else if(overwrite_flag == 1){
 			ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
 			ref_map_temp->hma = hash_map_addr_temp;
-		}else{
-			kfree(hash_map_addr_temp);
 		}
 		i -= block_len;
 	}
