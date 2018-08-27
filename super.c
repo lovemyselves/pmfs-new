@@ -63,7 +63,7 @@ EXPORT_SYMBOL(get_pmfs_super);
 static bool init_dedup_module(struct super_block *sb){
 	struct pmfs_blocknode *p;
 	unsigned long blocknr;
-	void *block;
+	void *xmem;
 
 	p  = pmfs_alloc_blocknode(sb);
 	printk("p:%lu",(unsigned long)p);
@@ -71,8 +71,8 @@ static bool init_dedup_module(struct super_block *sb){
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	printk("blocknr:%lu", blocknr);
 
-	void *xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
-	
+	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
+
 	return true;
 }
 
