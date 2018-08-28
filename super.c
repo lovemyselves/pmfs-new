@@ -61,11 +61,15 @@ struct pmfs_super_block *get_pmfs_super(void)
 EXPORT_SYMBOL(get_pmfs_super);
 #endif
 
+static inline void block_to_128B(void *blockaddr, struct list_head *h){
+	;	
+}
+
 static bool init_dedup_module(struct super_block *sb){
-	struct pmfs_blocknode *p;
+	// struct pmfs_blocknode *p;
 	unsigned long blocknr;
 	void *xmem;
-	struct list_head *hash_map_addr_head;
+	struct dedup_index *superindex;
 
 	// p  = pmfs_alloc_blocknode(sb);
 	// printk("p:%lu",(unsigned long)p);
@@ -78,13 +82,10 @@ static bool init_dedup_module(struct super_block *sb){
 	printk("hash_map_addr_head:%lu", (unsigned long)xmem);
 
 	hash_map_addr_head = xmem;
-	INIT_LIST_HEAD(hash_map_addr_head);
-
-
-	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-	printk("blocknr:%lu", blocknr);
-
-	
+	INIT_LIST_HEAD(&superindex->hma_head);
+	INIT_LIST_HEAD(&superindex->hma_unused);
+	INIT_LIST_HEAD(&superindex->ref_head);
+	INIT_LIST_HEAD(&superindex->ref_unused);
 
 	return true;
 }

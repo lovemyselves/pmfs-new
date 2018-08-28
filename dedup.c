@@ -29,3 +29,10 @@ struct dedup_inode{
     size_t length;
     const char __user buf[32];
 };
+
+struct dedup_index{
+    struct list_head hma_head;
+    struct list_head hma_unused;
+    struct list_head ref_head;
+    struct list_head ref_unused;
+};
