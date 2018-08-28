@@ -794,6 +794,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	// printk("dedup_interval:%lu",dedup_interval);
 		// 	;
 		// }
+		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+		hash_map_addr_temp->addr = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
+		memcpy(hash_map_addr_temp->addr, xmem, pmfs_inode_blk_size(pi));
+		kfree(xmem);
 		
 		printk("pos 5");
 		// printk("sizeof(hash_map_addr_temp):%lu",sizeof(struct hash_map_addr));
