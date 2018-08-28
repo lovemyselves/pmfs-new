@@ -34,6 +34,7 @@
 #include <linux/list.h>
 #include <linux/dax.h>
 #include "pmfs.h"
+#include "dedup.c"
 
 int measure_timing = 0;
 int support_clwb = 0;
