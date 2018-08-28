@@ -745,8 +745,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 		hash_map_addr_temp->hashing = hashing;
 		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->pfn = alloc_block_metadata(sb);
-		printk("hash_map_addr_temp->pfn:%lu", hash_map_addr_temp->pfn << PAGE_SHIFT);
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
 
 		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length)){
@@ -798,6 +796,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 		hash_map_addr_temp->addr = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
 		memcpy(hash_map_addr_temp->addr, xmem, pmfs_inode_blk_size(pi));
+
+		hash_map_addr_temp->pfn = pmfs_get_pfn(inode->i_sb, blocknr<<PAGE_SHIFT);
+
 		kfree(xmem);
 		
 		printk("pos 5");
