@@ -33,7 +33,7 @@
 #include <linux/backing-dev.h>
 #include <linux/list.h>
 #include <linux/dax.h>
-#include "pmfs.h"
+#include "pmfs.h" 
 #include "dedup.c"
 
 int measure_timing = 0;
@@ -71,8 +71,17 @@ static bool init_dedup_module(struct super_block *sb){
 	
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	printk("blocknr:%lu", blocknr);
-
+	
 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
+	
+	struct list_head *hash_map_addr_head = xmem;
+	INIT_LIST_HEAD(hash_map_addr_head);
+
+
+	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+	printk("blocknr:%lu", blocknr);
+
+	
 
 	return true;
 }
