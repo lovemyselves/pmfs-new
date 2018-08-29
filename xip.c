@@ -837,23 +837,20 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		pmfs_update_isize(inode, pi);
 	}
 	}else{
-	/* don't zero-out the allocated blocks */
-	pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
+		/* don't zero-out the allocated blocks */
+		pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
 
-	/* We avoid zeroing the alloc'd range, which is going to be overwritten
-	 * by this system call anyway */
+		/* We avoid zeroing the alloc'd range, which is going to be overwritten
+		 * by this system call anyway */
 	
-	if (offset != 0) {
-		if (pmfs_find_data_block(inode, start_blk) == 0)
-		    new_sblk = true;
-	}
+		if (offset != 0) {
+			if (pmfs_find_data_block(inode, start_blk) == 0)
+		    	new_sblk = true;
+		}
 
-	// end_blk = start_blk + actual_num_blocks - 1;
-
-	eblk_offset = (pos + count) & (pmfs_inode_blk_size(pi) - 1);
-	if ((eblk_offset != 0) &&
-			(pmfs_find_data_block(inode, end_blk) == 0))
-		new_eblk = true;
+		eblk_offset = (pos + count) & (pmfs_inode_blk_size(pi) - 1);
+		if ((eblk_offset != 0) && (pmfs_find_data_block(inode, end_blk) == 0))
+			new_eblk = true;
 		/* now zero out the edge blocks which will be partially written */
 		pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 		pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
