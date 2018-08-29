@@ -47,15 +47,28 @@ struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
 // static struct kmem_cache *pmfs_dedup_cachep;
-
 size_t dedup_interval = 1;
 /*
 	dedup rbtree function
 */
 unsigned long alloc_block_metadata(struct super_block *sb){
 	unsigned long blocknr;
+	
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+	
 	return blocknr;
+}
+
+void new_unused_dedupnode(struct super_block *sb){
+	unsigned long blocknr;
+	struct hash_map_addr_temp;
+	unsigned offset = 0;
+	unsigned dedupnode_size = 
+		sizeof(hash_map_addr) - sizeof(list_head) - sizeof(rb_node);
+	
+	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+	while(offset<4096)
+	
 }
 
 struct hash_map_addr *rb_search_insert_node(
