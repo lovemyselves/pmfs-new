@@ -33,6 +33,7 @@
 #include "dedup.c"
 
 /* dedup claim start */
+#define DEDUP_HEAD 1024
 
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
