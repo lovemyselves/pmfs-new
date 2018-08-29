@@ -902,14 +902,28 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	}
 	
 	//dedup insert
+	if( ((size_t)(vmf->pgoff)>0 && ref_find_flag) && 
+		(&dedup_ref_list!=last_ref->next && last_ref->next!=NULL)){
+			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
+			if(inode == ref_map_temp->virt_addr && (size_t)(vmf->pgoff) == ref_map_temp->index)
+			{
+				xip_mem = *ref_map_temp->phys_addr;
+				ref_find_flag = true;
+				last_ref = last_ref->next;
+				err = 0;
+				goto read_redirect;
+			}
+		}
 	ref_map_temp = ref_search_node(&ref_root, inode, (size_t)(vmf->pgoff));
 	if(ref_map_temp!=NULL)
 	{
 		xip_pfn = *ref_map_temp->pfn;
 		err = 0;
+		ref_find_flag = true;
 	}else
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	//end
+	read_redirect:
 
 	if (unlikely(err)) {
 		pmfs_dbg("[%s:%d] get_xip_mem failed(OOM). vm_start(0x%lx),"
