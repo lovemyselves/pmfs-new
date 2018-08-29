@@ -890,7 +890,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	unsigned long xip_pfn;
 	int err;
 	//dedup insert code
-	// struct ref_map *ref_map_temp;
+	struct ref_map *ref_map_temp;
 
 	size = (i_size_read(inode) + PAGE_SIZE - 1) >> PAGE_SHIFT;
 	if (vmf->pgoff >= size) {
