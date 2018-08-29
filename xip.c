@@ -920,7 +920,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		xip_pfn = *ref_map_temp->pfn;
 		err = 0;
 		ref_find_flag = true;
-		last_ref = ref_map_temp;
+		last_ref = &ref_map_temp->list;
 	}else
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	//end
