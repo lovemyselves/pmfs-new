@@ -40,7 +40,7 @@ struct list_head *new_list = &hash_map_addr_list;
 bool find_flag = false;
 struct rb_root root = RB_ROOT;
 
-struct list_head *last_ref;
+struct list_head *last_ref = NULL;
 bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
@@ -902,8 +902,8 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	
 	//dedup insert
 	printk("before fast search");
-	if( ((size_t)(vmf->pgoff)>0 && ref_find_flag) && 
-		(&dedup_ref_list!=last_ref->next)){
+	if( ( (vmf->pgoff)!=0 && ref_find_flag) && 
+		last_ref){
 			printk("1 fast search ...");
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && (size_t)(vmf->pgoff) == ref_map_temp->index)
