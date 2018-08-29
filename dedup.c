@@ -9,9 +9,9 @@ struct hash_map_addr{
     size_t length;
     size_t count;
     struct list_head list;
+    bool flag; 
     struct rb_node node;
     struct list_head hashing_list;
-    bool flag;     
 };
 
 struct ref_map{
