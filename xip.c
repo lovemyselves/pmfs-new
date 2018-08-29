@@ -909,8 +909,8 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 			{
 				printk("fast search ...");
 				xip_pfn = *ref_map_temp->pfn;
-				last_ref = last_ref->next;
 				err = 0;
+				last_ref = last_ref->next;
 				goto read_redirect;
 			}
 		}
