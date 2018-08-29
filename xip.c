@@ -904,10 +904,11 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	printk("before fast search");
 	if( ((size_t)(vmf->pgoff)>0 && ref_find_flag) && 
 		(&dedup_ref_list!=last_ref->next)){
+			printk("1 fast search ...");
 			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
 			if(inode == ref_map_temp->virt_addr && (size_t)(vmf->pgoff) == ref_map_temp->index)
 			{
-				printk("fast search ...");
+				printk("2 fast search ...");
 				xip_pfn = *ref_map_temp->pfn;
 				err = 0;
 				last_ref = last_ref->next;
