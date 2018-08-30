@@ -34,6 +34,7 @@
 
 /* dedup claim start */
 #define DEDUP_HEAD 1026
+#define DEDUPNODE_SIZE sizeof(struct hash_map_addr) - sizeof(struct list_head) - sizeof(struct rb_node)
 
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
@@ -63,8 +64,7 @@ void new_unused_dedupnode(struct super_block *sb){
 	unsigned long blocknr;
 	struct hash_map_addr_temp;
 	unsigned offset = 0;
-	unsigned dedupnode_size = 
-		sizeof(hash_map_addr) - sizeof(list_head) - sizeof(rb_node);
+	unsigned dedupnode_size = DEDUPNODE_SIZE;
 	
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	while(offset<4096)
