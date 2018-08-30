@@ -856,7 +856,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("pmfswrite 7");
 	new_unused_dedupnode(sb);
 	//dedupnode mem to nvm
-	while(hash_map_addr_list->next != &hash_map_addr_list){
+	while(hash_map_addr_list.next != &hash_map_addr_list){
 		break;
 	}
 
