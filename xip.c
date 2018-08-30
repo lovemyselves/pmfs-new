@@ -67,8 +67,11 @@ void new_unused_dedupnode(struct super_block *sb){
 	unsigned dedupnode_size = DEDUPNODE_SIZE;
 	
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-	while(offset<4096)
 	
+	while(offset + DEDUPNODE_SIZE <4096)
+	{
+		offset += DEDUPNODE_SIZE;
+	}
 }
 
 struct hash_map_addr *rb_search_insert_node(
