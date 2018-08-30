@@ -20,16 +20,12 @@
 #include "xip.h"
 /*dedup new add include*/
 #include <linux/kernel.h>
-// #include <linux/string.h>
 #include <linux/module.h>
 #include <linux/crypto.h>
 #include <crypto/hash.h>
-// #include <crypto/internal/hash.h>
-// #include <crypto/scatterwalk.h>
 #include <linux/scatterlist.h>
 #include <linux/err.h>
-// #include <linux/gfp.h>
-// #include <linux/slab.h>
+
 #include "dedup.c"
 
 /* dedup claim start */
