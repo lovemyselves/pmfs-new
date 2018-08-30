@@ -612,6 +612,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,dedup_offset;	
 	struct hash_map_addr *hash_map_addr_entry;
+	struct list_head *list_head_entry;
 	unsigned long actual_num_blocks = 0;
 	//end
 
@@ -845,9 +846,25 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("pmfswrite 7");
 	new_unused_dedupnode(sb);
 	//dedupnode mem to nvm
-	while(hash_map_addr_list.next != &hash_map_addr_list){
+	list_head_entry = &hash_map_addr_list;
+	while(list_head_entry->next != &hash_map_addr_list){
+		hash_map_addr_entry = list_entry(list_head_entry->next,
+			struct hash_map_addr, list);
+		struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+		struct dedupnode *dnode = list_entry(dindex->hma_unused->next,
+			struct dedupnode, list);
+		
+		dnode->hashing = hash_map_addr_entry->hashing;
+		// size_t hashing;
+    	// char strength_hashval[16];
+    	// void *addr;
+    	// unsigned long pfn;
+    	// size_t length;
+    	// size_t count;
+    	// bool flag;
 		break;
 	}
+	printk("pmfswrite 8");
 
 	if(actual_num_blocks!=0){
 		written = count;
