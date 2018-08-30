@@ -185,13 +185,6 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 				 
 	if(data_remainder!=0)
 		memcpy(hashing, xmem+len-data_remainder, data_remainder);
-	
-	// for(k=0;k<trace;k++){
-	// 		*hashing += *(size_t*)(xmem + hash_offset);
-	// 		*hashing += (*hashing << 3);
-	// 		*hashing ^= (*hashing >> 2);
-	// 		hash_offset += sizeof(size_t);
-	// }
 
 	for(k=0;(k+sizeof(size_t))<len;){
 		*hashing += *(size_t*)(xmem + k);
@@ -704,18 +697,18 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pos 1");
 		if(insert_ret){
 			ref_map_temp = insert_ret;
-			printk("ref count:%lu", ref_map_temp->hma->count);
 			if(ref_map_temp->hma->count!=0){
 				overwrite_flag = 1;
-				printk("should update COW");
+				//update COW
 			}
 			else{
-				printk("should update in-place");
+				//update in-place
 				ref_map_temp->hma->count = 1;
 				overwrite_flag = 2;
 			}
 		}else{
-			printk("new data block");
+			//new block
+			;
 		}
 
 		if(overwrite_flag!=2){

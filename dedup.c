@@ -27,12 +27,12 @@ struct ref_map{
 
 struct dedupnode{
     size_t hashing;
-    void *hashing_md5;
+    char strength_hashval[16];
     void *addr;
     unsigned long pfn;
     size_t length;
     size_t count;
-    bool flag; 
+    bool flag;
     struct list_head hashing_list;
     struct list_head list;
 };
