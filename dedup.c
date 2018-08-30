@@ -9,9 +9,10 @@ struct hash_map_addr{
     size_t length;
     size_t count;
     struct list_head list;
-    bool flag; 
-    struct rb_node node;
+    bool flag;
     struct list_head hashing_list;
+    struct rb_node node;
+    void *mapping_address;
 };
 
 struct ref_map{
@@ -24,10 +25,16 @@ struct ref_map{
     struct rb_node node;
 };
 
-struct dedup_inode{
-    size_t end_blk;
+struct dedupnode{
+    size_t hashing;
+    void *hashing_md5;
+    void *addr;
+    unsigned long pfn;
     size_t length;
-    const char __user buf[32];
+    size_t count;
+    bool flag; 
+    struct list_head hashing_list;
+    struct list_head list;
 };
 
 struct dedup_index{

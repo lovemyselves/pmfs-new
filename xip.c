@@ -62,14 +62,19 @@ unsigned long alloc_block_metadata(struct super_block *sb){
 
 void new_unused_dedupnode(struct super_block *sb){
 	unsigned long blocknr;
-	struct hash_map_addr_temp;
+	struct dedupnode *dnode;
 	unsigned offset = 0;
-	unsigned dedupnode_size = DEDUPNODE_SIZE;
+	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	
 	while(offset + DEDUPNODE_SIZE <4096)
-	{
+	{	
+		dnode = xmem + offset;
+		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
+		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
+		INIT_LIST_HEAD(&dnode->list);
+		list_add_tail(&dnode->list, &dindex->hma_unused);
 		offset += DEDUPNODE_SIZE;
 	}
 }
