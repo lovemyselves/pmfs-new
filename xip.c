@@ -72,7 +72,7 @@ void new_unused_dedupnode(struct super_block *sb){
 	
 	while(offset + DEDUPNODE_SIZE <4096)
 	{	
-		dnode =  + offset;
+		dnode = xmem + offset;
 		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		INIT_LIST_HEAD(&dnode->list);
