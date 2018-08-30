@@ -852,6 +852,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		i -= block_len;
 	}
 
+	//store dedupnode
+	printk("pmfswrite 7");
+	new_unused_dedupnode(sb);
+	//dedupnode mem to nvm
+	while(hash_map_addr_list->next != &hash_map_addr_list){
+		break;
+	}
+
 	if(actual_num_blocks!=0){
 		written = count;
 		*ppos = pos + count;
