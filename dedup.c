@@ -33,7 +33,7 @@ struct dedupnode{
     size_t length;
     size_t count;
     bool flag;
-    struct list_head hashing_list;
+    // struct list_head hashing_list;
     struct list_head list;
 };
 
