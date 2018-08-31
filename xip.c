@@ -871,6 +871,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// 	break;
 	// }
 	// printk("pmfswrite 8");
+	printk("sizeof(struct deduponode):%lu",sizeof(struct dedupnode));
 
 	if(actual_num_blocks!=0){
 		written = count;
