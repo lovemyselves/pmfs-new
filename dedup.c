@@ -40,7 +40,7 @@ struct dedupnode{
 struct dedup_index{
     struct list_head hma_head;
     struct list_head hma_unused;
-    struct list_head ref_head;
-    struct list_head ref_unused;
+    struct hlist_head ref_head;
+    struct hlist_head ref_unused;
     int update_flag;
 };

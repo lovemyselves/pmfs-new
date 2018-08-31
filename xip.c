@@ -30,7 +30,7 @@
 
 /* dedup claim start */
 #define DEDUP_HEAD 1026
-#define DEDUPNODE_SIZE sizeof(struct hash_map_addr) - sizeof(struct list_head) - sizeof(struct rb_node)
+#define DEDUPNODE_SIZE sizeof(struct dedupnode)
 
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
@@ -75,6 +75,17 @@ void new_unused_dedupnode(struct super_block *sb){
 		list_add_tail(&dnode->list, &dindex->hma_unused);
 		offset += DEDUPNODE_SIZE;
 	}
+}
+
+void alloc_dedupnode(void *dnode, struct super_block *sb){
+	struct list_head *p;
+	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	if(list_empty(&dindex->hma_unused))
+		new_unused_dedupnode(sb);
+	
+	p = dindex->hma_unused.next;
+	list_move(p, &dindex->hma_head);
+	dnode = list_entry(p, struct dedupnode, list);
 }
 
 struct hash_map_addr *rb_search_insert_node(
