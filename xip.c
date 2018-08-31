@@ -846,13 +846,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	printk("pmfswrite 7");
 	new_unused_dedupnode(sb);
 	//dedupnode mem to nvm
-	list_head_entry = &hash_map_addr_list;
-	while(list_head_entry->next != &hash_map_addr_list){
+	list_for_each_entry(hash_map_addr_entry, hash_map_addr_list, list){
 		struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 		struct list_head *new_dnode_list = dindex->hma_unused.next;
 		struct dedupnode *dnode = list_entry(new_dnode_list,struct dedupnode,list);
-		
-		hash_map_addr_entry = list_entry(list_head_entry->next,struct hash_map_addr,list);
+	
+		// hash_map_addr_entry = list_entry(list_head_entry->next,struct hash_map_addr,list);
 		dnode->hashing = hash_map_addr_entry->hashing;
 		memcpy(dnode->strength_hashval, hash_map_addr_entry->hashing_md5, 16);
 		dnode->addr = hash_map_addr_entry->addr;
@@ -860,6 +859,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->length = hash_map_addr_entry->length;
 		dnode->count = hash_map_addr_entry->count;
 		list_move(&dnode->list, &dindex->hma_head);
+		list_del();
 		dnode->flag = true;
 		// size_t hashing;
     	// char strength_hashval[16];
