@@ -77,7 +77,7 @@ void new_unused_dedupnode(struct super_block *sb){
 	}
 }
 
-void alloc_dedupnode(void *dnode, struct super_block *sb){
+bool alloc_dedupnode(void *dnode, struct super_block *sb){
 	struct list_head *p;
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	if(list_empty(&dindex->hma_unused))
@@ -86,6 +86,8 @@ void alloc_dedupnode(void *dnode, struct super_block *sb){
 	p = dindex->hma_unused.next;
 	list_move(p, &dindex->hma_head);
 	dnode = list_entry(p, struct dedupnode, list);
+
+	return true;
 }
 
 struct hash_map_addr *rb_search_insert_node(
