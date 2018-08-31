@@ -30,8 +30,8 @@ struct dedupnode{
     char strength_hashval[16];
     void *addr;
     unsigned long pfn;
-    size_t length;
-    size_t count;
+    unsigned length;
+    unsigned count;
     bool flag;
     // struct list_head hashing_list;
     struct list_head list;
