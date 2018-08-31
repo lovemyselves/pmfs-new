@@ -71,8 +71,8 @@ void new_unused_dedupnode(struct super_block *sb){
 		dnode = xmem + offset;
 		// INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		// list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		INIT_HLIST_HEAD(&dnode->list);
-		hlist_add_tail(&dnode->list, &dindex->hma_unused);
+		INIT_LIST_HEAD(&dnode->list);
+		list_add_tail(&dnode->list, &dindex->hma_unused);
 		offset += DEDUPNODE_SIZE;
 	}
 }
@@ -84,8 +84,8 @@ void alloc_dedupnode(void *dnode, struct super_block *sb){
 		new_unused_dedupnode(sb);
 	
 	p = dindex->hma_unused.next;
-	hlist_move(p, &dindex->hma_head);
-	dnode = hlist_entry(p, struct dedupnode, list);
+	list_move(p, &dindex->hma_head);
+	dnode = list_entry(p, struct dedupnode, list);
 }
 
 struct hash_map_addr *rb_search_insert_node(
@@ -623,6 +623,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,dedup_offset;	
 	struct hash_map_addr *hash_map_addr_entry;
+	// struct list_head *list_head_entry;
 	unsigned long actual_num_blocks = 0;
 	//end
 
