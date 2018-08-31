@@ -34,13 +34,13 @@ struct dedupnode{
     unsigned count;
     bool flag;
     // struct list_head hashing_list;
-    struct hlist_head list;
+    struct list_head list;
 };
 
 struct dedup_index{
-    struct hlist_head hma_head;
-    struct hlist_head hma_unused;
-    struct hlist_head ref_head;
-    struct hlist_head ref_unused;
+    struct list_head hma_head;
+    struct list_head hma_unused;
+    struct list_head ref_head;
+    struct list_head ref_unused;
     int update_flag;
 };
