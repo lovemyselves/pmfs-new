@@ -623,7 +623,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,dedup_offset;	
 	struct hash_map_addr *hash_map_addr_entry;
-	struct list_head *list_head_entry;
 	unsigned long actual_num_blocks = 0;
 	//end
 

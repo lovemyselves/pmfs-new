@@ -82,8 +82,8 @@ static bool init_dedup_module(struct super_block *sb){
 	printk("hash_map_addr_head:%lu", (unsigned long)xmem);
 
 	superindex = xmem;
-	INIT_LIST_HEAD(&superindex->hma_head);
-	INIT_LIST_HEAD(&superindex->hma_unused);
+	INIT_HLIST_HEAD(&superindex->hma_head);
+	INIT_HLIST_HEAD(&superindex->hma_unused);
 	INIT_HLIST_HEAD(&superindex->ref_head);
 	INIT_HLIST_HEAD(&superindex->ref_unused);
 
