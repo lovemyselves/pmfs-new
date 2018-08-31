@@ -854,6 +854,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		hash_map_addr_entry = list_entry(list_head_entry->next,struct hash_map_addr,list);
 		dnode->hashing = hash_map_addr_entry->hashing;
+		memcpy(dnode->strength_hashval, hash_map_addr_entry->hashing_md5, 16);
+		dnode->addr = hash_map_addr_entry->addr;
+		dnode->pfn = hash_map_addr_entry->pfn;
+		dnode->length = hash_map_addr_entry->length;
+		dnode->count = hash_map_addr_entry->count;
+		list_move(dnode->list, dindex->hma_head);
+		dnode->flag = true;
 		// size_t hashing;
     	// char strength_hashval[16];
     	// void *addr;
