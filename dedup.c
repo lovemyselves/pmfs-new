@@ -34,7 +34,7 @@ struct dedupnode{
     unsigned count;
     bool flag;
     // struct list_head hashing_list;
-    struct list_head list;
+    struct hlist_head list;
 };
 
 struct dedup_index{
