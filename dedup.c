@@ -36,7 +36,7 @@ struct dedupnode{
 };
 
 struct refnode{
-    void *virt_addr;
+    unsigned long ino;
     size_t index;
     void *blocknr;
     struct hash_map_addr *hma;
