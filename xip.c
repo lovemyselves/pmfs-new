@@ -31,6 +31,7 @@
 /* dedup claim start */
 #define DEDUP_HEAD 1026
 #define DEDUPNODE_SIZE sizeof(struct dedupnode)
+#define REFNODE_SIZE sizeof(struct REFNODE)
 
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
@@ -681,6 +682,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		ref_map_temp->index = j+start_blk;
 		
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp);
+
+		//persistent store part start
+		 
+		//part end 
 		
 		// printk("pos 1");
 		if(insert_ret){
