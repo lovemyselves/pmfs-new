@@ -12,7 +12,6 @@ struct hash_map_addr{
     bool flag;
     struct list_head hashing_list;
     struct rb_node node;
-    void *mapping_address;
 };
 
 struct ref_map{
@@ -34,6 +33,18 @@ struct dedupnode{
     unsigned count;
     bool flag;
     struct list_head list;
+    struct rb_node node;
+};
+
+struct refnode{
+    void *virt_addr;
+    size_t index;
+    void **phys_addr;
+    unsigned long *pfn;
+    struct hash_map_addr *hma;
+    bool flag;
+    struct list_head list;
+    struct rb_node node;
 };
 
 struct dedup_index{

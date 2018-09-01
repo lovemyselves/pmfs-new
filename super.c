@@ -61,10 +61,6 @@ struct pmfs_super_block *get_pmfs_super(void)
 EXPORT_SYMBOL(get_pmfs_super);
 #endif
 
-static inline void block_to_128B(void *blockaddr, struct list_head *h){
-	;	
-}
-
 static bool init_dedup_module(struct super_block *sb){
 	// struct pmfs_blocknode *p;
 	unsigned long blocknr;
@@ -493,9 +489,9 @@ static struct pmfs_inode *pmfs_init(struct super_block *sb,
 	PERSISTENT_MARK();
 	PERSISTENT_BARRIER();
 
-	printk("pmfs init");
-	if(init_dedup_module(sb))
-		printk("dedup init");
+	//dedup init
+	init_dedup_module(sb)
+		
 	
 	return root_i;
 }
