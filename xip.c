@@ -80,7 +80,7 @@ void new_unused_refnode(struct super_block *sb){
 
 	while(offset + REFNODE_SIZE < 4096)
 	{
-		refnode = xmem + offset;
+		rnode = xmem + offset;
 		INIT_LIST_HEAD(&rnode->list);
 		list_add_tail(&rnode->list, &dindex->ref_unused);
 		offset += REFNODE_SIZE;
