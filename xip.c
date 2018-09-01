@@ -597,6 +597,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	size_t i,j,dedup_offset;	
 	struct hash_map_addr *hash_map_addr_entry;
 	struct dedupnode *dnode_entry;
+	struct refnode *rnode_entry;
 	unsigned long actual_num_blocks = 0;
 	//end
 
@@ -664,6 +665,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	for(j = 0; j < num_blocks; j++ ){
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
+		struct dedupnode *dnode;
+		struct refnode *rnode;
 		unsigned block_len;
 		unsigned long blocknr;
 		void *xmem = NULL;
