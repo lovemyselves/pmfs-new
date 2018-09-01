@@ -31,7 +31,7 @@
 /* dedup claim start */
 #define DEDUP_HEAD 1026
 #define DEDUPNODE_SIZE sizeof(struct dedupnode)
-#define REFNODE_SIZE sizeof(struct REFNODE)
+#define REFNODE_SIZE sizeof(struct refnode)
 
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
