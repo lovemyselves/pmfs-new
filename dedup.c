@@ -38,8 +38,7 @@ struct dedupnode{
 struct refnode{
     void *virt_addr;
     size_t index;
-    void **phys_addr;
-    unsigned long *pfn;
+    void *blocknr;
     struct hash_map_addr *hma;
     bool flag;
     struct list_head list;
