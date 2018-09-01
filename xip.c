@@ -100,7 +100,7 @@ bool alloc_dedupnode(void *dnode, struct super_block *sb){
 	return true;
 }
 
-bool alloc_dedupnode(struct refnode *rnode, struct super_block *sb){
+bool alloc_refnode(struct refnode *rnode, struct super_block *sb){
 	struct list_head *p;
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	if(list_empty(&dindex->ref_unused))
