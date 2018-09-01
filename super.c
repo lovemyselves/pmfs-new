@@ -490,7 +490,7 @@ static struct pmfs_inode *pmfs_init(struct super_block *sb,
 	PERSISTENT_BARRIER();
 
 	//dedup init
-	init_dedup_module(sb)
+	init_dedup_module(sb);
 		
 	
 	return root_i;
