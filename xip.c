@@ -59,12 +59,31 @@ void new_unused_dedupnode(struct super_block *sb){
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
 	
-	while(offset + DEDUPNODE_SIZE <4096)
+	while(offset + DEDUPNODE_SIZE < 4096)
 	{	
 		dnode = xmem + offset;
 		INIT_LIST_HEAD(&dnode->list);
 		list_add_tail(&dnode->list, &dindex->hma_unused);
 		offset += DEDUPNODE_SIZE;
+	}
+}
+
+void new_unused_refnode(struct super_block *sb){
+	unsigned long blocknr;
+	struct refnode *rnode;
+	unsigned offset = 0;
+	void *xmem;
+	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+
+	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
+
+	while(offset + REFNODE_SIZE < 4096)
+	{
+		refnode = xmem + offset;
+		INIT_LIST_HEAD(&rnode->list);
+		list_add_tail(&rnode->list, &dindex->ref_unused);
+		offset += REFNODE_SIZE;
 	}
 }
 
