@@ -108,7 +108,9 @@ bool alloc_dedupnode(struct refnode *rnode, struct super_block *sb){
 	
 	p = dindex->ref_unused.next;
 	list_move(p, &dindex->ref_head);
-	dnode = list_entry(p, struct refnode, list);
+	rnode = list_entry(p, struct refnode, list);
+
+	return true;
 }
 
 struct hash_map_addr *rb_search_insert_node(
