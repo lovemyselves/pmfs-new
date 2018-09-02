@@ -30,7 +30,7 @@ struct dedupnode{
     unsigned long blocknr;
     unsigned length;
     unsigned count;
-    bool flag;
+    unsigned int flag;
     struct list_head list;
     struct rb_node node;
 };
@@ -40,7 +40,7 @@ struct refnode{
     size_t index;
     unsigned long blocknr;
     struct hash_map_addr *hma;
-    bool flag;
+    unsigned int flag;
     struct list_head list;
     struct rb_node node;
 };
