@@ -38,7 +38,7 @@ struct dedupnode{
 struct refnode{
     unsigned long ino;
     size_t index;
-    void *blocknr;
+    unsigned long blocknr;
     struct hash_map_addr *hma;
     bool flag;
     struct list_head list;
