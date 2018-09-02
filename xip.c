@@ -189,7 +189,7 @@ bool refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 	struct refnode *rnode_entry;
 	int result;
 
-	entry_node = &(dindex->refroot->rb_node);
+	entry_node = &(dindex->refroot.rb_node);
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
