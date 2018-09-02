@@ -72,14 +72,11 @@ void new_unused_refnode(struct super_block *sb){
 	struct refnode *rnode;
 	unsigned offset = 0;
 	void *xmem;
-	printk("new_unused_refnode 0");
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 
-	printk("new_unused_refnode 1");
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
 
-	printk("new_unused_refnode 2");
 	while(offset + REFNODE_SIZE < 4096)
 	{
 		rnode = xmem + offset;
@@ -700,7 +697,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
-		struct refnode *rnode;
+		struct refnode *rnode = NULL;
 		unsigned block_len;
 		unsigned long blocknr;
 		void *xmem = NULL;
