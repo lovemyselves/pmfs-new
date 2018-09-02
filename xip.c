@@ -184,12 +184,13 @@ struct ref_map* ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_ma
 
 bool refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct rb_root *rroot = &dindex->refroot;
 	struct rb_node **entry_node;
 	struct rb_node *parent = NULL;
 	struct refnode *rnode_entry;
 	int result;
 
-	entry_node = &(dindex->refroot.rb_node);
+	entry_node = &(rroot->rb_node);
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
@@ -207,7 +208,7 @@ bool refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 			entry_node = &(*entry_node)->rb_right;
 		}
 	rb_link_node(&rnode_new->node, parent, entry_node);
-	rb_insert_node(&rnode_new->node, &(dindex->refroot));
+	rb_insert_node(&rnode_new->node, rroot);
 
 	return false;
 }
