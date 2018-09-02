@@ -717,7 +717,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		//persistent store part start
 		rnode = alloc_refnode(sb);
 		rnode->blocknr = 0;
-		// rnode->ino = inode->i_ino;
+		rnode->ino = inode->i_ino;
 		//part end 
 		
 		// printk("pos 1");
