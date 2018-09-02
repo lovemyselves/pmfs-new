@@ -65,7 +65,7 @@ static bool init_dedup_module(struct super_block *sb){
 	// struct pmfs_blocknode *p;
 	unsigned long blocknr;
 	void *xmem;
-	struct dedup_index *superindex;
+	struct dedup_index *dindex;
 
 	// p  = pmfs_alloc_blocknode(sb);
 	// printk("p:%lu",(unsigned long)p);
@@ -77,11 +77,14 @@ static bool init_dedup_module(struct super_block *sb){
 	// printk("block:%lu", blocknr<<PAGE_SHIFT);
 	// printk("hash_map_addr_head:%lu", (unsigned long)xmem);
 
-	superindex = xmem;
-	INIT_LIST_HEAD(&superindex->hma_head);
-	INIT_LIST_HEAD(&superindex->hma_unused);
-	INIT_LIST_HEAD(&superindex->ref_head);
-	INIT_LIST_HEAD(&superindex->ref_unused);
+	dindex = xmem;
+	INIT_LIST_HEAD(&dindex->hma_head);
+	INIT_LIST_HEAD(&dindex->hma_unused);
+	dindex->dedupnode_root = RB_ROOT;
+	INIT_LIST_HEAD(&dindex->ref_head);
+	INIT_LIST_HEAD(&dindex->ref_unused);
+	dindex->refroot = RB_ROOT;
+
 
 	printk("init pmfs");
 
