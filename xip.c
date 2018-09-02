@@ -72,6 +72,7 @@ void new_unused_refnode(struct super_block *sb){
 	struct refnode *rnode;
 	unsigned offset = 0;
 	void *xmem;
+	struct pmfs_super_block *super = pmfs_get_super(sb);
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
