@@ -99,8 +99,9 @@ bool alloc_dedupnode(void *dnode, struct super_block *sb){
 	return true;
 }
 
-bool alloc_refnode(struct refnode *rnode, struct super_block *sb){
+struct refnode *alloc_refnode(struct super_block *sb){
 	struct list_head *p;
+	struct refnode *rnode;
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	if(list_empty(&dindex->ref_unused))
 		new_unused_refnode(sb);
@@ -108,7 +109,7 @@ bool alloc_refnode(struct refnode *rnode, struct super_block *sb){
 	p = dindex->ref_unused.next;
 	list_move(p, &dindex->ref_head);
 	rnode = list_entry(p, struct refnode, list);
-	return true;
+	return rnode;
 }
 
 struct hash_map_addr *rb_search_insert_node(
