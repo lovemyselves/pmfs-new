@@ -182,6 +182,11 @@ struct ref_map* ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_ma
 	return NULL;
 }
 
+bool refnode_insert(struct super_block *sb, struct refnode *rnode){
+	
+	return false;
+}
+
 struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t index)
 {
 	struct rb_node *entry_node = ref_root->rb_node;
@@ -718,6 +723,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode = alloc_refnode(sb);
 		rnode->blocknr = 0;
 		rnode->ino = inode->i_ino;
+		rnode->index = j+start_blk;
+
 		//part end 
 		
 		// printk("pos 1");

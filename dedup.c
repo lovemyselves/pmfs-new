@@ -48,7 +48,9 @@ struct refnode{
 struct dedup_index{
     struct list_head hma_head;
     struct list_head hma_unused;
+    struct rb_root dedupnode_root;
     struct list_head ref_head;
     struct list_head ref_unused;
+    struct rb_root refnode_root;
     int update_flag;
 };
