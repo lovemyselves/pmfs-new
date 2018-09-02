@@ -19,6 +19,7 @@
 
 #include <linux/types.h>
 #include <linux/magic.h>
+#include "dedup.c"
 
 #define	PMFS_SUPER_MAGIC	0xEFFC
 
@@ -191,7 +192,7 @@ struct pmfs_super_block {
 	__le32		s_free_inodes_count;
 	__le32		s_inodes_used_count;
 	__le32		s_free_inode_hint;
-	__le32      test;
+	struct dedup_index s_dedup_index;
 };
 
 #define PMFS_SB_STATIC_SIZE(ps) ((u64)&ps->s_start_dynamic - (u64)ps)
