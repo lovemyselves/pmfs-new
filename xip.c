@@ -108,10 +108,12 @@ bool alloc_refnode(struct refnode *rnode, struct super_block *sb){
 	if(list_empty(&dindex->ref_unused))
 		new_unused_refnode(sb);
 	
+	printk("alloc refnode 1");
 	p = dindex->ref_unused.next;
 	list_move(p, &dindex->ref_head);
+	printk("alloc refnode 2");
 	rnode = list_entry(p, struct refnode, list);
-
+	printk("alloc refnode 3");
 	return true;
 }
 
