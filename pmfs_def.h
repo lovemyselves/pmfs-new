@@ -19,7 +19,6 @@
 
 #include <linux/types.h>
 #include <linux/magic.h>
-#include "dedup.c"
 
 #define	PMFS_SUPER_MAGIC	0xEFFC
 
