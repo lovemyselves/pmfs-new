@@ -83,6 +83,8 @@ static bool init_dedup_module(struct super_block *sb){
 	INIT_LIST_HEAD(&superindex->ref_head);
 	INIT_LIST_HEAD(&superindex->ref_unused);
 
+	printk("init pmfs");
+
 	return true;
 }
 
