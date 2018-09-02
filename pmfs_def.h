@@ -164,16 +164,6 @@ typedef struct pmfs_journal {
  * once the file system becomes stable and pmfs_get_block() returns correct
  * pointers even for offset 0.
  */
-struct dedup_index{
-    struct list_head hma_head;
-    struct list_head hma_unused;
-    struct rb_root dedupnode_root;
-    struct list_head ref_head;
-    struct list_head ref_unused;
-    struct rb_root refnode_root;
-    int update_flag;
-};
-
 struct pmfs_super_block {
 	/* static fields. they never change after file system creation.
 	 * checksum only validates up to s_start_dynamic field below */
@@ -201,7 +191,6 @@ struct pmfs_super_block {
 	__le32		s_free_inodes_count;
 	__le32		s_inodes_used_count;
 	__le32		s_free_inode_hint;
-	struct dedup_index s_dedup_index;
 };
 
 #define PMFS_SB_STATIC_SIZE(ps) ((u64)&ps->s_start_dynamic - (u64)ps)
