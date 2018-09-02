@@ -182,8 +182,34 @@ struct ref_map* ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_ma
 	return NULL;
 }
 
-bool refnode_insert(struct super_block *sb, struct refnode *rnode){
-	
+bool refnode_insert(struct super_block *sb, struct refnode *rnode_new){
+	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct rb_node **entry_node;
+	struct rb_node *parent = NULL;
+	struct refnode *rnode_entry;
+	int result;
+
+	entry_node = &(dindex->refroot->rb_node);
+	while(*entry_node){
+		parent = *entry_node;
+		rnode_entry = rb_entry(*entry_node, struct refnode, node);
+		result = rnode_new->ino - rnode_entry->ino;
+		if(result == 0){
+			result = rnode_new->index - rnode_entry->index;
+			if(result == 0){
+			//count --;
+			//kfree(rnode_new);
+			return rnode_entry;
+			}
+		}else if(result < 0)
+			entry_node = &(*entry_node)->rb_left;
+		else
+			entry_node = &(*entry_node)->rb_right;
+		}
+	}
+	rb_link_node(&rnode_new->node, parent, entry_node);
+	rb_insert_node(&rnode_new->node, dindex->refroot);
+
 	return false;
 }
 
@@ -725,6 +751,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->ino = inode->i_ino;
 		rnode->index = j+start_blk;
 
+		refnode_insert(sb, rnode);
 		//part end 
 		
 		// printk("pos 1");

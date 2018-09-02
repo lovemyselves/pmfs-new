@@ -39,7 +39,7 @@ struct refnode{
     unsigned long ino;
     size_t index;
     unsigned long blocknr;
-    struct hash_map_addr *hma;
+    struct dedupnode *dnode;
     unsigned int flag;
     struct list_head list;
     struct rb_node node;
@@ -51,6 +51,6 @@ struct dedup_index{
     struct rb_root dedupnode_root;
     struct list_head ref_head;
     struct list_head ref_unused;
-    struct rb_root refnode_root;
+    struct rb_root refroot;
     int update_flag;
 };
