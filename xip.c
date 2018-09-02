@@ -72,11 +72,14 @@ void new_unused_refnode(struct super_block *sb){
 	struct refnode *rnode;
 	unsigned offset = 0;
 	void *xmem;
+	printk("new_unused_refnode 0");
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 
+	printk("new_unused_refnode 1");
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
 
+	printk("new_unused_refnode 2");
 	while(offset + REFNODE_SIZE < 4096)
 	{
 		rnode = xmem + offset;
@@ -708,7 +711,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		size_t hashing = 0;
 		char* strength_hashval = kmalloc(sizeof(char)<<4, GFP_KERNEL);
 
-		printk("pmfs write after def");
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
 		ref_map_temp->virt_addr = inode;
 		ref_map_temp->index = j+start_blk;
@@ -716,9 +718,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp);
 
 		//persistent store part start
-		// alloc_refnode(rnode, sb);
-		// rnode->blocknr = 0;
-		// rnode->ino = inode->i_ino;
+		alloc_refnode(rnode, sb);
+		rnode->blocknr = 0;
+		rnode->ino = inode->i_ino;
 		//part end 
 		
 		// printk("pos 1");
