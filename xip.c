@@ -206,9 +206,8 @@ bool refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 		else
 			entry_node = &(*entry_node)->rb_right;
 		}
-	}
 	rb_link_node(&rnode_new->node, parent, entry_node);
-	rb_insert_node(&rnode_new->node, dindex->refroot);
+	rb_insert_node(&rnode_new->node, &dindex->refroot);
 
 	return false;
 }
