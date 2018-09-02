@@ -44,7 +44,6 @@ bool ref_find_flag = false;
 struct rb_root ref_root = RB_ROOT;
 static LIST_HEAD(dedup_ref_list);
 
-// static struct kmem_cache *pmfs_dedup_cachep;
 size_t dedup_interval = 1;
 /*
 	dedup rbtree function
