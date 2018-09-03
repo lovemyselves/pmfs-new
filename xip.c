@@ -122,6 +122,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 	long result;
 
 	entry_node = &(rroot->rb_node);
+	printk("refnode insert 0");
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
@@ -138,6 +139,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		else
 			entry_node = &(*entry_node)->rb_right;
 		}
+	printk("refnode insert 1");
 	rb_link_node(&rnode_new->node, parent, entry_node);
 	rb_insert_color(&rnode_new->node, rroot);
 
