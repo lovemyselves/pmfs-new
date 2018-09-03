@@ -128,7 +128,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
 		result = (long)rnode_new->ino - (long)rnode_entry->ino;
 		if(result == 0){
-			result = rnode_new->index - rnode_entry->index;
+			// result = rnode_new->index - rnode_entry->index;
 		// 	if(result == 0){
 		// 	//count --;
 		// 	// kfree(rnode_new);
@@ -138,6 +138,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 			entry_node = &(*entry_node)->rb_left;
 		else
 			entry_node = &(*entry_node)->rb_right;
+		printk("result:%ld", result);
 	}
 	printk("refnode insert 1");
 	rb_link_node(&rnode_new->node, parent, entry_node);
