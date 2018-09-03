@@ -127,13 +127,13 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
 		result = rnode_new->ino - rnode_entry->ino;
-		if(result == 0){
-			result = rnode_new->index - rnode_entry->index;
-			if(result == 0){
-			//count --;
-			// kfree(rnode_new);
-			return rnode_entry;
-			}
+		// if(result == 0){
+		// 	result = rnode_new->index - rnode_entry->index;
+		// 	if(result == 0){
+		// 	//count --;
+		// 	// kfree(rnode_new);
+		// 	return rnode_entry;
+		// 	}
 		}else if(result < 0)
 			entry_node = &(*entry_node)->rb_left;
 		else
