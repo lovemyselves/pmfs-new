@@ -113,6 +113,37 @@ struct refnode *alloc_refnode(struct super_block *sb){
 	return rnode;
 }
 
+struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new){
+	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct rb_root *rroot = &(dindex->refroot);
+	struct rb_node **entry_node;
+	struct rb_node *parent = NULL;
+	struct refnode *rnode_entry;
+	int result;
+
+	entry_node = &(rroot->rb_node);
+	while(*entry_node){
+		parent = *entry_node;
+		rnode_entry = rb_entry(*entry_node, struct refnode, node);
+		result = rnode_new->ino - rnode_entry->ino;
+		if(result == 0){
+			result = rnode_new->index - rnode_entry->index;
+			if(result == 0){
+			//count --;
+			// kfree(rnode_new);
+			return rnode_entry;
+			}
+		}else if(result < 0)
+			entry_node = &(*entry_node)->rb_left;
+		else
+			entry_node = &(*entry_node)->rb_right;
+		}
+	rb_link_node(&rnode_new->node, parent, entry_node);
+	rb_insert_color(&rnode_new->node, rroot);
+
+	return NULL;
+}
+
 struct hash_map_addr *rb_search_insert_node(
 	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
 {
@@ -179,37 +210,6 @@ struct ref_map* ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_ma
 	}
 	rb_link_node(&ref_map_new->node, parent, entry_node);
 	rb_insert_color(&ref_map_new->node, ref_root);
-
-	return NULL;
-}
-
-struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new){
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
-	struct rb_root *rroot = &(dindex->refroot);
-	struct rb_node **entry_node;
-	struct rb_node *parent = NULL;
-	struct refnode *rnode_entry;
-	int result;
-
-	entry_node = &(rroot->rb_node);
-	while(*entry_node){
-		parent = *entry_node;
-		rnode_entry = rb_entry(*entry_node, struct refnode, node);
-		result = rnode_new->ino - rnode_entry->ino;
-		if(result == 0){
-			result = rnode_new->index - rnode_entry->index;
-			if(result == 0){
-			//count --;
-			kfree(rnode_new);
-			return rnode_entry;
-			}
-		}else if(result < 0)
-			entry_node = &(*entry_node)->rb_left;
-		else
-			entry_node = &(*entry_node)->rb_right;
-		}
-	rb_link_node(&rnode_new->node, parent, entry_node);
-	rb_insert_color(&rnode_new->node, rroot);
 
 	return NULL;
 }
