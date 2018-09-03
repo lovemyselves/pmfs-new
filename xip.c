@@ -123,23 +123,42 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 
 	entry_node = &(rroot->rb_node);
 	printk("refnode insert 0");
+	// while(*entry_node){
+	// 	parent = *entry_node;
+	// 	rnode_entry = rb_entry(*entry_node, struct refnode, node);
+	// 	result = rnode_new->ino - rnode_entry->ino;
+	// 	if(result == 0){
+	// 		// result = rnode_new->index - rnode_entry->index;
+	// 	// 	if(result == 0){
+	// 	// 	//count --;
+	// 	// 	// kfree(rnode_new);
+	// 	// 	return rnode_entry;
+	// 	// 	} 
+	// 		return NULL;
+	// 	}else if(result < 0)
+	// 		entry_node = &(*entry_node)->rb_left;
+	// 	else
+	// 		entry_node = &(*entry_node)->rb_right;
+	// 	printk("result:%ld", result);
+	// }
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
-		result = rnode_new->ino - rnode_entry->ino;
-		if(result == 0){
-			// result = rnode_new->index - rnode_entry->index;
-		// 	if(result == 0){
-		// 	//count --;
-		// 	// kfree(rnode_new);
-		// 	return rnode_entry;
-		// 	} 
-			return NULL;
-		}else if(result < 0)
+		if(rnode_new->ino < rnode_entry->ino)
 			entry_node = &(*entry_node)->rb_left;
-		else
+		else if(rnode_new->ino > rnode_entry->ino)
 			entry_node = &(*entry_node)->rb_right;
-		printk("result:%ld", result);
+		else{
+			if(rnode_new->index < rnode_entry->index)
+				entry_node = &(*entry_node)->rb_left;
+			else if(rnode_new->index > rnode_entry->index)
+				entry_node = &(*entry_node)->rb_right;
+			else{
+				// ref_map_entry->hma->count--;
+				// kfree(ref_map_new);
+				return rnode_entry;
+			}	
+		}		
 	}
 	printk("refnode insert 1");
 	rb_link_node(&rnode_new->node, parent, entry_node);

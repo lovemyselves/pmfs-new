@@ -37,7 +37,7 @@ struct dedupnode{
 
 struct refnode{
     unsigned long ino;
-    size_t index;
+    unsigned long index;
     unsigned long blocknr;
     struct dedupnode *dnode;
     unsigned int flag;
