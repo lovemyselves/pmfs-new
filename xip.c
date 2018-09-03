@@ -731,7 +731,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
 		unsigned long blocknr;
-		struct refnode *rnode = NULL, *rnode_insert_ret;
+		struct refnode *rnode=NULL, *rnode_insert_ret=NULL;
 		unsigned block_len;
 		void *xmem = NULL;
 		// bool hash_flag = true;
@@ -753,7 +753,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->index = j+start_blk;
 
 		printk("pmfs write 0");
-		rnode_insert_ret = refnode_insert(sb, rnode);
+		// rnode_insert_ret = refnode_insert(sb, rnode);
 		printk("pmfs write 0.1");
 		if(rnode_insert_ret){
 			rnode = rnode_insert_ret;
