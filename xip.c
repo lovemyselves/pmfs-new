@@ -144,9 +144,10 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
-		if(rnode_new->ino < rnode_entry->ino)
+		result = rnode_new->ino - rnode_entry->ino;
+		if(result < 0)
 			entry_node = &(*entry_node)->rb_left;
-		else if(rnode_new->ino > rnode_entry->ino)
+		else if(result > 0)
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			if(rnode_new->index < rnode_entry->index)
