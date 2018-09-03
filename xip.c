@@ -119,13 +119,14 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 	struct rb_node **entry_node;
 	struct rb_node *parent = NULL;
 	struct refnode *rnode_entry;
-	int result;
+	long result;
 
 	entry_node = &(rroot->rb_node);
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
 		result = rnode_new->ino - rnode_entry->ino;
+		printk("result:%ld", result);
 		if(result == 0){
 			result = rnode_new->index - rnode_entry->index;
 			if(result == 0){
