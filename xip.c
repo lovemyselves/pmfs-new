@@ -184,7 +184,7 @@ struct ref_map* ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_ma
 
 bool refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
-	struct rb_root *rroot = &dindex->refroot;
+	struct rb_root *rroot = &(dindex->refroot);
 	struct rb_node **entry_node;
 	struct rb_node *parent = NULL;
 	struct refnode *rnode_entry;
