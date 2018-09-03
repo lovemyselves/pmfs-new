@@ -758,10 +758,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			//update COW or in-place
 		}
 
-		dnode = alloc_dedupnode(sb);
-		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-		dnode->blocknr = blocknr;
-		dnode->flag = 0;
+		// dnode = alloc_dedupnode(sb);
+		// pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+		// dnode->blocknr = blocknr;
+		// dnode->flag = 0;
 		//part end 
 		
 		// printk("pos 1");
@@ -790,7 +790,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}else{
 			hash_map_addr_temp = NULL;
 		}
-		printk("pos 2");		
+		printk("pos 2");
 
 		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
 			block_len = i;
