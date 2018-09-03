@@ -126,7 +126,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
-		result = rnode_new->ino - rnode_entry->ino;
+		result = (long)rnode_new->ino - (long)rnode_entry->ino;
 		// if(result == 0){
 		// 	result = rnode_new->index - rnode_entry->index;
 		// 	if(result == 0){
