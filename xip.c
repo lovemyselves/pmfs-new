@@ -135,7 +135,8 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		// 	return rnode_entry;
 		// 	}
 		// }else
-		 if(result < 0)
+		printk("result:%ld", result);
+		if(result < 0)
 			entry_node = &(*entry_node)->rb_left;
 		else
 			entry_node = &(*entry_node)->rb_right;
