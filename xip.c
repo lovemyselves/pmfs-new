@@ -733,7 +733,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		unsigned long blocknr;
 		struct refnode *rnode = NULL, *rnode_insert_ret;
 		unsigned block_len;
-		unsigned long blocknr;
 		void *xmem = NULL;
 		// bool hash_flag = true;
 		size_t overwrite_flag = 0;
