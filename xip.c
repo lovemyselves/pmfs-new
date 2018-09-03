@@ -126,7 +126,6 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
 		result = rnode_new->ino - rnode_entry->ino;
-		printk("result:%ld", result);
 		if(result == 0){
 			result = rnode_new->index - rnode_entry->index;
 			if(result == 0){
@@ -754,7 +753,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->index = j+start_blk;
 
 		printk("pmfs write 0");
-		// rnode_insert_ret = refnode_insert(sb, rnode);
+		rnode_insert_ret = refnode_insert(sb, rnode);
 		printk("pmfs write 0.1");
 		if(rnode_insert_ret){
 			rnode = rnode_insert_ret;
