@@ -182,7 +182,7 @@ struct ref_map* ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_ma
 	return NULL;
 }
 
-bool refnode_insert(struct super_block *sb, struct refnode *rnode_new){
+struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	struct rb_root *rroot = &(dindex->refroot);
 	struct rb_node **entry_node;
@@ -199,7 +199,7 @@ bool refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 			result = rnode_new->index - rnode_entry->index;
 			if(result == 0){
 			//count --;
-			//kfree(rnode_new);
+			kfree(rnode_new);
 			return rnode_entry;
 			}
 		}else if(result < 0)
@@ -210,7 +210,7 @@ bool refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 	rb_link_node(&rnode_new->node, parent, entry_node);
 	rb_insert_color(&rnode_new->node, rroot);
 
-	return false;
+	return NULL;
 }
 
 struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t index)
@@ -729,7 +729,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
-		struct refnode *rnode = NULL;
+		struct refnode *rnode = NULL, *rnode_insert_ret;
 		unsigned block_len;
 		unsigned long blocknr;
 		void *xmem = NULL;
@@ -751,7 +751,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->ino = inode->i_ino;
 		rnode->index = j+start_blk;
 
-		refnode_insert(sb, rnode);
+		rnode_insert_ret = refnode_insert(sb, rnode);
+		if(rnode_insert_ret){
+			rnode = rnode_insert_ret;
+			//update COW or in-place
+		}	
 		//part end 
 		
 		// printk("pos 1");
