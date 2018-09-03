@@ -86,7 +86,8 @@ void new_unused_refnode(struct super_block *sb){
 	}
 }
 
-bool alloc_dedupnode(void *dnode, struct super_block *sb){
+struct dedupnode *alloc_dedupnode(struct super_block *sb){
+	struct dedupnode *dnode;
 	struct list_head *p;
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	if(list_empty(&dindex->hma_unused))
@@ -96,7 +97,7 @@ bool alloc_dedupnode(void *dnode, struct super_block *sb){
 	list_move(p, &dindex->hma_head);
 	dnode = list_entry(p, struct dedupnode, list);
 
-	return true;
+	return dnode;
 }
 
 struct refnode *alloc_refnode(struct super_block *sb){
@@ -729,6 +730,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
+		unsigned long blocknr;
 		struct refnode *rnode = NULL, *rnode_insert_ret;
 		unsigned block_len;
 		unsigned long blocknr;
@@ -747,7 +749,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		//persistent store part start
 		rnode = alloc_refnode(sb);
-		rnode->blocknr = 0;
+		// rnode->blocknr = 0;
 		rnode->ino = inode->i_ino;
 		rnode->index = j+start_blk;
 
@@ -755,7 +757,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(rnode_insert_ret){
 			rnode = rnode_insert_ret;
 			//update COW or in-place
-		}	
+		}
+
+		dnode = alloc_dedupnode(sb);
+		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+		dnode->blocknr = blocknr;
+		dnode->flag = 0;
 		//part end 
 		
 		// printk("pos 1");
