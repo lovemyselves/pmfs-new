@@ -151,9 +151,9 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			result = rnode_new->index - rnode_entry->index;
-			if(result < 0)
+			if(rnode_new->index < rnode_entry->index)
 				entry_node = &(*entry_node)->rb_left;
-			else if(result > 0)
+			else if(rnode_new->index > rnode_entry->index)
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				// ref_map_entry->hma->count--;
