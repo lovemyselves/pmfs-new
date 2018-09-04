@@ -143,6 +143,8 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 	}
 	rb_link_node(&dnode_new->node, parent, entry_node);
 	rb_insert_color(&dnode_new->node, droot);
+
+	return NULL;
 }
 
 struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new){
