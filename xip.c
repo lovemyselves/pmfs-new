@@ -113,6 +113,38 @@ struct refnode *alloc_refnode(struct super_block *sb){
 	return rnode;
 }
 
+struct dedupnode *dedupnode_tree_update(struct super_block *sb
+,struct dedupnode *dnode_new){
+	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct rb_root *droot = &(dindex->dedupnode_root);
+	struct rb_node **entry_node = &(droot->rb_node);
+	struct rb_node *parent = NULL;
+	struct dedupnode *dnode_entry;
+	long result;
+
+	while(*entry_node){
+		parent = *entry_node;
+		dnode_entry = rb_entry(*entry_node, struct dedupnode, node);
+		result = dnode_new->hashval - dnode_entry->hashval;
+		if(result < 0)
+			entry_node = &(*entry_node)->rb_left;
+		else if(result > 0)
+			entry_node = &(*entry_node)->rb_right;
+		else{
+			result = memcmp(dnode_new->strength_hash
+			,dnode_entry->strength_hash, 16);
+			if(result < 0)
+				entry_node = &(*entry_node)->rb_left;
+			else if(result > 0)
+				entry_node = &(*entry_node)->rb_right;
+			else
+				return dnode_entry;
+		}
+	}
+	rb_link_node(&dnode_new->node, parent, entry_node);
+	rb_insert_color(&dnode_new->node, droot);
+}
+
 struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	struct rb_root *rroot = &(dindex->refroot);
@@ -792,12 +824,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 		dedup_offset = 0;
-		if(short_hash(&hashing, xmem, block_len))
-			printk("2hashing:%lu",hashing);
-		
+		short_hash(&hashing, xmem, block_len);
 		dnode->hashval = hashing;
 		dnode->count = 1;
 		dnode->strength_hash_status = 0;
+		
+		// dnode_entry = dedupnode_tree_update(sb, dnode);
 		//part end 
 		
 		// printk("pos 1");
@@ -863,8 +895,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		hash_map_addr_temp->count = 1;
 		hash_map_addr_temp->pfn = 0;
 		// printk("hash_map_addr_temp->pfn:%lu", hash_map_addr_temp->pfn << PAGE_SHIFT);
+		
 		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
-
 		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length)){
 			printk("strength_hash:%c",*strength_hashval);
 			hash_map_addr_temp->hashing_md5 = (void *)strength_hashval;
