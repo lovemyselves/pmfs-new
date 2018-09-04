@@ -133,16 +133,15 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			result = rnode_new->index - rnode_new->index;
-			if(rnode_new->index < rnode_entry->index)
+			if(result < 0)
 				entry_node = &(*entry_node)->rb_left;
-			else if(rnode_new->index > rnode_entry->index)
+			else if(result > 0)
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				// refnode_free(rnode_new);
-				printk("result:%ld", result);
+				// printk("result:%ld", result);
 				return rnode_entry;
 			}
-			return NULL;	
 		}		
 	}
 	printk("refnode insert 1");
