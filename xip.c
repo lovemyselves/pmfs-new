@@ -803,7 +803,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			rnode = rnode_insert_ret;
 			if(rnode->dnode == NULL)
 				printk("pmfs write error 0");
-			printk("count:%lu", rnode->dnode->count);
+			printk("dnode refence count:%u", rnode->dnode->count);
 		// 	if(rnode->dnode->count>1)
 		// 		//update COW
 		// 		overwrite_flag = 1;
@@ -842,6 +842,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode_entry = dedupnode_tree_update(sb, dnode);
 		if(dnode_entry){
 			dnode_entry->count++;
+			printk("dnode_entry refence count:%u",count);
 			dnode_hit = true;
 			//free(dnode);
 			dnode = dnode_entry;
