@@ -812,8 +812,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		//alloc and init dnode
 		dnode = alloc_dedupnode(sb);
-		// pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-		// dnode->blocknr = blocknr;
 		dnode->flag = 0;
 		dnode->count = 1;
 		rnode->dnode = dnode;
@@ -841,12 +839,17 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode_entry->count++;
 			dnode_hit = true;
 			//free(dnode);
-			if(xmem!=NULL)
-				kfree(xmem);
 			dnode = dnode_entry;
 			printk("dnode fit!");
 			/*add reference content */
 		}
+
+		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+		dnode->blocknr = blocknr;
+		
+		memcpy(pmfs_get_block(sb, blocknr<<PAGE_SHIFT), xmem, pmfs_inode_blk_size(pi));
+		kfree(xmem);
+		dnode->flag = 1;
 		//part end 
 		
 		// printk("pos 1");
