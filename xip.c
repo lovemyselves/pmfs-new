@@ -132,13 +132,14 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		else if(rnode_new->ino > rnode_entry->ino)
 			entry_node = &(*entry_node)->rb_right;
 		else{
-			if(rnode_new->index < rnode_entry->index)
-				entry_node = &(*entry_node)->rb_left;
-			else if(rnode_new->index > rnode_entry->index)
-				entry_node = &(*entry_node)->rb_right;
-			else{
-				// refnode_free(rnode_new);
-				return rnode_entry;
+			// if(rnode_new->index < rnode_entry->index)
+			// 	entry_node = &(*entry_node)->rb_left;
+			// else if(rnode_new->index > rnode_entry->index)
+			// 	entry_node = &(*entry_node)->rb_right;
+			// else{
+			// 	// refnode_free(rnode_new);
+			// 	return rnode_entry;
+			return NULL;
 			}	
 		}		
 	}
