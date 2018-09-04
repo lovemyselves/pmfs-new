@@ -786,10 +786,19 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		printk("pmfs write 1");
 
+		//alloc and init dnode
 		dnode = alloc_dedupnode(sb);
 		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 		dnode->blocknr = blocknr;
 		dnode->flag = 0;
+
+		// slice buf
+		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
+			block_len = i;
+		else
+			block_len = pmfs_inode_blk_size(pi) - dedup_offset;
+
+		
 		//part end 
 		
 		// printk("pos 1");
@@ -820,12 +829,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		printk("pos 2");
 
-		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
-			block_len = i;
-		else
-			block_len = pmfs_inode_blk_size(pi) - dedup_offset;
-
-		// spin_lock_irq(&in_place_lock);
+		// if(i+dedup_offset <= pmfs_inode_blk_size(pi))
+		// 	block_len = i;
+		// else
+		// 	block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 
 		if(overwrite_flag == 2){
 			copy_from_user(ref_map_temp->hma->addr + dedup_offset, buf+count-i, block_len);
