@@ -836,7 +836,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		, xmem, block_len);
 
 		dnode_entry = dedupnode_tree_update(sb, dnode);
-
+		if(dnode_entry){
+			dnode_entry->count++;
+			dnode_hit = true;
+			//free(dnode);
+			if(xmem!=NULL)
+				kfree(xmem);
+			dnode = dnode_entry;
+			printk("dnode fit!");
+			/*add reference content */
+		}
 		//part end 
 		
 		// printk("pos 1");
