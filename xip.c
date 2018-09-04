@@ -118,7 +118,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 	struct rb_root *rroot = &(dindex->refroot);
 	struct rb_node **entry_node;
 	struct rb_node *parent = NULL;
-	struct refnode *rnode_entry;
+	struct refnode *rnode_entry = NULL;
 	long result;
 
 	entry_node = &(rroot->rb_node);
@@ -127,19 +127,20 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
 		result = rnode_new->ino - rnode_entry->ino;
-		if(rnode_new->ino < rnode_entry->ino)
+		if(result < 0)
 			entry_node = &(*entry_node)->rb_left;
-		else if(rnode_new->ino > rnode_entry->ino)
+		else if(result > 0)
 			entry_node = &(*entry_node)->rb_right;
 		else{
+			result = rnode_new->index - rnode_new->index;
 			if(rnode_new->index < rnode_entry->index)
 				entry_node = &(*entry_node)->rb_left;
 			else if(rnode_new->index > rnode_entry->index)
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				// refnode_free(rnode_new);
-				// return rnode_entry;
-				;
+				printk("result:%ld", result);
+				return rnode_entry;
 			}
 			return NULL;	
 		}		
