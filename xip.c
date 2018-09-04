@@ -791,6 +791,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		//persistent store part start
 		rnode = alloc_refnode(sb);
 		// rnode->blocknr = 0;
+		rnode->flag = 0;
 		rnode->ino = inode->i_ino;
 		rnode->index = j+start_blk;
 
@@ -850,6 +851,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		memcpy(pmfs_get_block(sb, blocknr<<PAGE_SHIFT), xmem, pmfs_inode_blk_size(pi));
 		kfree(xmem);
 		dnode->flag = 1;
+		rnode->flag = 1;
 		//part end 
 		
 		// printk("pos 1");
