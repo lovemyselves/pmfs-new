@@ -37,6 +37,7 @@ static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
 struct list_head *new_list = &hash_map_addr_list;
 bool find_flag = false;
+bool dnode_hit = false;
 struct rb_root root = RB_ROOT;
 
 struct list_head *last_ref = NULL;
