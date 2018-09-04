@@ -759,9 +759,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->ino = inode->i_ino;
 		rnode->index = j+start_blk;
 
-		// printk("pmfs write 0");
+		printk("pmfs write 0");
 		rnode_insert_ret = refnode_insert(sb, rnode);
-		// printk("pmfs write 0.1");
+		printk("pmfs write 0.1");
 		if(rnode_insert_ret){
 			rnode = rnode_insert_ret;
 			if(rnode->dnode->count>1)
