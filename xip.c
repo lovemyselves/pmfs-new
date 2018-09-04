@@ -798,6 +798,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 
+		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
+		
+		
 		
 		//part end 
 		
