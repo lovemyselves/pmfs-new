@@ -832,7 +832,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->strength_hash_status = 0;
 		strength_hash(dnode->strength_hashval 
 		, xmem, block_len);
-		// dnode_entry = dedupnode_tree_update(sb, dnode);
+
+		dnode_entry = dedupnode_tree_update(sb, dnode);
 
 		//part end 
 		
