@@ -138,8 +138,10 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 				entry_node = &(*entry_node)->rb_left;
 			else if(result > 0)
 				entry_node = &(*entry_node)->rb_right;
-			else
+			else{
+				printk("dnode_entry:%u", dnode_entry->count);
 				return dnode_entry;
+			}
 		}
 	}
 	rb_link_node(&dnode_new->node, parent, entry_node);
@@ -972,6 +974,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	// printk("dedup_interval:%lu",dedup_interval);
 		// 	;
 		// }
+			
 		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 		hash_map_addr_temp->addr = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
 		memcpy(hash_map_addr_temp->addr, xmem, pmfs_inode_blk_size(pi));
