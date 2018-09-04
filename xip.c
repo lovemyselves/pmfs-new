@@ -123,24 +123,6 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 
 	entry_node = &(rroot->rb_node);
 	printk("refnode insert 0");
-	// while(*entry_node){
-	// 	parent = *entry_node;
-	// 	rnode_entry = rb_entry(*entry_node, struct refnode, node);
-	// 	result = rnode_new->ino - rnode_entry->ino;
-	// 	if(result == 0){
-	// 		// result = rnode_new->index - rnode_entry->index;
-	// 	// 	if(result == 0){
-	// 	// 	//count --;
-	// 	// 	// kfree(rnode_new);
-	// 	// 	return rnode_entry;
-	// 	// 	} 
-	// 		return NULL;
-	// 	}else if(result < 0)
-	// 		entry_node = &(*entry_node)->rb_left;
-	// 	else
-	// 		entry_node = &(*entry_node)->rb_right;
-	// 	printk("result:%ld", result);
-	// }
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
@@ -156,8 +138,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 			else if(rnode_new->index > rnode_entry->index)
 				entry_node = &(*entry_node)->rb_right;
 			else{
-				// ref_map_entry->hma->count--;
-				// kfree(ref_map_new);
+				// refnode_free(rnode_new);
 				return rnode_entry;
 			}	
 		}		
@@ -782,8 +763,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pmfs write 0.1");
 		if(rnode_insert_ret){
 			rnode = rnode_insert_ret;
-			//update COW or in-place
+			if(rnode->dnode->count>1)
+				//update COW
+				overwrite_flag = 1;
+			else{
+				overwrite_flag = 2;
+				rnode->dnode->count = 1;
+				//update in-place		
+			}
 		}
+		
 		printk("pmfs write 1");
 
 		//alloc and init dnode
@@ -801,7 +790,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 		
-		
+
 		
 		//part end 
 		
