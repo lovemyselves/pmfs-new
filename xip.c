@@ -1043,7 +1043,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		i_size_write(inode, count+pos);
 		pmfs_update_isize(inode, pi);
 	}
-	}else{
+	}else if(!dnode_hit){
 		printk("raw pmfs write");
 		/* don't zero-out the allocated blocks */
 		pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
