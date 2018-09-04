@@ -132,7 +132,6 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		else if(result > 0)
 			entry_node = &(*entry_node)->rb_right;
 		else{
-			result = rnode_new->index - rnode_entry->index;
 			if(rnode_new->index < rnode_entry->index)
 				entry_node = &(*entry_node)->rb_left;
 			else if(rnode_new->index > rnode_entry->index)
@@ -772,7 +771,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				//update in-place		
 			}
 		}
-		
 		printk("pmfs write 1");
 
 		//alloc and init dnode
