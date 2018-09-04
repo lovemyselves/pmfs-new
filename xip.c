@@ -127,9 +127,9 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
 		result = rnode_new->ino - rnode_entry->ino;
-		if(result < 0)
+		if(rnode_new->ino < rnode_entry->ino)
 			entry_node = &(*entry_node)->rb_left;
-		else if(result > 0)
+		else if(rnode_new->ino > rnode_entry->ino)
 			entry_node = &(*entry_node)->rb_right;
 		else{
 			if(rnode_new->index < rnode_entry->index)
