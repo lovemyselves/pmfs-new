@@ -765,14 +765,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("pmfs write 0.1");
 		if(rnode_insert_ret){
 			rnode = rnode_insert_ret;
-			if(rnode->dnode->count>1)
-				//update COW
-				overwrite_flag = 1;
-			else{
-				overwrite_flag = 2;
-				rnode->dnode->count = 1;
-				//update in-place		
-			}
+			// if(rnode->dnode->count>1)
+			// 	//update COW
+			// 	overwrite_flag = 1;
+			// else{
+			// 	overwrite_flag = 2;
+			// 	rnode->dnode->count = 1;
+			// 	//update in-place		
+			// }
 		}
 		printk("pmfs write 1");
 
@@ -781,6 +781,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 		dnode->blocknr = blocknr;
 		dnode->flag = 0;
+		dnode->count = 1;
+		rnode->dnode = dnode;
 
 		// slice buf
 		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
