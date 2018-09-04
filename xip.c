@@ -777,19 +777,19 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->ino = inode->i_ino;
 		rnode->index = j+start_blk;
 
-		printk("pmfs write 0");
+		// printk("pmfs write 0");
 		rnode_insert_ret = refnode_insert(sb, rnode);
-		printk("pmfs write 0.1");
+		// printk("pmfs write 0.1");
 		if(rnode_insert_ret){
 			rnode = rnode_insert_ret;
 			//update COW or in-place
 		}
 		printk("pmfs write 1");
 
-		// dnode = alloc_dedupnode(sb);
-		// pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-		// dnode->blocknr = blocknr;
-		// dnode->flag = 0;
+		dnode = alloc_dedupnode(sb);
+		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+		dnode->blocknr = blocknr;
+		dnode->flag = 0;
 		//part end 
 		
 		// printk("pos 1");
