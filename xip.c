@@ -978,7 +978,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 
 	//store dedupnode
-	// printk("pmfswrite 7");
+	printk("pmfswrite 7");
 	// new_unused_dedupnode(sb);
 	//dedupnode mem to nvm
 	// list_for_each_entry(hash_map_addr_entry, hash_map_addr_list, list){
