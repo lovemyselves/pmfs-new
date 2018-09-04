@@ -138,7 +138,8 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				// refnode_free(rnode_new);
-				return rnode_entry;
+				// return rnode_entry;
+				;
 			}
 			return NULL;	
 		}		
