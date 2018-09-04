@@ -764,14 +764,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("pmfs write 0.1");
 		if(rnode_insert_ret){
 			rnode = rnode_insert_ret;
-			// if(rnode->dnode->count>1)
-			// 	//update COW
-			// 	overwrite_flag = 1;
-			// else{
-			// 	overwrite_flag = 2;
-			// 	rnode->dnode->count = 1;
-			// 	//update in-place		
-			// }
+			if(rnode->dnode->count>1)
+				//update COW
+				overwrite_flag = 1;
+			else{
+				overwrite_flag = 2;
+				rnode->dnode->count = 1;
+				//update in-place		
+			}
 		}
 		printk("pmfs write 1");
 
@@ -789,8 +789,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 
-		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
-		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
+		// xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+		// copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 		
 
 		
@@ -970,8 +970,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// 	break;
 	// }
 	// printk("pmfswrite 8");
-	printk("sizeof(struct deduponode):%lu",sizeof(struct dedupnode));
-	printk("sizeof(struct list_head):%lu", sizeof(struct list_head));
 
 	if(actual_num_blocks!=0){
 		written = count;
