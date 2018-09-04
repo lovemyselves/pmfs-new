@@ -824,12 +824,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 		dedup_offset = 0;
+		dnode->hash_status = 0;
 		short_hash(&hashing, xmem, block_len);
+		dnode->hash_status = 1;
 		dnode->hashval = hashing;
 		dnode->count = 1;
 		dnode->strength_hash_status = 0;
-		
+		strength_hash(dnode->strength_hashval 
+		,hash_map_addr_temp->addr, hash_map_addr_temp->length);
 		// dnode_entry = dedupnode_tree_update(sb, dnode);
+
 		//part end 
 		
 		// printk("pos 1");

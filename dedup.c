@@ -26,7 +26,7 @@ struct ref_map{
 
 struct dedupnode{
     size_t hashval;
-    unsigned short hashing_status;
+    unsigned short hash_status;
     char strength_hashval[16];
     unsigned short strength_hash_status;
     unsigned long blocknr;
