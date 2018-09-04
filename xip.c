@@ -803,6 +803,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			rnode = rnode_insert_ret;
 			if(rnode->dnode == NULL)
 				printk("pmfs write error 0");
+			printk("count:%lu", rnode->dnode->count);
 		// 	if(rnode->dnode->count>1)
 		// 		//update COW
 		// 		overwrite_flag = 1;
