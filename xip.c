@@ -777,8 +777,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		//alloc and init dnode
 		dnode = alloc_dedupnode(sb);
-		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-		dnode->blocknr = blocknr;
+		// pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+		// dnode->blocknr = blocknr;
 		dnode->flag = 0;
 		dnode->count = 1;
 		rnode->dnode = dnode;
@@ -789,11 +789,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else
 			block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 
-		// xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
-		// copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
+		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
+		dedup_offset = 0;
+		if(short_hash(&hashing, xmem, blocklen)
+			printk("2hashing:%lu",hashing);
 		
-
-		
+		dnode->hashval = hashing;
+		dnode->count = 1;
+		dnode->strength_hash_status = 0;
 		//part end 
 		
 		// printk("pos 1");
