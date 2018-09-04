@@ -794,12 +794,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->flag = 0;
 		rnode->ino = inode->i_ino;
 		rnode->index = j+start_blk;
+		rnode->dnode = NULL;
 
 		printk("pmfs write 0");
 		rnode_insert_ret = refnode_insert(sb, rnode);
 		printk("pmfs write 0.1");
 		if(rnode_insert_ret){
 			rnode = rnode_insert_ret;
+			if(rnode->dnode == NULL)
+				printk("pmfs write error 0");
 		// 	if(rnode->dnode->count>1)
 		// 		//update COW
 		// 		overwrite_flag = 1;
