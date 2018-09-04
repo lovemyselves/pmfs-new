@@ -848,15 +848,17 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode = dnode_entry;
 			printk("dnode fit!");
 			/*add reference content */
+		}else
+			dnode_hit = false;
+			
+		if(!dnode_hit){
+			pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+			dnode->blocknr = blocknr;
+			memcpy(pmfs_get_block(sb, blocknr<<PAGE_SHIFT), xmem, pmfs_inode_blk_size(pi));
+			kfree(xmem);
+			dnode->flag = 1;
+			rnode->flag = 1;
 		}
-
-		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-		dnode->blocknr = blocknr;
-		
-		memcpy(pmfs_get_block(sb, blocknr<<PAGE_SHIFT), xmem, pmfs_inode_blk_size(pi));
-		kfree(xmem);
-		dnode->flag = 1;
-		rnode->flag = 1;
 		//part end 
 		
 		// printk("pos 1");
