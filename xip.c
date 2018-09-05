@@ -1141,11 +1141,11 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		printk("pmfs xip file fault");
 		printk("rnode->blocknr:%lu", rnode->dnode->blocknr);
 	}
-	else
+	else{
+		printk("pmfs xip file fault 1");
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
-	
+	}
 	//end
-	read_redirect:
 
 	if (unlikely(err)) {
 		pmfs_dbg("[%s:%d] get_xip_mem failed(OOM). vm_start(0x%lx),"
