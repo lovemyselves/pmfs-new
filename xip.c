@@ -38,6 +38,9 @@ struct list_head *last_hit;
 struct list_head *new_list = &hash_map_addr_list;
 bool find_flag = false;
 bool dnode_hit = false;
+bool rnode_hit = false;
+struct list_head *last_dnode_list;
+struct list_head *last_rnode_list;
 struct rb_root root = RB_ROOT;
 
 struct list_head *last_ref = NULL;
@@ -152,13 +155,12 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 
 struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
-	struct rb_root *rroot = &(dindex->refroot);
 	struct rb_node **entry_node;
 	struct rb_node *parent = NULL;
 	struct refnode *rnode_entry = NULL;
 	long result;
 
-	entry_node = &(rroot->rb_node);
+	entry_node = &(dindex->refroot.rb_node);
 	printk("refnode insert 0");
 	while(*entry_node){
 		parent = *entry_node;
@@ -185,6 +187,33 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 	rb_link_node(&rnode_new->node, parent, entry_node);
 	rb_insert_color(&rnode_new->node, rroot);
 
+	return NULL;
+}
+
+struct refnode *refnode_search(struct refnode *rnode, struct super_block *sb
+,unsigned ino, unsigned long index){
+	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct rb_node *entry_node = dindex->refroot.rb_node;
+	struct refnode *rnode_entry;
+	long result;
+
+	while(entry_node){
+		rnode_entry = rb_entry(entry_node, struct refnode, node);
+		result = ino - rnode_entry->ino;
+		if(result < 0)
+			entry_node = entry_node->rb_left;
+		else if(result > 0)
+			entry_node = entry_node->rb_right;
+		else{
+			result = index - rnode_entry->index;
+			if(result < 0)
+				entry_node = entry_node->rb_left;
+			else if(result > 0)
+				entry_node = entry_node->rb_right;
+			else
+				return rnode_entry;
+		}
+	}
 	return NULL;
 }
 
@@ -1069,6 +1098,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	unsigned long xip_pfn;
 	int err;
 	//dedup insert code
+	struct super_block *sb = inode->i_sb;
 	struct ref_map *ref_map_temp;
 	struct ref_node *rnode;
 	unsigned long blocknr;
@@ -1102,7 +1132,13 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	// 	ref_find_flag = true;
 	// 	last_ref = &ref_map_temp->list;
 	// }else
-	blocknr = refnode_search(inode->i_ino, (size_t)vmf->pgoff);
+	rnode = refnode_search(sb, inode->i_ino, (size_t)vmf->pgoff);
+	if(rnode){
+		rnode->hit = true;
+		err = 0;
+		last_rnode_list = rnode->list;
+	}
+	xip_pfn = pmfs_get_pfn(sb, rnode->blocknr<<PAGE_SHIFT);
 	// err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	
 	//end
