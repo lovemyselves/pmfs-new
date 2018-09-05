@@ -195,7 +195,7 @@ struct refnode *refnode_search(struct super_block *sb
 ,unsigned ino, unsigned long index){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	struct rb_node *entry_node = dindex->refroot.rb_node;
-	struct refnode *rnode_entry;
+	struct refnode *rnode_entry = NULL;
 	long result;
 
 	while(entry_node){
