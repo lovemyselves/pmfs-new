@@ -155,12 +155,13 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 
 struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct rb_root *rroot = &dindex->refroot;
 	struct rb_node **entry_node;
 	struct rb_node *parent = NULL;
 	struct refnode *rnode_entry = NULL;
 	long result;
 
-	entry_node = &(dindex->refroot.rb_node);
+	entry_node = &(refroot->rb_node);
 	printk("refnode insert 0");
 	while(*entry_node){
 		parent = *entry_node;
