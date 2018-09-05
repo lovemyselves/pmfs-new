@@ -1070,6 +1070,8 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	int err;
 	//dedup insert code
 	struct ref_map *ref_map_temp;
+	struct ref_node *rnode;
+	unsigned long blocknr;
 
 	size = (i_size_read(inode) + PAGE_SIZE - 1) >> PAGE_SHIFT;
 	if (vmf->pgoff >= size) {
@@ -1081,26 +1083,28 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	}
 	
 	//dedup insert
-	if( ( (vmf->pgoff)!=0 && ref_find_flag) && 
-		(&dedup_ref_list!=last_ref->next)){
-			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
-			if(inode == ref_map_temp->virt_addr && (size_t)(vmf->pgoff) == ref_map_temp->index)
-			{
-				xip_pfn = *ref_map_temp->pfn;
-				err = 0;
-				last_ref = last_ref->next;
-				goto read_redirect;
-			}
-		}
-	ref_map_temp = ref_search_node(&ref_root, inode, (size_t)(vmf->pgoff));
-	if(ref_map_temp!=NULL)
-	{
-		xip_pfn = *ref_map_temp->pfn;
-		err = 0;
-		ref_find_flag = true;
-		last_ref = &ref_map_temp->list;
-	}else
-		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
+	// if( ( (vmf->pgoff)!=0 && ref_find_flag) && 
+	// 	(&dedup_ref_list!=last_ref->next)){
+	// 		ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
+	// 		if(inode == ref_map_temp->virt_addr && (size_t)(vmf->pgoff) == ref_map_temp->index)
+	// 		{
+	// 			xip_pfn = *ref_map_temp->pfn;
+	// 			err = 0;
+	// 			last_ref = last_ref->next;
+	// 			goto read_redirect;
+	// 		}
+	// 	}
+	// ref_map_temp = ref_search_node(&ref_root, inode, (size_t)(vmf->pgoff));
+	// if(ref_map_temp!=NULL)
+	// {
+	// 	xip_pfn = *ref_map_temp->pfn;
+	// 	err = 0;
+	// 	ref_find_flag = true;
+	// 	last_ref = &ref_map_temp->list;
+	// }else
+	blocknr = refnode_search(inode->i_ino, (size_t)vmf->pgoff);
+	// err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
+	
 	//end
 	read_redirect:
 
