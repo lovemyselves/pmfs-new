@@ -1100,9 +1100,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	int err;
 	//dedup insert code
 	struct super_block *sb = inode->i_sb;
-	struct ref_map *ref_map_temp;
 	struct refnode *rnode = NULL;
-	unsigned long blocknr;
 
 	size = (i_size_read(inode) + PAGE_SIZE - 1) >> PAGE_SHIFT;
 	if (vmf->pgoff >= size) {
@@ -1139,6 +1137,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		err = 0;
 		last_rnode_list = &rnode->list;
 		xip_pfn = pmfs_get_pfn(sb, rnode->blocknr<<PAGE_SHIFT);
+		printk("pmfs xip file fault");
 	}
 	else
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
