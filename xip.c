@@ -844,9 +844,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode_entry = dedupnode_tree_update(sb, dnode);
 		if(dnode_entry){
 			dnode = dnode_entry;
-			printk("0 dnode_entry refence count:%u",dnode_entry->count);
 			dnode->count++;
-			printk("1 dnode_entry refence count:%u",dnode_entry->count);
 			dnode_hit = true;
 			//free(dnode);
 			printk("dnode fit!");
@@ -1010,35 +1008,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		i -= block_len;
 	}
 
-	//store dedupnode
 	printk("pmfswrite 7");
-	// new_unused_dedupnode(sb);
-	//dedupnode mem to nvm
-	// list_for_each_entry(hash_map_addr_entry, hash_map_addr_list, list){
-	// 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
-	// 	struct list_head *new_dnode_list = dindex->hma_unused.next;
-	// 	struct dedupnode *dnode = list_entry(new_dnode_list,struct dedupnode,list);
-	
-	// 	// hash_map_addr_entry = list_entry(list_head_entry->next,struct hash_map_addr,list);
-	// 	dnode->hashing = hash_map_addr_entry->hashing;
-	// 	memcpy(dnode->strength_hashval, hash_map_addr_entry->hashing_md5, 16);
-	// 	dnode->addr = hash_map_addr_entry->addr;
-	// 	dnode->pfn = hash_map_addr_entry->pfn;
-	// 	dnode->length = hash_map_addr_entry->length;
-	// 	dnode->count = hash_map_addr_entry->count;
-	// 	list_move(&dnode->list, &dindex->hma_head);
-	
-	// 	dnode->flag = true;
-	// 	// size_t hashing;
-    // 	// char strength_hashval[16];
-    // 	// void *addr;
-    // 	// unsigned long pfn;
-    // 	// size_t length;
-    // 	// size_t count;
-    // 	// bool flag;
-	// 	break;
-	// }
-	// printk("pmfswrite 8");
 
 	if(dnode_hit || actual_num_blocks!=0){
 		written = count;
@@ -1259,9 +1229,7 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 {
 	int rc, dedup_rc;
 	sector_t block = 0;
-	// sector_t dedup_block = 0;
 	struct inode *inode = mapping->host;
-	// struct ref_map *ref_map_temp;
 
 	rc = __pmfs_get_block(inode, pgoff, create, &block);
 	dedup_rc = rc;
@@ -1277,31 +1245,9 @@ int pmfs_get_xip_mem(struct address_space *mapping, pgoff_t pgoff, int create,
 	*kmem = pmfs_get_block(inode->i_sb, block);
 	*pfn = pmfs_get_pfn(inode->i_sb, block);
 
-	// ref_map_temp = ref_search_node(&ref_root, inode, pgoff);
-	// if(ref_map_temp != NULL)
-	// {
-	// 	// *kmem = *ref_map_temp->phys_addr;
-	// 	rc = 0;
-	// 	// printk("find a read-dedup metadata");
-	// 	// if(*kmem == *ref_map_temp->phys_addr)
-	// 	// printk("read a raw data block");
-	// 	// last_ref = &ref_map_temp->list;
-	// 	// ref_find_flag = true;
-	// 	// printk("xip_mem after redirect:%lu", (size_t)xip_mem);
-	// 	// goto read_redirect;
-	// }
-
 	pmfs_dbg_mmapvv("[%s:%d] sb->physaddr(0x%llx), block(0x%lx),"
 		" pgoff(0x%lx), flag(0x%x), PFN(0x%lx)\n", __func__, __LINE__,
 		PMFS_SB(inode->i_sb)->phys_addr, block, pgoff, create, *pfn);
-
-	/* dedup start */
-	// printk("PMFS_SB(inode->i_sb)->phys_addr:%llu\n", PMFS_SB(inode->i_sb)->phys_addr);
-	// printk("block:%lu\n",block);
-	// printk("block value:%lu\n",block>>12);
-	// printk("pfn<<PAGE_SHIFT:%lu\n",(size_t)*pfn<<PAGE_SHIFT);
-	// printk("kmem:%lu",(size_t)*kmem);
-	/* end */
 
 	return 0;
 }
