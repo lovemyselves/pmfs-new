@@ -843,12 +843,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		dnode_entry = dedupnode_tree_update(sb, dnode);
 		if(dnode_entry){
+			dnode = dnode_entry;
 			printk("0 dnode_entry refence count:%u",dnode_entry->count);
-			dnode_entry->count++;
+			dnode->count++;
 			printk("1 dnode_entry refence count:%u",dnode_entry->count);
 			dnode_hit = true;
 			//free(dnode);
-			dnode = dnode_entry;
 			printk("dnode fit!");
 			/*add reference content */
 		}else
