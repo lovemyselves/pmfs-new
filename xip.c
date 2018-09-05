@@ -1138,9 +1138,10 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		rnode_hit = true;
 		err = 0;
 		last_rnode_list = &rnode->list;
+		xip_pfn = pmfs_get_pfn(sb, rnode->blocknr<<PAGE_SHIFT);
 	}
-	xip_pfn = pmfs_get_pfn(sb, rnode->blocknr<<PAGE_SHIFT);
-	// err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
+	else
+		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	
 	//end
 	read_redirect:
