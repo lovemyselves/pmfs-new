@@ -161,7 +161,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 	struct refnode *rnode_entry = NULL;
 	long result;
 
-	entry_node = &(refroot->rb_node);
+	entry_node = &(rroot->rb_node);
 	printk("refnode insert 0");
 	while(*entry_node){
 		parent = *entry_node;
@@ -191,7 +191,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 	return NULL;
 }
 
-struct refnode *refnode_search(struct refnode *rnode, struct super_block *sb
+struct refnode *refnode_search(struct super_block *sb
 ,unsigned ino, unsigned long index){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	struct rb_node *entry_node = dindex->refroot.rb_node;
@@ -1135,7 +1135,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	// }else
 	rnode = refnode_search(sb, inode->i_ino, (size_t)vmf->pgoff);
 	if(rnode){
-		rnode->hit = true;
+		rnode_hit = true;
 		err = 0;
 		last_rnode_list = rnode->list;
 	}
