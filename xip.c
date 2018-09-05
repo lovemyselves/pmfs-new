@@ -1101,7 +1101,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	//dedup insert code
 	struct super_block *sb = inode->i_sb;
 	struct ref_map *ref_map_temp;
-	struct ref_node *rnode;
+	struct refnode *rnode = NULL;
 	unsigned long blocknr;
 
 	size = (i_size_read(inode) + PAGE_SIZE - 1) >> PAGE_SHIFT;
