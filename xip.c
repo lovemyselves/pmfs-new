@@ -375,6 +375,7 @@ do_xip_mapping_read(struct address_space *mapping,
 	loff_t isize, pos;
 	size_t copied = 0, error = 0;
 	timing_t memcpy_time;
+	struct super_block *sb = inode->i_sb;
 
 	pos = *ppos;
 	index = pos >> PAGE_SHIFT;
@@ -394,6 +395,7 @@ do_xip_mapping_read(struct address_space *mapping,
 
 		/* read dedup data block start */
 		struct ref_map *ref_map_temp;
+		struct refnode *rnode;
 		/* end */
 
 		/* nr is the maximum number of bytes to copy from this page */
@@ -413,17 +415,17 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		if( (index>0 && ref_find_flag) && 
-		(&dedup_ref_list!=last_ref->next && last_ref->next!=NULL)){
-			ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
-			if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
-			{
-				xip_mem = *ref_map_temp->phys_addr;
-				last_ref = last_ref->next;
-				error = 0;
-				goto read_redirect;
-			}
-		}
+		// if( (index>0 && ref_find_flag) && 
+		// (&dedup_ref_list!=last_ref->next && last_ref->next!=NULL)){
+		// 	ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
+		// 	if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
+		// 	{
+		// 		xip_mem = *ref_map_temp->phys_addr;
+		// 		last_ref = last_ref->next;
+		// 		error = 0;
+		// 		goto read_redirect;
+		// 	}
+		// }
 		ref_map_temp = ref_search_node(&ref_root, inode, index);
 		
 		if(ref_map_temp != NULL)
@@ -434,11 +436,31 @@ do_xip_mapping_read(struct address_space *mapping,
 			ref_find_flag = true;
 			goto read_redirect;
 		}
-		
-		error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
-		ref_find_flag = false;
-
 		read_redirect:
+		if(rnode_hit){
+			rnode = list_entry(last_rnode_list->next, struct refnode, list);
+			if(inode->i_ino==rnode->ino && index==rnode->index){
+				xip_mem = pmfs_get_block(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
+				err = 0;
+				rnode_hit = true;
+				last_rnode_list = last_rnode_list->next;
+				goto rnode_find;
+			}
+		}
+		rnode = refnode_search(sb, inode->i_ino, index);
+		if(rnode){
+			rnode_hit = true;
+			err = 0;
+			last_rnode_list = &rnode->list;
+			printk("do_xip_read rnode->dnode->blocknr:%lu", rnode->dnode->blocknr);
+			xip_mem = pmfs_get_block(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
+		}
+		else{
+			err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
+		}
+	
+		// error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
+		// ref_find_flag = false;
 
 		if (unlikely(error)) {
 			if (error == -ENODATA) {
@@ -1016,10 +1038,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		kfree(xmem);
 		
 		printk("pos 5");
-		// printk("sizeof(hash_map_addr_temp):%lu",sizeof(struct hash_map_addr));
-		// printk("sizeof(struct rb_node node):%lu",sizeof(struct rb_node));
-		// printk("sizeof(struct list_head):%lu",sizeof(struct list_head));
-		// printk("sizeof(xmem):%lu",sizeof(char)<<10);
 		INIT_LIST_HEAD(&hash_map_addr_temp->list);
 		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
 		direct_write_out:
@@ -1113,15 +1131,16 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		return VM_FAULT_SIGBUS;
 	}
 	
+	//rnode search
 	if(rnode_hit){
 		rnode = list_entry(last_rnode_list->next, struct refnode, list);
-		printk("xip file fault function try hit");
+		// printk("xip file fault function try hit");
 		if(inode->i_ino==rnode->ino && (size_t)vmf->pgoff==rnode->index){
 			xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
 			err = 0;
 			rnode_hit = true;
 			last_rnode_list = last_rnode_list->next;
-			printk("xip file fault function hit!");
+			// printk("xip file fault function hit!");
 			goto rnode_find;
 		}
 	}
@@ -1138,6 +1157,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	}
 	rnode_find:
 	//end
+
 	if (unlikely(err)) {
 		pmfs_dbg("[%s:%d] get_xip_mem failed(OOM). vm_start(0x%lx),"
 			" vm_end(0x%lx), pgoff(0x%lx), VA(%lx)\n",
