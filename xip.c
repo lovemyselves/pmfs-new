@@ -1124,27 +1124,28 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	// 			goto read_redirect;
 	// 		}
 	// 	}
-	// ref_map_temp = ref_search_node(&ref_root, inode, (size_t)(vmf->pgoff));
-	// if(ref_map_temp!=NULL)
-	// {
-	// 	xip_pfn = *ref_map_temp->pfn;
-	// 	err = 0;
-	// 	ref_find_flag = true;
-	// 	last_ref = &ref_map_temp->list;
-	// }else
+	
+	if(vmf->pgoff!=0 && rnode_hit==true){
+		rnode = list_entry(last_rnode_list->next, struct refnode, list);
+		if(inode->i_ino==rnode->ino && vmf->pgoff==rnode->index){
+			xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
+			err = 0;
+			rnode_hit = true;
+			last_rnode_list = last_rnode_list->next;
+			goto rnode_find;
+		}
+	}
 	rnode = refnode_search(sb, inode->i_ino, (size_t)vmf->pgoff);
 	if(rnode){
 		rnode_hit = true;
 		err = 0;
 		last_rnode_list = &rnode->list;
 		xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
-		printk("pmfs xip file fault");
-		printk("rnode->blocknr:%lu", rnode->dnode->blocknr);
 	}
 	else{
-		printk("pmfs xip file fault 1");
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	}
+	rnode_find:
 	//end
 
 	if (unlikely(err)) {
