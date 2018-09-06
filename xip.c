@@ -189,8 +189,8 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 
 	rnode_new = alloc_refnode(sb);
 	rnode_new->flag = 0;
-	rnode_new->ino = inode->i_ino;
-	rnode_new->index = j+start_blk;
+	rnode_new->ino = ino;
+	rnode_new->index = index;
 	rnode_new->dnode = NULL;
 
 	printk("refnode insert 1");
