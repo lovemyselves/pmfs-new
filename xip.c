@@ -98,7 +98,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 		new_unused_dedupnode(sb);
 	
 	p = dindex->hma_unused.next;
-	list_move(p, &dindex->hma_head);
+	list_move_tail(p, &dindex->hma_head);
 	dnode = list_entry(p, struct dedupnode, list);
 
 	return dnode;
@@ -112,7 +112,7 @@ struct refnode *alloc_refnode(struct super_block *sb){
 		new_unused_refnode(sb);
 	
 	p = dindex->ref_unused.next;
-	list_move(p, &dindex->ref_head);
+	list_move_tail(p, &dindex->ref_head);
 	rnode = list_entry(p, struct refnode, list);
 	return rnode;
 }
@@ -1128,7 +1128,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	// 	}
 	
 	if(vmf->pgoff!=0 && rnode_hit==true){
-		rnode = list_entry(last_rnode_list->prev, struct refnode, list);
+		rnode = list_entry(last_rnode_list->next, struct refnode, list);
 		printk("xip file fault function try hit");
 		printk("inode->ino:%u",inode->i_ino);
 		printk("rnode->ino:%u",rnode->ino);
