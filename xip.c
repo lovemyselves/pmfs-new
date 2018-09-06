@@ -1139,6 +1139,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		rnode_hit = true;
 		err = 0;
 		last_rnode_list = &rnode->list;
+		printk("rnode->dnode->blocknr:%lu", rnode->dnode->blocknr);
 		xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
 	}
 	else{
