@@ -172,7 +172,7 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 		else if(result > 0)
 			entry_node = &(*entry_node)->rb_right;
 		else{
-			result = rnode_new->index - rnode_new->index;
+			result = rnode_new->index - rnode_entry->index;
 			if(result < 0)
 				entry_node = &(*entry_node)->rb_left;
 			else if(result > 0)
