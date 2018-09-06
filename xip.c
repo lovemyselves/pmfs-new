@@ -889,6 +889,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			memcpy(pmfs_get_block(sb, blocknr<<PAGE_SHIFT), xmem, pmfs_inode_blk_size(pi));
 		}
 		kfree(xmem);
+		rnode->dnode = dnode;
+		rnode->blocknr = dnode->blocknr;
 		dnode->flag = 1;
 		rnode->flag = 1;
 		printk("dnode->blocknr:%lu", dnode->blocknr);
