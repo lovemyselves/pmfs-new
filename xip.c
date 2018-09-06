@@ -20,10 +20,10 @@
 #include "xip.h"
 /*dedup new add include*/
 #include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/crypto.h>
+// #include <linux/module.h>
+// #include <linux/crypto.h>
 #include <crypto/hash.h>
-#include <linux/scatterlist.h>
+// #include <linux/scatterlist.h>
 #include <linux/err.h>
 
 #include "dedup.c"
@@ -1101,7 +1101,6 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	void *xip_mem;
 	unsigned long xip_pfn;
 	int err;
-	//dedup insert code
 	struct super_block *sb = inode->i_sb;
 	struct refnode *rnode = NULL;
 
@@ -1114,20 +1113,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		return VM_FAULT_SIGBUS;
 	}
 	
-	//dedup insert
-	// if( ( (vmf->pgoff)!=0 && ref_find_flag) && 
-	// 	(&dedup_ref_list!=last_ref->next)){
-	// 		ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
-	// 		if(inode == ref_map_temp->virt_addr && (size_t)(vmf->pgoff) == ref_map_temp->index)
-	// 		{
-	// 			xip_pfn = *ref_map_temp->pfn;
-	// 			err = 0;
-	// 			last_ref = last_ref->next;
-	// 			goto read_redirect;
-	// 		}
-	// 	}
-	
-	if(rnode_hit==true){
+	if(rnode_hit){
 		rnode = list_entry(last_rnode_list->next, struct refnode, list);
 		printk("xip file fault function try hit");
 		if(inode->i_ino==rnode->ino && (size_t)vmf->pgoff==rnode->index){
@@ -1151,7 +1137,6 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	}
 	rnode_find:
-	printk("xip file fault +++++++++++++++++++++++++++");
 	//end
 	if (unlikely(err)) {
 		pmfs_dbg("[%s:%d] get_xip_mem failed(OOM). vm_start(0x%lx),"
