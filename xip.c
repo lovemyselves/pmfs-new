@@ -1127,16 +1127,16 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	// 		}
 	// 	}
 	
-	// if(vmf->pgoff!=0 && rnode_hit==true){
-	// 	rnode = list_entry(last_rnode_list->next, struct refnode, list);
-	// 	if(inode->i_ino==rnode->ino && vmf->pgoff==rnode->index){
-	// 		xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
-	// 		err = 0;
-	// 		rnode_hit = true;
-	// 		last_rnode_list = last_rnode_list->next;
-	// 		goto rnode_find;
-	// 	}
-	// }
+	if(vmf->pgoff!=0 && rnode_hit==true){
+		rnode = list_entry(last_rnode_list->next, struct refnode, list);
+		if(inode->i_ino==rnode->ino && vmf->pgoff==rnode->index){
+			xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
+			err = 0;
+			rnode_hit = true;
+			last_rnode_list = last_rnode_list->next;
+			goto rnode_find;
+		}
+	}
 	rnode = refnode_search(sb, inode->i_ino, (size_t)vmf->pgoff);
 	if(rnode){
 		rnode_hit = true;
@@ -1149,8 +1149,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	}
 	rnode_find:
-	printk("\n");
-	printk("\n");
+	printk("xip file fault +++++++++++++++++++++++++++");
 	//end
 	if (unlikely(err)) {
 		pmfs_dbg("[%s:%d] get_xip_mem failed(OOM). vm_start(0x%lx),"
