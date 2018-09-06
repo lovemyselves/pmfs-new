@@ -1127,13 +1127,9 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	// 		}
 	// 	}
 	
-	if(vmf->pgoff!=0 && rnode_hit==true){
+	if(rnode_hit==true){
 		rnode = list_entry(last_rnode_list->next, struct refnode, list);
 		printk("xip file fault function try hit");
-		printk("inode->ino:%u",inode->i_ino);
-		printk("rnode->ino:%u",rnode->ino);
-		printk("vmf->pgoff:%lu",vmf->pgoff);
-		printk("rnode->index:%lu",rnode->index);
 		if(inode->i_ino==rnode->ino && (size_t)vmf->pgoff==rnode->index){
 			xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
 			err = 0;
