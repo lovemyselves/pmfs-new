@@ -441,7 +441,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			rnode = list_entry(last_rnode_list->next, struct refnode, list);
 			if(inode->i_ino==rnode->ino && index==rnode->index){
 				xip_mem = pmfs_get_block(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
-				err = 0;
+				error = 0;
 				rnode_hit = true;
 				last_rnode_list = last_rnode_list->next;
 				goto rnode_find;
@@ -450,14 +450,13 @@ do_xip_mapping_read(struct address_space *mapping,
 		rnode = refnode_search(sb, inode->i_ino, index);
 		if(rnode){
 			rnode_hit = true;
-			err = 0;
+			error = 0;
 			last_rnode_list = &rnode->list;
 			printk("do_xip_read rnode->dnode->blocknr:%lu", rnode->dnode->blocknr);
 			xip_mem = pmfs_get_block(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
-		}
-		else{
-			err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
-		}
+		}else
+			printk("lost block");
+		rnode_find:
 	
 		// error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		// ref_find_flag = false;
