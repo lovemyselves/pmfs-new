@@ -153,7 +153,8 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 	return NULL;
 }
 
-struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new){
+struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
+	, unsigned long index){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	struct rb_root *rroot = &dindex->refroot;
 	struct rb_node **entry_node;
@@ -166,13 +167,13 @@ struct refnode *refnode_insert(struct super_block *sb, struct refnode *rnode_new
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
-		result = rnode_new->ino - rnode_entry->ino;
+		result = ino - rnode_entry->ino;
 		if(result < 0)
 			entry_node = &(*entry_node)->rb_left;
 		else if(result > 0)
 			entry_node = &(*entry_node)->rb_right;
 		else{
-			result = rnode_new->index - rnode_entry->index;
+			result = index - rnode_entry->index;
 			if(result < 0)
 				entry_node = &(*entry_node)->rb_left;
 			else if(result > 0)
@@ -826,7 +827,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
 		unsigned long blocknr;
-		struct refnode *rnode=NULL, *rnode_insert_ret=NULL;
+		struct refnode *rnode=NULL;
 		unsigned block_len;
 		void *xmem = NULL;
 		// bool hash_flag = true;
@@ -842,18 +843,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		insert_ret = ref_insert_node(&ref_root, ref_map_temp);
 
 		//persistent store part start
-		rnode = alloc_refnode(sb);
+		
 		// rnode->blocknr = 0;
-		rnode->flag = 0;
-		rnode->ino = inode->i_ino;
-		rnode->index = j+start_blk;
-		rnode->dnode = NULL;
+		
 
 		printk("pmfs write 0");
-		rnode_insert_ret = refnode_insert(sb, rnode);
+		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
 		printk("pmfs write 0.1");
-		if(rnode_insert_ret){
-			rnode = rnode_insert_ret;
+		if(rnode){
 			if(rnode->dnode == NULL)
 				printk("pmfs write error 0");
 			printk("dnode refence count:%u", rnode->dnode->count);
@@ -865,6 +862,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 		rnode->dnode->count = 1;
 		// 		//update in-place		
 		// 	}
+		}else{
+			rnode = alloc_refnode(sb);
+			rnode->flag = 0;
+			rnode->ino = inode->i_ino;
+			rnode->index = j+start_blk;
+			rnode->dnode = NULL;
 		}
 		printk("pmfs write 1");
 
