@@ -389,12 +389,12 @@ do_xip_mapping_read(struct address_space *mapping,
 
 	do {
 		unsigned long nr, left;
-		void *xip_mem;
-		unsigned long xip_pfn;
+		void *xip_mem = NULL;
+		// unsigned long xip_pfn;
 		int zero = 0;
 
 		/* read dedup data block start */
-		struct ref_map *ref_map_temp;
+		// struct ref_map *ref_map_temp;
 		struct refnode *rnode;
 		/* end */
 
