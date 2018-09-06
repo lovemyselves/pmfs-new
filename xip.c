@@ -862,10 +862,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(rnode->dnode == NULL)
 				printk("pmfs write error 0");
 			printk("dnode refence count:%u", rnode->dnode->count);
-			// if(rnode->dnode->count>1)
-			// 	//update COW
-			// 	// overwrite_flag = 1;
-			// 	printk("pmfs write in-place");
+			else if(rnode->dnode->count>1){
+				//update COW
+				// overwrite_flag = 1;
+				printk("pmfs write in-place");
+			}	
 			// else{
 			// 	// overwrite_flag = 2;
 			// 	rnode->dnode->count = 1;
