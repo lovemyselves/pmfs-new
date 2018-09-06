@@ -859,22 +859,20 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
 		printk("pmfs write 0.1");
 		if(rnode->flag == 1){
-			if(rnode->dnode == NULL)
+			if(rnode->dnode == NULL){
 				printk("pmfs write error 0");
-			printk("dnode refence count:%u", rnode->dnode->count);
+			}
 			else if(rnode->dnode->count>1){
 				//update COW
 				// overwrite_flag = 1;
-				printk("pmfs write in-place");
+				printk("dnode refence count:%u", rnode->dnode->count);
+				printk("pmfs write COW");
 			}	
-			// else{
+			else{
 			// 	// overwrite_flag = 2;
 			// 	rnode->dnode->count = 1;
-			// 	printk("pmfs write COW");
-			// 	//update in-place		
-			// }
-		}else{
-			//new create block write	
+				printk("pmfs write in-place");	
+			}
 		}
 		printk("pmfs write 1");
 
