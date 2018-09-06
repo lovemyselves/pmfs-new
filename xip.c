@@ -852,7 +852,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode = alloc_dedupnode(sb);
 		dnode->flag = 0;
 		dnode->count = 1;
-		rnode->dnode = dnode;
 
 		// slice buf
 		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
