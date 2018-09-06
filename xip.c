@@ -873,6 +873,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// 	rnode->dnode->count = 1;
 				printk("pmfs write in-place");	
 			}
+		}else{
+			printk("pfms write:a new block!");
 		}
 		printk("pmfs write 1");
 
