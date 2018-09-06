@@ -426,17 +426,17 @@ do_xip_mapping_read(struct address_space *mapping,
 		// 		goto read_redirect;
 		// 	}
 		// }
-		ref_map_temp = ref_search_node(&ref_root, inode, index);
+		// ref_map_temp = ref_search_node(&ref_root, inode, index);
 		
-		if(ref_map_temp != NULL)
-		{
-			xip_mem = *ref_map_temp->phys_addr;
-			error = 0;
-			last_ref = &ref_map_temp->list;
-			ref_find_flag = true;
-			goto read_redirect;
-		}
-		read_redirect:
+		// if(ref_map_temp != NULL)
+		// {
+		// 	xip_mem = *ref_map_temp->phys_addr;
+		// 	error = 0;
+		// 	last_ref = &ref_map_temp->list;
+		// 	ref_find_flag = true;
+		// 	goto read_redirect;
+		// }
+		// read_redirect:
 		if(rnode_hit){
 			rnode = list_entry(last_rnode_list->next, struct refnode, list);
 			if(inode->i_ino==rnode->ino && index==rnode->index){
