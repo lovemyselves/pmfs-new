@@ -160,6 +160,7 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 	struct rb_node **entry_node;
 	struct rb_node *parent = NULL;
 	struct refnode *rnode_entry = NULL;
+	struct refnode *rnode_new;
 	long result;
 
 	entry_node = &(rroot->rb_node);
@@ -185,11 +186,18 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 			}
 		}		
 	}
+
+	rnode_new = alloc_refnode(sb);
+	rnode_new->flag = 0;
+	rnode_new->ino = inode->i_ino;
+	rnode_new->index = j+start_blk;
+	rnode_new->dnode = NULL;
+
 	printk("refnode insert 1");
 	rb_link_node(&rnode_new->node, parent, entry_node);
 	rb_insert_color(&rnode_new->node, rroot);
 
-	return NULL;
+	return rnode_new;
 }
 
 struct refnode *refnode_search(struct super_block *sb
@@ -850,24 +858,22 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("pmfs write 0");
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
 		printk("pmfs write 0.1");
-		if(rnode){
+		if(rnode->flag == 1){
 			if(rnode->dnode == NULL)
 				printk("pmfs write error 0");
 			printk("dnode refence count:%u", rnode->dnode->count);
-		// 	if(rnode->dnode->count>1)
-		// 		//update COW
-		// 		overwrite_flag = 1;
-		// 	else{
-		// 		overwrite_flag = 2;
-		// 		rnode->dnode->count = 1;
-		// 		//update in-place		
-		// 	}
+			if(rnode->dnode->count>1)
+				//update COW
+				// overwrite_flag = 1;
+				printk("pmfs write in-place");
+			else{
+				// overwrite_flag = 2;
+				rnode->dnode->count = 1;
+				printk("pmfs write COW");
+				//update in-place		
+			}
 		}else{
-			rnode = alloc_refnode(sb);
-			rnode->flag = 0;
-			rnode->ino = inode->i_ino;
-			rnode->index = j+start_blk;
-			rnode->dnode = NULL;
+			//new create block write	
 		}
 		printk("pmfs write 1");
 
