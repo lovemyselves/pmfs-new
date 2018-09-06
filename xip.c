@@ -211,8 +211,10 @@ struct refnode *refnode_search(struct super_block *sb
 				entry_node = entry_node->rb_left;
 			else if(result > 0)
 				entry_node = entry_node->rb_right;
-			else
-				return rnode_entry;
+			else{
+				printk("rnode_entry->dnode->blocknr:%lu", 
+					rnode_entry->dnode->blocknr);
+				return rnode_entry;}
 		}
 	}
 	return NULL;
