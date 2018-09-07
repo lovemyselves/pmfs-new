@@ -834,7 +834,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
-		unsigned long blocknr;
+		// unsigned long blocknr;
 		struct refnode *rnode=NULL;
 		unsigned block_len;
 		void *xmem = NULL;
@@ -852,26 +852,34 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		//persistent store part start
 		
-		// rnode->blocknr = 0;
-		
+		// slice buf
+		block_len = (4096-deup_offset)<i?(4096-dedup_offset):i;
+		// if(i+dedup_offset <= pmfs_inode_blk_size(pi))
+		// 	block_len = i;
+		// else
+		// 	block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 
 		printk("pmfs write 0");
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
 		printk("pmfs write 0.1");
 		if(rnode->flag == 1){
-			if(rnode->dnode == NULL){
+			rnode->flag = 0;
+			dnode = rnode->rnode;
+			if(dnode == NULL){
 				printk("pmfs write error 0");
 			}
-			else if(rnode->dnode->count>1){
+			else if(dnode->count>1){
 				//update COW
 				// overwrite_flag = 1;
-				printk("dnode refence count:%u", rnode->dnode->count);
+				printk("dnode refence count:%u", dnode->count);
 				printk("pmfs write COW");
 			}	
 			else{
-			// 	// overwrite_flag = 2;
-			// 	rnode->dnode->count = 1;
-				printk("pmfs write in-place");	
+				dnode->flag = 0;
+				xmem = kmalloc(4096, GFP_KERNEL);
+				printk("pmfs write in-place");
+				// memcpy_to_nvmm(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT)
+				// 	,dedup_offset, buf+count-i, block_len);
 			}
 		}else{
 			printk("pfms write:a new block!");
@@ -882,12 +890,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode = alloc_dedupnode(sb);
 		dnode->flag = 0;
 		dnode->count = 1;
-
-		// slice buf
-		if(i+dedup_offset <= pmfs_inode_blk_size(pi))
-			block_len = i;
-		else
-			block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 
 		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
@@ -913,9 +915,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode_hit = false;
 
 		if(!dnode_hit){
-			pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-			dnode->blocknr = blocknr;
-			memcpy(pmfs_get_block(sb, blocknr<<PAGE_SHIFT), xmem, pmfs_inode_blk_size(pi));
+			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
+			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
+			, pmfs_inode_blk_size(pi));
 		}
 		kfree(xmem);
 		rnode->dnode = dnode;
