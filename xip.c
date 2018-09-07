@@ -834,7 +834,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
-		// unsigned long blocknr;
+		unsigned long blocknr;
 		struct refnode *rnode=NULL;
 		unsigned block_len;
 		void *xmem = NULL;
@@ -853,7 +853,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		//persistent store part start
 		
 		// slice buf
-		block_len = (4096-deup_offset)<i?(4096-dedup_offset):i;
+		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
 		// if(i+dedup_offset <= pmfs_inode_blk_size(pi))
 		// 	block_len = i;
 		// else
@@ -864,7 +864,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		printk("pmfs write 0.1");
 		if(rnode->flag == 1){
 			rnode->flag = 0;
-			dnode = rnode->rnode;
+			dnode = rnode->dnode;
 			if(dnode == NULL){
 				printk("pmfs write error 0");
 			}
