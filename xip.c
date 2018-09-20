@@ -897,6 +897,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->flag = 1;
 		//part end 
 		i -= block_len;
+		actual_num_blocks += 1;
 	}
 
 	printk("pmfswrite 7");
