@@ -739,7 +739,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	//dedup claiming start
 	size_t i,j,dedup_offset;	
-	struct hash_map_addr *hash_map_addr_entry;
+	// struct hash_map_addr *hash_map_addr_entry;
 	struct dedupnode *dnode_entry;
 	unsigned long actual_num_blocks = 0;
 	//end
@@ -806,18 +806,18 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 	for(j = 0; j < num_blocks; j++ ){
-		struct hash_map_addr *hash_map_addr_temp;
+		// struct hash_map_addr *hash_map_addr_temp;
 		struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
-		unsigned long blocknr;
+		// unsigned long blocknr;
 		struct refnode *rnode=NULL;
 		unsigned block_len;
 		void *xmem = NULL;
 		// bool hash_flag = true;
-		size_t overwrite_flag = 0;
+		// size_t overwrite_flag = 0;
 		// size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
-		char* strength_hashval = kmalloc(sizeof(char)<<4, GFP_KERNEL);
+		// char* strength_hashval = kmalloc(sizeof(char)<<4, GFP_KERNEL);
 
 		printk("pmfs write start!");
 
