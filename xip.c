@@ -834,7 +834,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		printk("pmfs write 0");
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
-		printk("pmfs write 0.1");
 		if(rnode->flag == 1){
 			rnode->flag = 0;
 			dnode = rnode->dnode;
@@ -854,6 +853,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				// memcpy_to_nvmm(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT)
 				// 	,dedup_offset, buf+count-i, block_len);
 			}
+		}else{
+			actual_num_blocks += 1;
 		}
 		
 		printk("pmfs write 1");
@@ -897,7 +898,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->flag = 1;
 		//part end 
 		i -= block_len;
-		actual_num_blocks += 1;
+		
 	}
 
 	printk("pmfswrite 7");
