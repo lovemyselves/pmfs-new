@@ -897,146 +897,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->flag = 1;
 		rnode->flag = 1;
 		//part end 
-		
-		// printk("pos 1");
-		if(insert_ret){
-			ref_map_temp = insert_ret;
-			if(ref_map_temp->hma->count!=0){
-				overwrite_flag = 1;
-				//update COW
-			}
-			else{
-				//update in-place
-				ref_map_temp->hma->count = 1;
-				overwrite_flag = 2;
-			}
-		}else{
-			//new block
-			;
-		}
-
-		if(overwrite_flag!=2){
-			hash_map_addr_temp = kmalloc(sizeof(*hash_map_addr_temp), GFP_KERNEL);
-			hash_map_addr_temp->flag = false;
-			hash_map_addr_temp->hashing_md5 = NULL;
-			hash_map_addr_temp->pfn = 0;
-			hash_map_addr_temp->addr = NULL;
-		}else{
-			hash_map_addr_temp = NULL;
-		}
-		printk("pos 2");
-
-		// if(i+dedup_offset <= pmfs_inode_blk_size(pi))
-		// 	block_len = i;
-		// else
-		// 	block_len = pmfs_inode_blk_size(pi) - dedup_offset;
-
-		if(overwrite_flag == 2){
-			copy_from_user(ref_map_temp->hma->addr + dedup_offset, buf+count-i, block_len);
-		}else if(overwrite_flag == 1){
-			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
-			memcpy(xmem, *ref_map_temp->phys_addr, dedup_offset + block_len);
-			copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
-			hash_map_addr_temp->addr = xmem;
-			hash_map_addr_temp->length = dedup_offset + block_len;
-		}else{
-			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
-			copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
-			hash_map_addr_temp->addr = xmem;
-			hash_map_addr_temp->length = block_len + dedup_offset;
-		}
-		// spin_unlock_irq(&in_place_lock);
-		printk("pos 3");
-		
-		dedup_offset = 0;
-		
-		if(overwrite_flag==2){
-			goto direct_write_out;
-		}
-
-		if(short_hash(&hashing, hash_map_addr_temp->addr, hash_map_addr_temp->length))
-			printk("2hashing:%lu",hashing);
-	
-		hash_map_addr_temp->hashing = hashing;
-		hash_map_addr_temp->count = 1;
-		hash_map_addr_temp->pfn = 0;
-		// printk("hash_map_addr_temp->pfn:%lu", hash_map_addr_temp->pfn << PAGE_SHIFT);
-		
-		INIT_LIST_HEAD(&hash_map_addr_temp->hashing_list);
-		if(strength_hash(strength_hashval, hash_map_addr_temp->addr, hash_map_addr_temp->length)){
-			printk("strength_hash:%c",*strength_hashval);
-			hash_map_addr_temp->hashing_md5 = (void *)strength_hashval;
-		}
-		printk("pos 4");
-
-		if(find_flag == true && last_hit != NULL )
-		{	
-			hash_map_addr_entry = list_entry(last_hit->next, struct hash_map_addr, list);
-			if(hashing == hash_map_addr_entry->hashing // && 
-			// memcmp(hash_map_addr_temp->addr,hash_map_addr_entry->addr,hash_map_addr_temp->length) == 0
-			){
-				hash_map_addr_entry->count++;
-				last_hit = &hash_map_addr_entry->list;
-				kfree(hash_map_addr_temp);
-				if(xmem!=NULL)
-					kfree(xmem);
-				hash_map_addr_temp = hash_map_addr_entry;
-				printk("fast hit!");
-				/* add reference content */
-				dedup_interval = 0;
-				goto find;
-			}
-			else
-				find_flag = false;
-		}
-
-		hash_map_addr_entry = rb_search_insert_node(&root, hash_map_addr_temp);
-		if(hash_map_addr_entry){
-			/* hashing conflict decision */
-			hash_map_addr_entry->count++;
-			last_hit = &hash_map_addr_entry->list;
-			find_flag = true;
-			kfree(hash_map_addr_temp);
-			if(xmem!=NULL)
-				kfree(xmem);
-			hash_map_addr_temp = hash_map_addr_entry;
-			printk("fit!");
-			goto find;
-			/*add reference content */
-		}
-		// else{
-		// 	// dedup_interval = (31 & ((dedup_interval<<1) - 1)) + 1;
-		// 	// printk("dedup_interval:%lu",dedup_interval);
-		// 	;
-		// }
-			
-		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-		hash_map_addr_temp->addr = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
-		memcpy(hash_map_addr_temp->addr, xmem, pmfs_inode_blk_size(pi));
-
-		hash_map_addr_temp->pfn = pmfs_get_pfn(inode->i_sb, blocknr<<PAGE_SHIFT);
-
-		kfree(xmem);
-		
-		printk("pos 5");
-		INIT_LIST_HEAD(&hash_map_addr_temp->list);
-		list_add_tail(&hash_map_addr_temp->list, &hash_map_addr_list);
-		direct_write_out:
-		actual_num_blocks++;
-		printk("pos 6");
-		find:
-		//less than 32, break;
-		if(overwrite_flag == 0){
-			ref_map_temp->hma = hash_map_addr_temp;
-			ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
-			ref_map_temp->pfn = &hash_map_addr_temp->pfn;
-		
-			INIT_LIST_HEAD(&ref_map_temp->list);
-			list_add_tail(&ref_map_temp->list, &dedup_ref_list);
-		}else if(overwrite_flag == 1){
-			ref_map_temp->phys_addr = &hash_map_addr_temp->addr;
-			ref_map_temp->hma = hash_map_addr_temp;
-		}
 		i -= block_len;
 	}
 
@@ -1071,9 +931,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 		written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
 	}
-	// printk("before __write, ppos in pmfs_xip_file_write:%llu", *ppos);
-
-	
 
 	if (written < 0 || written != count)
 		pmfs_dbg_verbose("write incomplete/failed: written %ld len %ld"
@@ -1085,6 +942,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 out:
 	inode_unlock(inode);
 	sb_end_write(inode->i_sb);
+	printk("pmfs write out");
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
 	return ret;
 }
