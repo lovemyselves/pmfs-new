@@ -876,14 +876,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}	
 			else{
 				dnode->flag = 0;
-				xmem = kmalloc(4096, GFP_KERNEL);
+				// xmem = kmalloc(4096, GFP_KERNEL);
 				printk("pmfs write in-place");
 				// memcpy_to_nvmm(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT)
 				// 	,dedup_offset, buf+count-i, block_len);
 			}
-		}else{
-			printk("pfms write:a new block!");
 		}
+		
 		printk("pmfs write 1");
 
 		//alloc and init dnode
@@ -924,7 +923,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->blocknr = dnode->blocknr;
 		dnode->flag = 1;
 		rnode->flag = 1;
-		printk("dnode->blocknr:%lu", dnode->blocknr);
 		//part end 
 		
 		// printk("pos 1");
