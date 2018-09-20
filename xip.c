@@ -1077,6 +1077,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if (*ppos > inode->i_size) {
 		i_size_write(inode, count+pos);
 		pmfs_update_isize(inode, pi);
+		printk("isize chance!");
 	}
 	}else{
 		printk("raw pmfs write");
