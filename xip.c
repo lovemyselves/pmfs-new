@@ -424,28 +424,6 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		// if( (index>0 && ref_find_flag) && 
-		// (&dedup_ref_list!=last_ref->next && last_ref->next!=NULL)){
-		// 	ref_map_temp = list_entry(last_ref->next, struct ref_map, list);
-		// 	if(inode == ref_map_temp->virt_addr && index == ref_map_temp->index)
-		// 	{
-		// 		xip_mem = *ref_map_temp->phys_addr;
-		// 		last_ref = last_ref->next;
-		// 		error = 0;
-		// 		goto read_redirect;
-		// 	}
-		// }
-		// ref_map_temp = ref_search_node(&ref_root, inode, index);
-		
-		// if(ref_map_temp != NULL)
-		// {
-		// 	xip_mem = *ref_map_temp->phys_addr;
-		// 	error = 0;
-		// 	last_ref = &ref_map_temp->list;
-		// 	ref_find_flag = true;
-		// 	goto read_redirect;
-		// }
-		// read_redirect:
 		if(rnode_hit){
 			rnode = list_entry(last_rnode_list->next, struct refnode, list);
 			if(inode->i_ino==rnode->ino && index==rnode->index){
@@ -465,9 +443,6 @@ do_xip_mapping_read(struct address_space *mapping,
 		}else
 			printk(KERN_DEBUG "lost block!\n");
 		rnode_find:
-	
-		// error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
-		// ref_find_flag = false;
 
 		if (unlikely(error)) {
 			if (error == -ENODATA) {
@@ -856,10 +831,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		// slice buf
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
-		// if(i+dedup_offset <= pmfs_inode_blk_size(pi))
-		// 	block_len = i;
-		// else
-		// 	block_len = pmfs_inode_blk_size(pi) - dedup_offset;
 
 		printk("pmfs write 0");
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
