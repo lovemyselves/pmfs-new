@@ -844,6 +844,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		size_t hashing = 0;
 		char* strength_hashval = kmalloc(sizeof(char)<<4, GFP_KERNEL);
 
+		printk("pmfs write start!");
+
 		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
 		ref_map_temp->virt_addr = inode;
 		ref_map_temp->index = j+start_blk;
