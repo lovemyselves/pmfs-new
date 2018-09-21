@@ -807,7 +807,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	dedup_offset = offset;
 	for(j = 0; j < num_blocks; j++ ){
 		// struct hash_map_addr *hash_map_addr_temp;
-		struct ref_map *ref_map_temp, *insert_ret = NULL;
+		// struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
 		// unsigned long blocknr;
 		struct refnode *rnode=NULL;
@@ -821,11 +821,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		printk("pmfs write start!");
 
-		ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
-		ref_map_temp->virt_addr = inode;
-		ref_map_temp->index = j+start_blk;
+		// ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
+		// ref_map_temp->virt_addr = inode;
+		// ref_map_temp->index = j+start_blk;
 		
-		insert_ret = ref_insert_node(&ref_root, ref_map_temp);
+		// insert_ret = ref_insert_node(&ref_root, ref_map_temp);
 
 		//persistent store part start
 		
@@ -844,26 +844,35 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			else if(dnode->count>1){
 				//update COW
 				// overwrite_flag = 1;
-				printk("dnode refence count:%u", dnode->count);
+				// printk("dnode refence count:%u", dnode->count);
+				dnode = alloc_dedupnode(sb);
+				dnode->flag = 0;
+				dnode->count = 1;
 				printk("pmfs write COW");
+				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+				memcpy(xmem, pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), pmfs_inode_blk_size(pi));
 			}	
 			else{
 				dnode->flag = 0;
 				// xmem = kmalloc(4096, GFP_KERNEL);
 				printk("pmfs write in-place");
+				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+				memcpy(xmem, pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), pmfs_inode_blk_size(pi));
 				// memcpy_to_nvmm(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT)
 				// 	,dedup_offset, buf+count-i, block_len);
 			}
+		}
+		else{
+			dnode = alloc_dedupnode(sb);
+			dnode->flag = 0;
+			dnode->count = 1;
+			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		}
 		
 		printk("pmfs write 1");
 
 		//alloc and init dnode
-		dnode = alloc_dedupnode(sb);
-		dnode->flag = 0;
-		dnode->count = 1;
-
-		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+		
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 		dedup_offset = 0;
 		dnode->hash_status = 0;
