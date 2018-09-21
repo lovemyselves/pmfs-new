@@ -24,6 +24,7 @@
 #include <linux/ratelimit.h>
 #include "pmfs.h"
 #include "xip.h"
+#include "dedup.c"
 
 unsigned int blk_type_to_shift[PMFS_BLOCK_TYPE_MAX] = {12, 21, 30};
 uint32_t blk_type_to_size[PMFS_BLOCK_TYPE_MAX] = {0x1000, 0x200000, 0x40000000};
@@ -926,7 +927,9 @@ static int pmfs_free_inode(struct inode *inode)
 	pmfs_transaction_t *trans;
 	int err = 0;
 	//dedup free
-	int i;
+	int i, blocknum;
+	struct refnode rnode;
+	struct dedupnode dnode;
 	//dedup
 
 	mutex_lock(&PMFS_SB(sb)->inode_table_mutex);
@@ -976,8 +979,11 @@ out:
 	//dedup del part
 	printk("del inode, ino:%lu", inode->i_ino);
 	printk("isize:%llu, num of block:%llu", inode->i_size, inode->i_size>>12);
-	printk("iblocks:%lu", inode->i_blocks);
-
+	blocknum = inode->i_size>>12 + (inode->i_size&4096)?1:0;
+	printk("iblocks:%lu", blocknum);
+	for(i=0;i<blocknum;i++){
+		printk("i:%u",i);
+	}
 	//dedup end
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
 	return err;
