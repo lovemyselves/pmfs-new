@@ -927,7 +927,7 @@ static int pmfs_free_inode(struct inode *inode)
 	pmfs_transaction_t *trans;
 	int err = 0;
 	//dedup free
-	int i, blocknum;
+	unsigned i, blocknum;
 	struct refnode *rnode;
 	struct dedupnode *dnode;
 	//dedup
@@ -981,7 +981,7 @@ out:
 	printk("del inode, ino:%lu", inode->i_ino);
 	printk("isize:%llu, num of block:%llu", inode->i_size, inode->i_size>>12);
 	blocknum = (inode->i_size>>12) + ((inode->i_size&4096)?1:0);
-	printk("blocknum:%lu", blocknum);
+	printk("blocknum:%u", blocknum);
 	for(i=0;i<blocknum;i++){
 		printk("i:%u",i);
 		rnode = refnode_search(sb,inode->i_ino,i);
