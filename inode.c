@@ -928,8 +928,8 @@ static int pmfs_free_inode(struct inode *inode)
 	int err = 0;
 	//dedup free
 	int i, blocknum;
-	struct refnode rnode;
-	struct dedupnode dnode;
+	struct refnode *rnode;
+	struct dedupnode *dnode;
 	//dedup
 
 	mutex_lock(&PMFS_SB(sb)->inode_table_mutex);
@@ -983,6 +983,7 @@ out:
 	printk("blocknum:%lu", blocknum);
 	for(i=0;i<blocknum;i++){
 		printk("i:%u",i);
+		rnode = refnode_search(sb,inode->i_ino,i);
 	}
 	//dedup end
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
