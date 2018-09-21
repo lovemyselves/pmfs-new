@@ -979,7 +979,7 @@ out:
 	//dedup del part
 	printk("del inode, ino:%lu", inode->i_ino);
 	printk("isize:%llu, num of block:%llu", inode->i_size, inode->i_size>>12);
-	blocknum = inode->i_size>>12 + ((inode->i_size&4096)?1:0);
+	blocknum = (inode->i_size>>12) + ((inode->i_size&4096)?1:0);
 	printk("blocknum:%lu", blocknum);
 	for(i=0;i<blocknum;i++){
 		printk("i:%u",i);
