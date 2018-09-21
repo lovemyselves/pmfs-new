@@ -926,6 +926,9 @@ static int pmfs_free_inode(struct inode *inode)
 	pmfs_transaction_t *trans;
 	int err = 0;
 
+	//dedup del part
+	printk("del inode, ino:%ld", inode->i_ino);
+	//dedup end
 	mutex_lock(&PMFS_SB(sb)->inode_table_mutex);
 
 	pmfs_dbg_verbose("free_inode: %lx free_nodes %x tot nodes %x hint %x\n",
