@@ -984,13 +984,18 @@ out:
 	for(i=0;i<blocknum;i++){
 		printk("i:%u",i);
 		rnode = refnode_search(sb,inode->i_ino,i);
-		if(!rnode || !rnode->flag)
+		if(!rnode || !rnode->flag){
+			printk("error, cannot find this refnode!");
 			break;
+		}
+			
 		printk("count:%lu", rnode->dnode->count);
 		if(--(rnode->dnode->count) == 0){
+			printk("free block");
+			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 			printk("free dnode");
 		}
-		rnode->flag = 0;
+		printk("free rnode");
 	}
 	//dedup end
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
