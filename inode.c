@@ -984,6 +984,8 @@ out:
 	for(i=0;i<blocknum;i++){
 		printk("i:%u",i);
 		rnode = refnode_search(sb,inode->i_ino,i);
+		if(!rnode || !rnode->flag)
+			break;
 		printk("count:%lu", rnode->dnode->count);
 		if(--(rnode->dnode->count) == 0){
 			printk("free dnode");
