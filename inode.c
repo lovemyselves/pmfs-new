@@ -925,6 +925,9 @@ static int pmfs_free_inode(struct inode *inode)
 	unsigned long inode_nr;
 	pmfs_transaction_t *trans;
 	int err = 0;
+	//dedup free
+	int i;
+	//dedup
 
 	mutex_lock(&PMFS_SB(sb)->inode_table_mutex);
 
@@ -973,6 +976,7 @@ out:
 	//dedup del part
 	printk("del inode, ino:%lu", inode->i_ino);
 	printk("isize:%llu, num of block:%llu", inode->i_size, inode->i_size>>12);
+	printk("iblocks:%lu", inode->i_blocks);
 
 	//dedup end
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
