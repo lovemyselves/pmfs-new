@@ -845,12 +845,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				//update COW
 				// overwrite_flag = 1;
 				// printk("dnode refence count:%u", dnode->count);
-				dnode = alloc_dedupnode(sb);
-				dnode->flag = 0;
-				dnode->count = 1;
 				printk("pmfs write COW");
 				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 				memcpy(xmem, pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), pmfs_inode_blk_size(pi));
+				dnode = alloc_dedupnode(sb);
+				dnode->flag = 0;
+				dnode->count = 1;
 			}	
 			else{
 				dnode->flag = 0;
