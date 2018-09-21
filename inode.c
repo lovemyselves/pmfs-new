@@ -989,11 +989,11 @@ out:
 			printk("error, cannot find this refnode!");
 			break;
 		}
-			
-		printk("count:%lu", rnode->dnode->count);
+		dnode = rnode->dnode;
+		printk("count:%u", dnode->count);
 		if(--(rnode->dnode->count) == 0){
 			printk("free block");
-			// pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
+			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 			printk("free dnode");
 		}
 		printk("free rnode");
