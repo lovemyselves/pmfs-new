@@ -971,7 +971,6 @@ static int pmfs_free_inode(struct inode *inode)
 		   sbi->s_free_inode_hint);
 out:
 	//dedup del part
-	int isize = 23;
 	printk("del inode, ino:%ld", inode->i_ino);
 	printk("isize:%ld, num of block:%ld", inode->i_size, inode->i_size<<12);
 
