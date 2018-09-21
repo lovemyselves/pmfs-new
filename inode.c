@@ -926,9 +926,6 @@ static int pmfs_free_inode(struct inode *inode)
 	pmfs_transaction_t *trans;
 	int err = 0;
 
-	//dedup del part
-	printk("del inode, ino:%ld", inode->i_ino);
-	//dedup end
 	mutex_lock(&PMFS_SB(sb)->inode_table_mutex);
 
 	pmfs_dbg_verbose("free_inode: %lx free_nodes %x tot nodes %x hint %x\n",
@@ -973,6 +970,12 @@ static int pmfs_free_inode(struct inode *inode)
 		   sbi->s_free_inodes_count, sbi->s_inodes_count,
 		   sbi->s_free_inode_hint);
 out:
+	//dedup del part
+	int isize = 23;
+	printk("del inode, ino:%ld", inode->i_ino);
+	printk("isize:%ld, num of block:%ld", inode->i_size, inode->i_size<<12);
+
+	//dedup end
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
 	return err;
 }
