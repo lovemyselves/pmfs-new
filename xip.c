@@ -117,6 +117,20 @@ struct refnode *alloc_refnode(struct super_block *sb){
 	return rnode;
 }
 
+bool free_refnode(struct refnode *rnode){
+	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct rb_root *rroot = &dindex->refroot;
+
+	if(rnode == NULL)
+		return false;
+	//remove from the red black tree
+	rb_erase(rnode->node, rroot);
+	//flag set 0, remove to unused link
+	rnode->flag = 0;
+	list_move_tail(rnode->list, &dindex->ref_unused);
+	return true;
+}
+
 struct dedupnode *dedupnode_tree_update(struct super_block *sb
 ,struct dedupnode *dnode_new){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);

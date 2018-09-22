@@ -996,7 +996,9 @@ out:
 			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 			printk("free dnode");
 		}
-		printk("free rnode");
+		// printk("free rnode");
+		if(free_refnode(rnode))
+			printk("free rnode success!");
 	}
 	//dedup end
 	return err;

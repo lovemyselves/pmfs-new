@@ -20,6 +20,7 @@ int pmfs_xip_file_mmap(struct file *file, struct vm_area_struct *vma);
 //dedup part start
 struct refnode *refnode_search(struct super_block *sb
 ,unsigned ino, unsigned long index);
+bool free_refnode(struct refnode *rnode);
 //dedup part end
 static inline int pmfs_use_xip(struct super_block *sb)
 {
