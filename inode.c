@@ -997,7 +997,7 @@ out:
 			printk("free dnode");
 		}
 		// printk("free rnode");
-		if(free_refnode(rnode))
+		if(free_refnode(sb, rnode))
 			printk("free rnode success!");
 	}
 	//dedup end

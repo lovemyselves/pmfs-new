@@ -117,7 +117,7 @@ struct refnode *alloc_refnode(struct super_block *sb){
 	return rnode;
 }
 
-bool free_refnode(struct refnode *rnode){
+bool free_refnode(struct super_block *sb, struct refnode *rnode){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	struct rb_root *rroot = &dindex->refroot;
 
