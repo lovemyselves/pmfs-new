@@ -127,7 +127,7 @@ bool free_refnode(struct refnode *rnode){
 	rb_erase(rnode->node, rroot);
 	//flag set 0, remove to unused link
 	rnode->flag = 0;
-	list_move_tail(rnode->list, &dindex->ref_unused);
+	list_move_tail(&rnode->list, &dindex->ref_unused);
 	return true;
 }
 
