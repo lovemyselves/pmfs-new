@@ -124,7 +124,7 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 	if(rnode == NULL)
 		return false;
 	//remove from the red black tree
-	rb_erase(rnode->node, rroot);
+	rb_erase(&rnode->node, rroot);
 	//flag set 0, remove to unused link
 	rnode->flag = 0;
 	list_move_tail(&rnode->list, &dindex->ref_unused);
