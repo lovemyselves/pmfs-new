@@ -22,7 +22,7 @@ struct refnode *refnode_search(struct super_block *sb
 ,unsigned ino, unsigned long index);
 bool free_refnode(struct super_block *sb, struct refnode *rnode);
 bool free_dedupnode(struct super_block *sb, struct dedupnode *dnode);
-//dedup part endv
+//dedup part end
 static inline int pmfs_use_xip(struct super_block *sb)
 {
 	struct pmfs_sb_info *sbi = PMFS_SB(sb);
