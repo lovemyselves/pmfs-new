@@ -104,6 +104,20 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	return dnode;
 }
 
+bool free_dedupnode(struct super_block *sb, struct dedupnode *dnode){
+	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct rb_root *droot = &dindex->dedupnode_root;
+
+	if(dnode == NULL)
+		return false;
+	//remove from the tree
+	rb_erase(&dnode->node, droot);
+	//flag set 0, remove to unused list
+	dnode->flag = 0;
+	list_move_tail(&dnode->list, &dindex->hma_unused);
+	return true;
+}
+
 struct refnode *alloc_refnode(struct super_block *sb){
 	struct list_head *p;
 	struct refnode *rnode;
@@ -125,7 +139,7 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 		return false;
 	//remove from the red black tree
 	rb_erase(&rnode->node, rroot);
-	//flag set 0, remove to unused link
+	//flag set 0, remove to unused list
 	rnode->flag = 0;
 	list_move_tail(&rnode->list, &dindex->ref_unused);
 	return true;

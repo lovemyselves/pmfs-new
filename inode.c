@@ -995,6 +995,8 @@ out:
 			printk("free block");
 			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 			printk("free dnode");
+			if(free_dedupnode(sb, dnode))
+				printk("free dnode success!");
 		}
 		// printk("free rnode");
 		if(free_refnode(sb, rnode))
