@@ -995,8 +995,8 @@ out:
 			printk("free block");
 			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 			printk("free dnode");
-			if(free_dedupnode(sb, (struct dedupnode *)dnode))
-				printk("free dnode success!");
+			// if(free_dedupnode(sb, rnode->dnode))
+			// 	printk("free dnode success!");
 		}
 		// printk("free rnode");
 		if(free_refnode(sb, rnode))
