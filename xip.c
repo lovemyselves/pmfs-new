@@ -104,9 +104,10 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	return dnode;
 }
 
-bool free_dedupnode(struct super_block *sb, struct dedupnode *dnode){
+bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
 	struct rb_root *droot = &dindex->dedupnode_root;
+	struct dedupnode *dnode = (struct dedupnode*)dedupnode;
 
 	if(dnode == NULL)
 		return false;
