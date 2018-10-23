@@ -171,7 +171,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 			else if(result > 0)
 				entry_node = &(*entry_node)->rb_right;
 			else{
-				printk("dnode_entry:%u", dnode_entry->count);
+				// printk("dnode_entry:%u", dnode_entry->count);
 				return dnode_entry;
 			}
 		}
@@ -193,7 +193,7 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 	long result;
 
 	entry_node = &(rroot->rb_node);
-	printk("refnode insert 0");
+	// printk("refnode insert 0");
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
@@ -222,7 +222,7 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 	rnode_new->index = index;
 	rnode_new->dnode = NULL;
 
-	printk("refnode insert 1");
+	// printk("refnode insert 1");
 	rb_link_node(&rnode_new->node, parent, entry_node);
 	rb_insert_color(&rnode_new->node, rroot);
 
@@ -250,9 +250,10 @@ struct refnode *refnode_search(struct super_block *sb
 			else if(result > 0)
 				entry_node = entry_node->rb_right;
 			else{
-				printk("rnode_entry->dnode->blocknr:%lu", 
-					rnode_entry->dnode->blocknr);
-				return rnode_entry;}
+				// printk("rnode_entry->dnode->blocknr:%lu", 
+				// 	rnode_entry->dnode->blocknr);
+				return rnode_entry;
+				}
 		}
 	}
 	return NULL;
@@ -848,7 +849,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		size_t hashing = 0;
 		// char* strength_hashval = kmalloc(sizeof(char)<<4, GFP_KERNEL);
 
-		printk("pmfs write start!");
 
 		// ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
 		// ref_map_temp->virt_addr = inode;
@@ -861,9 +861,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// slice buf
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
 
-		printk("pmfs write 0");
+		// printk("pmfs write 0");
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
-		printk("pmfs write 0.1");
+		// printk("pmfs write 0.1");
 		if(rnode->flag == 1){
 			rnode->flag = 0;
 			dnode = rnode->dnode;
@@ -874,7 +874,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				//update COW
 				// overwrite_flag = 1;
 				// printk("dnode refence count:%u", dnode->count);
-				printk("pmfs write COW");
+				// printk("pmfs write COW");
 				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 				memcpy(xmem, pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), pmfs_inode_blk_size(pi));
 				dnode = alloc_dedupnode(sb);
@@ -884,7 +884,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			else{
 				dnode->flag = 0;
 				// xmem = kmalloc(4096, GFP_KERNEL);
-				printk("pmfs write in-place");
+				// printk("pmfs write in-place");
 				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 				memcpy(xmem, pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), pmfs_inode_blk_size(pi));
 				// memcpy_to_nvmm(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT)
@@ -898,7 +898,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		}
 		
-		printk("pmfs write 1");
+		// printk("pmfs write 1");
 
 		//alloc and init dnode
 		
@@ -918,7 +918,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode->count++;
 			dnode_hit = true;
 			//free(dnode);
-			printk("dnode fit!");
+			// printk("dnode fit!");
 			/*add reference content */
 		}else
 			dnode_hit = false;
@@ -938,7 +938,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		actual_num_blocks += 1;
 	}
 
-	printk("pmfswrite 7");
+	// printk("pmfswrite 7");
 
 	if(dnode_hit || actual_num_blocks!=0){
 		written = count;
@@ -946,10 +946,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if (*ppos > inode->i_size) {
 			i_size_write(inode, count+pos);
 			pmfs_update_isize(inode, pi);
-			printk("isize chance!");
+			// printk("isize chance!");
 		}
 	}else{
-		printk("raw pmfs write");
+		// printk("raw pmfs write");
 		/* don't zero-out the allocated blocks */
 		pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
 
@@ -980,7 +980,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 out:
 	inode_unlock(inode);
 	sb_end_write(inode->i_sb);
-	printk("pmfs write out");
+	// printk("pmfs write out");
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
 	return ret;
 }
@@ -1027,7 +1027,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		rnode_hit = true;
 		err = 0;
 		last_rnode_list = &rnode->list;
-		printk("rnode->dnode->blocknr:%lu", rnode->dnode->blocknr);
+		// printk("rnode->dnode->blocknr:%lu", rnode->dnode->blocknr);
 		xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
 	}
 	else{

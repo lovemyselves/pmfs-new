@@ -39,7 +39,6 @@ void pmfs_init_blockmap(struct super_block *sb, unsigned long init_used_size)
 	blknode->block_high = sbi->block_start + num_used_block - 1;
 	sbi->num_free_blocks -= num_used_block;
 	list_add(&blknode->link, &sbi->block_inuse_head);
-	printk("init block map");
 }
 
 static struct pmfs_blocknode *pmfs_next_blocknode(struct pmfs_blocknode *i,

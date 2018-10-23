@@ -978,29 +978,29 @@ static int pmfs_free_inode(struct inode *inode)
 out:
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
 	//dedup del part
-	printk("del inode, ino:%lu", inode->i_ino);
-	printk("isize:%llu, num of block:%llu", inode->i_size, inode->i_size>>12);
+	// printk("del inode, ino:%lu", inode->i_ino);
+	// printk("isize:%llu, num of block:%llu", inode->i_size, inode->i_size>>12);
 	blocknum = (inode->i_size>>12) + ((inode->i_size&4096)?1:0);
-	printk("blocknum:%u", blocknum);
+	// printk("blocknum:%u", blocknum);
 	for(i=0;i<blocknum;i++){
-		printk("i:%u",i);
+		// printk("i:%u",i);
 		rnode = refnode_search(sb,inode->i_ino,i);
 		if(!rnode || !rnode->flag){
-			printk("error, cannot find this refnode!");
+			// printk("error, cannot find this refnode!");
 			break;
 		}
 		dnode = rnode->dnode;
-		printk("count:%u", dnode->count);
+		// printk("count:%u", dnode->count);
 		if(--(rnode->dnode->count) == 0){
-			printk("free block");
+			// printk("free block");
 			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
-			printk("free dnode");
+			// printk("free dnode");
 			if(free_dedupnode(sb, (void*)rnode->dnode))
-				printk("free dnode success!");
+				// printk("free dnode success!");
 		}
 		// printk("free rnode");
 		if(free_refnode(sb, rnode))
-			printk("free rnode success!");
+			// printk("free rnode success!");
 	}
 	//dedup end
 	return err;
