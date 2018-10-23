@@ -600,9 +600,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		size_t copied;
 		void *xmem;
 		unsigned long xpfn;
-		//dedup claiming start
-		
-		// struct hash_map_addr *hash_map_addr_entry;//, *hash_map_addr_temp;
 
 		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 		index = pos >> sb->s_blocksize_bits;
@@ -611,14 +608,11 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 			bytes = count;
 		
 		status = pmfs_get_xip_mem(mapping, index, 1, &xmem, &xpfn);
-		// status = 0;
 		
 		if (status)
 			break;
 
 		copied = bytes;
-
-		// printk("a __write call");
 
 		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
@@ -630,8 +624,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 	 	 * __copy_from_user_inatomic_nocache uses cacheable instructions
 	 	 * (instead of movnti) to write. So flush those cachelines. */
 		pmfs_flush_edge_cachelines(pos, copied, xmem + offset); 
-	
-		// dedup:
+		
         if (likely(copied > 0)) {
 			status = copied;
 
@@ -640,7 +633,6 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 				count -= status;
 				pos += status;
 				buf += status;
-				// printk("status:%lu",status);
 			}
 		}
 		if (unlikely(copied != bytes))
@@ -835,8 +827,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	i = count;
 	dedup_offset = offset;
+
+	dnode_hit = 0;
 	goto nondedup;
-	
+
 	for(j = 0; j < num_blocks; j++ ){
 		// struct hash_map_addr *hash_map_addr_temp;
 		// struct ref_map *ref_map_temp, *insert_ret = NULL;
@@ -955,6 +949,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}else{
 		// printk("raw pmfs write");
 		/* don't zero-out the allocated blocks */
+		printk("test1");
 		pmfs_alloc_blocks(trans, inode, start_blk, actual_num_blocks, false);
 
 		/* We avoid zeroing the alloc'd range, which is going to be overwritten
@@ -964,14 +959,16 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if (pmfs_find_data_block(inode, start_blk) == 0)
 		    	new_sblk = true;
 		}
-
+		printk("test2");
 		eblk_offset = (pos + count) & (pmfs_inode_blk_size(pi) - 1);
 		if ((eblk_offset != 0) && (pmfs_find_data_block(inode, end_blk) == 0))
 			new_eblk = true;
 		/* now zero out the edge blocks which will be partially written */
 		pmfs_clear_edge_blk(sb, pi, new_sblk, start_blk, offset, false);
 		pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
+		printk("test3");
 		written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
+		printk("test4");
 	}
 
 	if (written < 0 || written != count)
