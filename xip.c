@@ -835,6 +835,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	i = count;
 	dedup_offset = offset;
+	goto nondedup;
+	
 	for(j = 0; j < num_blocks; j++ ){
 		// struct hash_map_addr *hash_map_addr_temp;
 		// struct ref_map *ref_map_temp, *insert_ret = NULL;
@@ -941,7 +943,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 
 	// printk("pmfswrite 7");
-
+	nondedup:
 	if(dnode_hit || actual_num_blocks!=0){
 		written = count;
 		*ppos = pos + count;
