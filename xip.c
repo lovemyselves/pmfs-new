@@ -761,7 +761,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,dedup_offset;	
 	struct dedupnode *dnode_entry;
-	unsigned long actual_num_blocks = 0;
+	short block_hit_count = 0;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -830,27 +830,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	goto nondedup;
 
 	for(j = 0; j < num_blocks; j++ ){
-		// struct hash_map_addr *hash_map_addr_temp;
-		// struct ref_map *ref_map_temp, *insert_ret = NULL;
 		struct dedupnode *dnode;
-		// unsigned long blocknr;
-		struct refnode *rnode=NULL;
+		struct refnode *rnode;
 		unsigned block_len;
 		void *xmem = NULL;
-		// bool hash_flag = true;
-		// size_t overwrite_flag = 0;
-		// size_t trace = 512; /* 1/4 of pmfs_inode_blk_size(pi) */
 		size_t hashing = 0;
-		// char* strength_hashval = kmalloc(sizeof(char)<<4, GFP_KERNEL);
-
-
-		// ref_map_temp = kmalloc(sizeof(*ref_map_temp), GFP_KERNEL);
-		// ref_map_temp->virt_addr = inode;
-		// ref_map_temp->index = j+start_blk;
-		
-		// insert_ret = ref_insert_node(&ref_root, ref_map_temp);
-
-		//persistent store part start
 		
 		// slice buf
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
@@ -862,7 +846,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			rnode->flag = 0;
 			dnode = rnode->dnode;
 			if(dnode == NULL){
-				printk("pmfs write error 0");
+				printk("pmfs write error 0, lost dnode of this rnode!");
 			}
 			else if(dnode->count>1){
 				//update COW
@@ -884,6 +868,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				// memcpy_to_nvmm(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT)
 				// 	,dedup_offset, buf+count-i, block_len);
 			}
+			block_hit_count++;
 		}
 		else{
 			dnode = alloc_dedupnode(sb);
@@ -931,12 +916,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->flag = 1;
 		//part end 
 		i -= block_len;
-		actual_num_blocks += 1;
 	}
 
 	// printk("pmfswrite 7");
 	nondedup:
-	if(dnode_hit || actual_num_blocks!=0){
+	if(dnode_hit || block_hit_count!=0){
 		written = count;
 		*ppos = pos + count;
 		if (*ppos > inode->i_size) {
