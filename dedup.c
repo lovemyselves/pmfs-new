@@ -2,15 +2,15 @@
 #include <linux/rbtree.h>
 
 struct hash_map_addr{
-    size_t hashing;
-    void *hashing_md5;
-    void *addr;
-    unsigned long pfn;
-    size_t length;
-    size_t count;
+    size_t hashval;
+    char strength_hashval[16];
+    // unsigned short strength_hash_status;
+    unsigned long blocknr;
+    short length;
+    short count;
+    // unsigned int flag;
+    char status; //similar chmod command, 111 respectively represent transaction, short hash, strength hash
     struct list_head list;
-    bool flag;
-    struct list_head hashing_list;
     struct rb_node node;
 };
 

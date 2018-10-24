@@ -926,7 +926,7 @@ static int pmfs_free_inode(struct inode *inode)
 	unsigned long inode_nr;
 	pmfs_transaction_t *trans;
 	int err = 0;
-	//dedup free
+	//dedup
 	unsigned i, blocknum;
 	struct refnode *rnode;
 	struct dedupnode *dnode;

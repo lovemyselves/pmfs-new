@@ -62,20 +62,14 @@ EXPORT_SYMBOL(get_pmfs_super);
 #endif
 
 static bool init_dedup_module(struct super_block *sb){
-	// struct pmfs_blocknode *p;
 	unsigned long blocknr;
 	void *xmem;
 	struct dedup_index *dindex;
-
-	// p  = pmfs_alloc_blocknode(sb);
-	// printk("p:%lu",(unsigned long)p);
 	
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	printk("blocknr:%lu", blocknr);
 	
 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
-	// printk("block:%lu", blocknr<<PAGE_SHIFT);
-	// printk("hash_map_addr_head:%lu", (unsigned long)xmem);
 
 	dindex = xmem;
 	INIT_LIST_HEAD(&dindex->hma_head);
@@ -86,6 +80,7 @@ static bool init_dedup_module(struct super_block *sb){
 	dindex->refroot = RB_ROOT;
 
 	printk("init pmfs");
+	printk("size of struct hash_map_addr:%lu", sizeof(struct hash_map_addr));
 
 	return true;
 }
