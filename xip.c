@@ -36,7 +36,7 @@
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
 struct list_head *new_list = &hash_map_addr_list;
-bool find_flag = false;
+char dedup_model = 0xFF;
 bool dnode_hit = false;
 bool rnode_hit = false;
 struct list_head *last_dnode_list;
@@ -826,9 +826,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	dnode_hit = 0;
-	goto nondedup;
-
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
@@ -836,6 +833,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		void *xmem = NULL;
 		size_t hashing = 0;
 		
+		//adapt dedup model
+		if(j=0 && dedup_model < 32){
+			goto nondedup;
+		}
+		dedup_model--;
+
 		// slice buf
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
 
@@ -846,7 +849,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			rnode->flag = 0;
 			dnode = rnode->dnode;
 			if(dnode == NULL){
-				printk("pmfs write error 0, lost dnode of this rnode!");
+				printk("pmfs write error 0");
 			}
 			else if(dnode->count>1){
 				//update COW
@@ -868,7 +871,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				// memcpy_to_nvmm(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT)
 				// 	,dedup_offset, buf+count-i, block_len);
 			}
-			block_hit_count++;
 		}
 		else{
 			dnode = alloc_dedupnode(sb);
@@ -920,7 +922,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	// printk("pmfswrite 7");
 	nondedup:
-	if(dnode_hit || block_hit_count!=0){
+	if(dedup_model > 128){
 		written = count;
 		*ppos = pos + count;
 		if (*ppos > inode->i_size) {
