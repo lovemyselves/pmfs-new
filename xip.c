@@ -429,11 +429,10 @@ do_xip_mapping_read(struct address_space *mapping,
 	do {
 		unsigned long nr, left;
 		void *xip_mem = NULL;
-		// unsigned long xip_pfn;
+		unsigned long xip_pfn;
 		int zero = 0;
 
 		/* read dedup data block start */
-		// struct ref_map *ref_map_temp;
 		struct refnode *rnode;
 		/* end */
 
@@ -473,7 +472,7 @@ do_xip_mapping_read(struct address_space *mapping,
 		}else
 			{
 				printk(KERN_DEBUG "lost block!\n");
-				errror = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
+				error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 			}
 		rnode_find:
 
