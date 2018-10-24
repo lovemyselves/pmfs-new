@@ -471,7 +471,10 @@ do_xip_mapping_read(struct address_space *mapping,
 			last_rnode_list = &rnode->list;
 			xip_mem = pmfs_get_block(sb, rnode->blocknr<<PAGE_SHIFT);
 		}else
-			printk(KERN_DEBUG "lost block!\n");
+			{
+				printk(KERN_DEBUG "lost block!\n");
+				errror = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
+			}
 		rnode_find:
 
 		if (unlikely(error)) {
