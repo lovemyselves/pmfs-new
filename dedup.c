@@ -9,7 +9,8 @@ struct hash_map_addr{
     short length;
     short count;
     // unsigned int flag;
-    char status; //similar chmod command, 111 respectively represent transaction, short hash, strength hash
+    u8 status; //similar chmod command, 111 respectively represent transaction, short hash, strength hash
+    u8 node_flag; //101, list_head update success mean 100, rb_node update success mean 001
     struct list_head list;
     struct rb_node node;
 };
