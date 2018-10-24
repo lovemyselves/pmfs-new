@@ -470,10 +470,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			last_rnode_list = &rnode->list;
 			xip_mem = pmfs_get_block(sb, rnode->blocknr<<PAGE_SHIFT);
 		}else
-			{
-				printk(KERN_DEBUG "lost block!\n");
-				error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
-			}
+			error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		rnode_find:
 
 		if (unlikely(error)) {
@@ -1032,6 +1029,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
 	}
 	else{
+		printk("rnode cannot find");
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
 	}
 	rnode_find:
