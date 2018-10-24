@@ -1028,10 +1028,8 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 		// printk("rnode->dnode->blocknr:%lu", rnode->dnode->blocknr);
 		xip_pfn = pmfs_get_pfn(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
 	}
-	else{
-		printk("rnode cannot find");
+	else
 		err = pmfs_get_xip_mem(mapping, vmf->pgoff, 1, &xip_mem, &xip_pfn);
-	}
 	rnode_find:
 	//end
 
