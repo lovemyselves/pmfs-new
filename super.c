@@ -83,6 +83,10 @@ static bool init_dedup_module(struct super_block *sb){
 	printk("size of struct hash_map_addr:%lu", sizeof(struct hash_map_addr));
 	printk("size of struct list_head:%lu", sizeof(struct list_head));
 	printk("size of struct rb_node:%lu", sizeof(struct rb_node));
+	printk("size of size_t:%lu", sizeof(size_t));
+	printk("size of char:%lu", sizeof(char));
+	printk("size of long:%lu", sizeof(long));
+	printk("size of short:%lu", sizeof(short));
 
 	return true;
 }
