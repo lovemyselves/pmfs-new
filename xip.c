@@ -826,18 +826,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
+	// dnode_hit = 0;
+	// goto nondedup;
+
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
 		unsigned block_len;
 		void *xmem = NULL;
 		size_t hashing = 0;
-		
-		//adapt dedup model
-		if(j=0 && dedup_model < 32){
-			goto nondedup;
-		}
-		dedup_model--;
 
 		// slice buf
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
