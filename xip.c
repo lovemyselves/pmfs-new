@@ -761,7 +761,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,dedup_offset;	
 	struct dedupnode *dnode_entry;
-	short block_hit_count = 0;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -826,8 +825,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	// dnode_hit = 0;
-	// goto nondedup;
+	if(!dnode_hit && (start_blk&127))
+		goto nondedup;
 
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
