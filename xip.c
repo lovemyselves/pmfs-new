@@ -825,7 +825,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	if(!dnode_hit && (start_blk&511))
+	if(!dnode_hit && (start_blk&1023))
 		goto nondedup;
 
 	for(j = 0; j < num_blocks; j++ ){
