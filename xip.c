@@ -849,7 +849,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(dnode == NULL){
 				printk("pmfs write error 0");
 			}
-			else if(dnode->count>1){
+			else if(atomic_read(&dnode->atomic_ref_count)>1){
 				//update COW
 				// overwrite_flag = 1;
 				// printk("dnode refence count:%u", dnode->count);
