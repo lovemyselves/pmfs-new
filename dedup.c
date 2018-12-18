@@ -57,5 +57,5 @@ struct dedup_index{
     struct list_head ref_head;
     struct list_head ref_unused;
     struct rb_root refroot;
-    static unsigned long update_flags;
+    unsigned long update_flags;
 };
