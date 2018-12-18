@@ -857,6 +857,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				dnode = alloc_dedupnode(sb);
 				dnode->flag = 0;
 				dnode->count = 1;
+				atomic_set(atomic_t &dnode->atomic_ref_count, 1);
 			}	
 			else{
 				dnode->flag = 0;
@@ -872,6 +873,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode = alloc_dedupnode(sb);
 			dnode->flag = 0;
 			dnode->count = 1;
+			atomic_set(atomic_t &dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		}
 		
@@ -886,6 +888,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->hash_status = 1;
 		dnode->hashval = hashing;
 		dnode->count = 1;
+		atomic_set(atomic_t &dnode->atomic_ref_count, 1);
 		dnode->strength_hash_status = 0;
 		strength_hash(dnode->strength_hashval, xmem, block_len);
 		// dnode->strength_hash_status = 1;
