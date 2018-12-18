@@ -34,6 +34,7 @@
 #define DEDUP_HEAD 1026
 #define DEDUPNODE_SIZE sizeof(struct dedupnode)
 #define REFNODE_SIZE sizeof(struct refnode)
+#define DINDEX pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT)
 DEFINE_SPINLOCK(dedup_index_lock);
 
 static LIST_HEAD(hash_map_addr_list);
@@ -97,6 +98,10 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	struct dedupnode *dnode;
 	struct list_head *p;
 	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	unsigned long flags;
+
+	spin_lock_irqsave(&dedup_index_lock, flags);
+
 	if(list_empty(&dindex->hma_unused))
 		new_unused_dedupnode(sb);
 	
@@ -104,6 +109,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	list_move_tail(p, &dindex->hma_head);
 	dnode = list_entry(p, struct dedupnode, list);
 
+	spin_unlock_irqrestore(&dedup_index_lock, flags);
 	return dnode;
 }
 
