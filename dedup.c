@@ -34,7 +34,7 @@ struct dedupnode{
     unsigned long blocknr;
     unsigned length;
     unsigned count;
-    atomic atomic_ref_count;
+    atomic_t atomic_ref_count;
     unsigned int flag;
     struct list_head list;
     struct rb_node node;
