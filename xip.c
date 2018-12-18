@@ -211,7 +211,7 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 			else{
 				// refnode_free(rnode_new);
 				// printk("result:%ld", result);
-				rnode_entry->dnode->count--;
+				// rnode_entry->dnode->count--;
 				atomic_dec(&rnode_entry->dnode->atomic_ref_count);
 				return rnode_entry;
 			}
@@ -858,7 +858,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				memcpy(xmem, pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), pmfs_inode_blk_size(pi));
 				dnode = alloc_dedupnode(sb);
 				dnode->flag = 0;
-				dnode->count = 1;
+				// dnode->count = 1;
 				atomic_set(&dnode->atomic_ref_count, 1);
 			}	
 			else{
@@ -874,7 +874,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else{
 			dnode = alloc_dedupnode(sb);
 			dnode->flag = 0;
-			dnode->count = 1;
+			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		}
@@ -889,7 +889,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		short_hash(&hashing, xmem, block_len);
 		dnode->hash_status = 1;
 		dnode->hashval = hashing;
-		dnode->count = 1;
+		// dnode->count = 1;
 		atomic_set(&dnode->atomic_ref_count, 1);
 		dnode->strength_hash_status = 0;
 		strength_hash(dnode->strength_hashval, xmem, block_len);
@@ -899,7 +899,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode_entry = dedupnode_tree_update(sb, dnode);
 		if(dnode_entry){
 			dnode = dnode_entry;
-			dnode->count++;
+			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
 			dnode_hit = true;
 			//free(dnode);
