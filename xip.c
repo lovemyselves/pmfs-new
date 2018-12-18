@@ -61,7 +61,7 @@ void new_unused_dedupnode(struct super_block *sb){
 	struct dedupnode *dnode;
 	unsigned offset = 0;
 	void *xmem;
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct dedup_index *dindex = DINDEX;
 	
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
@@ -80,7 +80,7 @@ void new_unused_refnode(struct super_block *sb){
 	struct refnode *rnode;
 	unsigned offset = 0;
 	void *xmem;
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct dedup_index *dindex = DINDEX;
 
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
@@ -97,7 +97,7 @@ void new_unused_refnode(struct super_block *sb){
 struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	struct dedupnode *dnode;
 	struct list_head *p;
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct dedup_index *dindex = DINDEX;
 	unsigned long flags;
 
 	spin_lock_irqsave(&dedup_index_lock, flags);
@@ -114,7 +114,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 }
 
 bool free_dedupnode(struct super_block *sb, void *dedupnode){
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &dindex->dedupnode_root;
 	struct dedupnode *dnode = (struct dedupnode*)dedupnode;
 
@@ -131,7 +131,7 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 struct refnode *alloc_refnode(struct super_block *sb){
 	struct list_head *p;
 	struct refnode *rnode;
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct dedup_index *dindex = DINDEX;
 	if(list_empty(&dindex->ref_unused))
 		new_unused_refnode(sb);
 	
@@ -142,7 +142,7 @@ struct refnode *alloc_refnode(struct super_block *sb){
 }
 
 bool free_refnode(struct super_block *sb, struct refnode *rnode){
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct dedup_index *dindex = DINDEX;
 	struct rb_root *rroot = &dindex->refroot;
 
 	if(rnode == NULL)
@@ -157,7 +157,7 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 
 struct dedupnode *dedupnode_tree_update(struct super_block *sb
 ,struct dedupnode *dnode_new){
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
 	struct rb_node **entry_node = &(droot->rb_node);
 	struct rb_node *parent = NULL;
@@ -193,7 +193,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 
 struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 	, unsigned long index){
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct dedup_index *dindex = DINDEX;
 	struct rb_root *rroot = &dindex->refroot;
 	struct rb_node **entry_node;
 	struct rb_node *parent = NULL;
@@ -242,7 +242,7 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 
 struct refnode *refnode_search(struct super_block *sb
 ,unsigned ino, unsigned long index){
-	struct dedup_index *dindex = pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT);
+	struct dedup_index *dindex = DINDEX;
 	struct rb_node *entry_node = dindex->refroot.rb_node;
 	struct refnode *rnode_entry = NULL;
 	long result;
