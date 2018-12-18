@@ -1,5 +1,6 @@
 #include <linux/list.h>
 #include <linux/rbtree.h>
+#include <linux/types.h>
 
 struct hash_map_addr{
     size_t hashval;
@@ -33,6 +34,7 @@ struct dedupnode{
     unsigned long blocknr;
     unsigned length;
     unsigned count;
+    atomic atomic_ref_count;
     unsigned int flag;
     struct list_head list;
     struct rb_node node;
