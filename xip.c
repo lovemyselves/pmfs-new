@@ -211,7 +211,8 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 			else{
 				// refnode_free(rnode_new);
 				// printk("result:%ld", result);
-				// atomic_dec(&atomic_ref_count);
+				--rnode_entry->dnode->atomic_ref_count;
+				atomic_dec(&rnode_entry->dnode->atomic_ref_count);
 				return rnode_entry;
 			}
 		}		
@@ -899,6 +900,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(dnode_entry){
 			dnode = dnode_entry;
 			dnode->count++;
+			atomic_inc(&dnode->atomic_ref_count);
 			dnode_hit = true;
 			//free(dnode);
 			// printk("dnode fit!");
