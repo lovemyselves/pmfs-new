@@ -211,7 +211,7 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 			else{
 				// refnode_free(rnode_new);
 				// printk("result:%ld", result);
-				--rnode_entry->dnode->atomic_ref_count;
+				rnode_entry->dnode->count--;
 				atomic_dec(&rnode_entry->dnode->atomic_ref_count);
 				return rnode_entry;
 			}
