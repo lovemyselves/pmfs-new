@@ -23,8 +23,10 @@
 // #include <linux/module.h>
 // #include <linux/crypto.h>
 #include <crypto/hash.h>
+#include <linux/spinlock.h>
 // #include <linux/scatterlist.h>
-#include <linux/err.h>
+// #include <linux/err.h>
+
 
 #include "dedup.c"
 
@@ -32,6 +34,7 @@
 #define DEDUP_HEAD 1026
 #define DEDUPNODE_SIZE sizeof(struct dedupnode)
 #define REFNODE_SIZE sizeof(struct refnode)
+DEFINE_SPINLOCK(dedup_index_lock);
 
 static LIST_HEAD(hash_map_addr_list);
 struct list_head *last_hit;
