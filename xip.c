@@ -408,16 +408,16 @@ bool short_userspace_hash(size_t __user *hashing, const char __user *buf, size_t
 	// if(data_remainder!=0)
 	// 	memcpy(hashing, buf+len-data_remainder, data_remainder);
 
-	// for(k=0;(k+sizeof(size_t))<len;){
-	// 	*hashing += *(size_t*)(buf + k);
-	// 	*hashing += (*hashing << 3);
-	// 	*hashing ^= (*hashing >> 2);
-	// 	if(thick_internal_count>0){
-	// 		k += sizeof(size_t);	
-	// 		thick_internal_count--;
-	// 	}
-	// 	k += (thin_internal<<3);
-	// }
+	for(k=0;(k+sizeof(size_t))<len;){
+		*hashing += *(size_t __user*)(buf + k);
+		*hashing += (*hashing << 3);
+		*hashing ^= (*hashing >> 2);
+		if(thick_internal_count>0){
+			k += sizeof(size_t);	
+			thick_internal_count--;
+		}
+		k += (thin_internal<<3);
+	}
 
 	return true;
 }
