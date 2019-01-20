@@ -849,9 +849,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// slice buf
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
 
-		printk("pmfs write 0");
+		// printk("pmfs write 0");
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
-		printk("pmfs write 0.1");
+		// printk("pmfs write 0.1");
 		if(rnode->flag == 1){
 			rnode->flag = 0;
 			dnode = rnode->dnode;
@@ -888,7 +888,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		}
 		
-		printk("pmfs write 1");
+		// printk("pmfs write 1");
 
 		//alloc and init dnode
 		
