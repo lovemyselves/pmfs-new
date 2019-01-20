@@ -911,8 +911,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
 			dnode_hit = true;
-			//free(dnode);
-			// printk("dnode fit!");
+			// free(dnode);
+			printk("dnode fit!");
 			/*add reference content */
 		}else
 			dnode_hit = false;
