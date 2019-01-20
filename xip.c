@@ -913,17 +913,21 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			atomic_inc(&dnode->atomic_ref_count);
 			dnode_hit = true;
 			// free(dnode);
-			printk("dnode fit!");
+			printk("dnode is duplicated!");
 			local_hit = true;
 			/*add reference content */
-		}else
+		}else{
 			dnode_hit = false;
-
-		if(!dnode_hit){
+			printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
 		}
+		// if(!dnode_hit){
+		// 	pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
+		// 	memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
+		// 	, pmfs_inode_blk_size(pi));
+		// }
 		kfree(xmem);
 		rnode->dnode = dnode;
 		rnode->blocknr = dnode->blocknr;
