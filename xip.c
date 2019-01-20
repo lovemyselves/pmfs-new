@@ -940,8 +940,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			i_size_write(inode, count+pos);
 			pmfs_update_isize(inode, pi);
 			// printk("isize chance!");
-			printk("dedup system in work!");
 		}
+		printk("dedup system in work!");
 	}else{
 		// printk("raw pmfs write");
 		/* We avoid zeroing the alloc'd range, which is going to be overwritten
