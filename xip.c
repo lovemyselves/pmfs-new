@@ -393,7 +393,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	return true;
 }
 
-void short_userspace_hash(size_t __user *hashing, char __user *buf, size_t len)
+void short_userspace_hash(size_t __user *hashing, const char __user *buf, size_t len)
 {
 	// size_t trace = len >> 3;
 	size_t data_remainder = len & (sizeof(size_t)-1);
