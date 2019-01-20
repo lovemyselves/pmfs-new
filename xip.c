@@ -393,6 +393,33 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	return true;
 }
 
+void short_userspace_hash(size_t __user *hashing, char __user *buf, size_t len)
+{
+	// size_t trace = len >> 3;
+	size_t data_remainder = len & (sizeof(size_t)-1);
+	size_t k;//,hash_offset=0;
+
+	size_t thin_internal = len >> 10;
+	size_t thick_internal_count = (len&1023) >> 3;
+
+	if(*hashing!=0)
+		return false;
+				 
+	// if(data_remainder!=0)
+	// 	memcpy(hashing, buf+len-data_remainder, data_remainder);
+
+	// for(k=0;(k+sizeof(size_t))<len;){
+	// 	*hashing += *(size_t*)(buf + k);
+	// 	*hashing += (*hashing << 3);
+	// 	*hashing ^= (*hashing >> 2);
+	// 	if(thick_internal_count>0){
+	// 		k += sizeof(size_t);	
+	// 		thick_internal_count--;
+	// 	}
+	// 	k += (thin_internal<<3);
+	// }
+}
+
 bool strength_hash(char *result, char* data, size_t len){
 	struct shash_desc *desc;
 	desc = kmalloc(sizeof(*desc), GFP_KERNEL);
@@ -846,7 +873,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		unsigned block_len;
 		void *xmem = NULL;
 		size_t hashing = 0;
-		size_t __user userspace_hashing =0;
+		size_t __user userspace_hashing = 0;
 
 		// slice buf
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
@@ -898,8 +925,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dedup_offset = 0;
 		dnode->hash_status = 0;
 		short_hash(&hashing, xmem, block_len);
-		dnode->hash_status = 1;
 		dnode->hashval = hashing;
+		dnode->hash_status = 1;
+		short_userspace_hash(&userspace_hashing, buf+count-i, block_len);
 		// dnode->count = 1;
 		atomic_set(&dnode->atomic_ref_count, 1);
 		dnode->strength_hash_status = 0;
