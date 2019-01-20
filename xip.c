@@ -100,7 +100,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	struct dedup_index *dindex = DINDEX;
 	unsigned long flags;
 
-	spin_lock_irqsave(&dedup_index_lock, flags);
+	// spin_lock_irqsave(&dedup_index_lock, flags);
 
 	if(list_empty(&dindex->hma_unused))
 		new_unused_dedupnode(sb);
@@ -109,7 +109,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	list_move_tail(p, &dindex->hma_head);
 	dnode = list_entry(p, struct dedupnode, list);
 
-	spin_unlock_irqrestore(&dedup_index_lock, flags);
+	// spin_unlock_irqrestore(&dedup_index_lock, flags);
 	return dnode;
 }
 
