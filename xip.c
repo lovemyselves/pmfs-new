@@ -772,6 +772,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	//dedup claiming start
 	size_t i,j,dedup_offset;	
 	struct dedupnode *dnode_entry;
+	bool local_hit = false;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -913,6 +914,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode_hit = true;
 			// free(dnode);
 			printk("dnode fit!");
+			local_hit = true;
 			/*add reference content */
 		}else
 			dnode_hit = false;
@@ -931,9 +933,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		i -= block_len;
 	}
 
-	printk("pmfswrite 7");
+	// printk("pmfswrite 7");
 	nondedup:
-	if(dedup_model > 128){
+	if(local_hit){
 		written = count;
 		*ppos = pos + count;
 		if (*ppos > inode->i_size) {
