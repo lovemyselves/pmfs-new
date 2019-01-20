@@ -940,6 +940,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			i_size_write(inode, count+pos);
 			pmfs_update_isize(inode, pi);
 			// printk("isize chance!");
+			printk("dedup system in work!");
 		}
 	}else{
 		// printk("raw pmfs write");
@@ -963,6 +964,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 
 		written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
+		printk("data write in pmfs");
 	}
 
 	if (written < 0 || written != count)
