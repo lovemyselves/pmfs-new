@@ -846,6 +846,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		unsigned block_len;
 		void *xmem = NULL;
 		size_t hashing = 0;
+		size_t __user userspace_hashing =0;
 
 		// slice buf
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
@@ -923,11 +924,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
 		}
-		// if(!dnode_hit){
-		// 	pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
-		// 	memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
-		// 	, pmfs_inode_blk_size(pi));
-		// }
+		
 		kfree(xmem);
 		rnode->dnode = dnode;
 		rnode->blocknr = dnode->blocknr;
