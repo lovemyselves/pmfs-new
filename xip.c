@@ -393,37 +393,6 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	return true;
 }
 
-bool short_userspace_hash(size_t __user *hashing, const char __user *buf, size_t len)
-{
-	// size_t trace = len >> 3;
-	size_t data_remainder = len & (sizeof(size_t)-1);
-	size_t k;//,hash_offset=0;
-
-	size_t thin_internal = len >> 10;
-	size_t thick_internal_count = (len&1023) >> 3;
-
-	if(*hashing!=0)
-		return false;
-
-	memcpy(buf, buf+len-data_remainder, data_remainder);
-				 
-	// if(data_remainder!=0)
-	// 	memcpy(hashing, buf+len-data_remainder, data_remainder);
-
-	// for(k=0;(k+sizeof(size_t))<len;){
-	// 	*hashing += *(size_t __user*)(buf + k);
-	// 	*hashing += (*hashing << 3);
-	// 	*hashing ^= (*hashing >> 2);
-	// 	if(thick_internal_count>0){
-	// 		k += sizeof(size_t);	
-	// 		thick_internal_count--;
-	// 	}
-	// 	k += (thin_internal<<3);
-	// }
-
-	return true;
-}
-
 bool strength_hash(char *result, char* data, size_t len){
 	struct shash_desc *desc;
 	desc = kmalloc(sizeof(*desc), GFP_KERNEL);
@@ -877,7 +846,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		unsigned block_len;
 		void *xmem = NULL;
 		size_t hashing = 0;
-		size_t __user userspace_hashing = 0;
 
 		// slice buf
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
@@ -931,7 +899,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		short_hash(&hashing, xmem, block_len);
 		dnode->hashval = hashing;
 		dnode->hash_status = 1;
-		short_userspace_hash(&userspace_hashing, buf+count-i, block_len);
 		// dnode->count = 1;
 		atomic_set(&dnode->atomic_ref_count, 1);
 		dnode->strength_hash_status = 0;
@@ -946,12 +913,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			atomic_inc(&dnode->atomic_ref_count);
 			dnode_hit = true;
 			// free(dnode);
-			printk("dnode is duplicated!");
+			// printk("dnode is duplicated!");
 			local_hit = true;
 			/*add reference content */
 		}else{
 			dnode_hit = false;
-			printk("dnode is new!");
+			// printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
@@ -976,7 +943,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			pmfs_update_isize(inode, pi);
 			// printk("isize chance!");
 		}
-		printk("dedup system in work!");
+		// printk("dedup system in work!");
 	}else{
 		// printk("raw pmfs write");
 		/* We avoid zeroing the alloc'd range, which is going to be overwritten
@@ -999,7 +966,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		pmfs_clear_edge_blk(sb, pi, new_eblk, end_blk, eblk_offset, true);
 
 		written = __pmfs_xip_file_write(mapping, buf, count, pos, ppos);
-		printk("data write in pmfs");
+		// printk("data write in pmfs");
 	}
 
 	if (written < 0 || written != count)
