@@ -206,10 +206,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 	if(flag){
 		dnode_entry = alloc_dedupnode(sb);
 
-		printk("%d",sizeof(struct dedupnode));
-		printk("%d",sizeof(struct list_head));
-		printk("%d",sizeof(struct rb_node));
-		memcpy(dnode_entry, dnode_new, sizeof(struct dedupnode)-sizeof(struct list_head)-sizeof(struct rb_node));
+		memcpy(dnode_entry, dnode_new, 54);//sizeof(struct dedupnode)-sizeof(struct list_head)-sizeof(struct rb_node) equal to 54
 		kfree(dnode_new);
 		dnode_new = dnode_entry;
 	}
