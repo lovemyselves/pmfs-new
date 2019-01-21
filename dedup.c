@@ -28,14 +28,14 @@ struct ref_map{
 
 struct dedupnode{
     size_t hashval;
-    unsigned short hash_status;
-    char strength_hashval[16];
-    unsigned short strength_hash_status;
     unsigned long blocknr;
+    unsigned short hash_status;
+    unsigned short strength_hash_status;
     unsigned length;
     unsigned count;
-    atomic_t atomic_ref_count;
     unsigned int flag;
+    char strength_hashval[16];
+    atomic_t atomic_ref_count;
     struct list_head list;
     struct rb_node node;
 };
@@ -58,4 +58,16 @@ struct dedup_index{
     struct list_head ref_unused;
     struct rb_root refroot;
     unsigned long update_flags;
+};
+
+struct dedupnode_onlydata{
+    size_t hashval;
+    unsigned long blocknr;
+    unsigned short hash_status;
+    unsigned short strength_hash_status;
+    unsigned length;
+    unsigned count;
+    unsigned int flag;
+    char strength_hashval[16];
+    atomic_t atomic_ref_count;
 };

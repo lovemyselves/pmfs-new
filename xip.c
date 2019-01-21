@@ -197,9 +197,21 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 			else if(result > 0)
 				entry_node = &(*entry_node)->rb_right;
 			else{
+				//printk("dnode_entry:%u", dnode_entry->count);
+				//if(flag) kfree(dnode_new);
 				return dnode_entry;
 			}
 		}
+	}
+
+	if(flag){
+		dnode_entry = alloc_dedupnode(sb);
+
+		printk("sizeof(struct dedupnode):%d", sizeof(struct dedupnode));
+		printk("sizeof(struct onlydata):%d", sizeof(struct dedupnode_onlydata));
+		memcpy(dnode_entry, dnode_new, sizeof(struct dedupnode));//sizeof(struct dedupnode)-sizeof(struct list_head)-sizeof(struct rb_node) equal to 54
+		// kfree(dnode_new);
+		dnode_new = dnode_entry;
 	}
 
 	rb_link_node(&dnode_new->node, parent, entry_node);
