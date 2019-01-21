@@ -159,7 +159,7 @@ struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new){
 	struct dedupnode *dnode_entry;
 	long result;
 
-	if(last_dnode_list!=NULL && last_node_list->next!=NULL){
+	if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
 		dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
 		result =  memcmp(dnode_new->strength_hashval, dnode_entry->strength_hashval, 16);
 
