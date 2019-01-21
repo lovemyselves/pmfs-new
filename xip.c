@@ -164,8 +164,8 @@ struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new, bool
 		result =  memcmp(dnode_new->strength_hashval, dnode_entry->strength_hashval, 16);
 
 		if(result==0){
-			if(flag) kfree(dnode_new);
-			printk("hit in low overhead check!");
+			// if(flag) kfree(dnode_new);
+			// printk("hit in low overhead check!");
 			return dnode_entry;
 		}
 	}
@@ -199,22 +199,11 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				//printk("dnode_entry:%u", dnode_entry->count);
-				//if(flag) kfree(dnode_new);
-				printk("hit in rbtree search!");
+				// printk("hit in rbtree search!");
 				return dnode_entry;
 			}
 		}
 	}
-
-	// if(flag){
-	// 	dnode_entry = alloc_dedupnode(sb);
-
-	// 	printk("onlypoint:%d",(int)sizeof(struct deudpnode_onlypoint));
-
-	// 	memcpy(dnode_entry, dnode_new, 80);//sizeof(struct dedupnode)-sizeof(struct list_head)-sizeof(struct rb_node) equal to 56
-	// 	kfree(dnode_new);
-	// 	dnode_new = dnode_entry;
-	// }
 
 	rb_link_node(&dnode_new->node, parent, entry_node);
 	rb_insert_color(&dnode_new->node, droot);
@@ -912,8 +901,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 		}
 		else{
-			// dnode = alloc_dedupnode(sb);
-			dnode = kmalloc(sizeof(struct dedupnode), GFP_KERNEL);
+			dnode = alloc_dedupnode(sb);
+			// dnode = kmalloc(sizeof(struct dedupnode), GFP_KERNEL);
 			dnode->flag = 0;
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
