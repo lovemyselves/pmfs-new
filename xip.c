@@ -907,8 +907,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 		}
 		else{
-			// dnode = alloc_dedupnode(sb);
-			dnode = kmalloc(sizeof(struct dedupnode), GFP_KERNEL);
+			dnode = alloc_dedupnode(sb);
+			// dnode = kmalloc(sizeof(struct dedupnode), GFP_KERNEL);
 			dnode->flag = 0;
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
