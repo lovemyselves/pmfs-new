@@ -198,7 +198,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				// printk("dnode_entry:%u", dnode_entry->count);
-				// if(flag) kfree(dnode_new);
+				if(flag) kfree(dnode_new);
 				return dnode_entry;
 			}
 		}
