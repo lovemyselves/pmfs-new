@@ -197,8 +197,8 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 			else if(result > 0)
 				entry_node = &(*entry_node)->rb_right;
 			else{
-				// printk("dnode_entry:%u", dnode_entry->count);
-				if(flag) kfree(dnode_new);
+				//printk("dnode_entry:%u", dnode_entry->count);
+				//if(flag) kfree(dnode_new);
 				return dnode_entry;
 			}
 		}
@@ -907,8 +907,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 		}
 		else{
-			dnode = alloc_dedupnode(sb);
-			// dnode = kmalloc(sizeof(struct dedupnode), GFP_KERNEL);
+			// dnode = alloc_dedupnode(sb);
+			dnode = kmalloc(sizeof(struct dedupnode), GFP_KERNEL);
 			dnode->flag = 0;
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
