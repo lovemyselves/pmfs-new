@@ -155,6 +155,13 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 	return true;
 }
 
+struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new){
+	struct dedupnode *dnode_entry;
+	long result;
+	
+	dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
+}
+
 struct dedupnode *dedupnode_tree_update(struct super_block *sb
 ,struct dedupnode *dnode_new){
 	struct dedup_index *dindex = DINDEX;
@@ -845,6 +852,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		unsigned block_len;
 		void *xmem = NULL;
 		size_t hashing = 0;
+		bool new_dnode = false;
 
 		// chunk divide equally
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
@@ -884,6 +892,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+			//build a new dnode
+			new_dnode = true;
 		}
 		// printk("pmfs write 1");
 
@@ -901,12 +911,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// dnode->strength_hash_status = 1;
 		// memset(dnode->strength_hashval, 0, sizeof(char)<<16); 
 
+		if
 		dnode_entry = dedupnode_tree_update(sb, dnode);
 		if(dnode_entry){
 			dnode = dnode_entry;
 			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
 			dnode_hit = true;
+			last_dnode_list = dnode->list; //log last hit node
 			// free(dnode);
 			// printk("dnode is duplicated!");
 			local_hit = true;
