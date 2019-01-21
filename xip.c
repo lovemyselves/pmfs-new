@@ -164,7 +164,7 @@ struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new, bool
 		result =  memcmp(dnode_new->strength_hashval, dnode_entry->strength_hashval, 16);
 
 		if(result==0){
-			if(flag) kfree(dnode);
+			if(flag) kfree(dnode_new);
 			return dnode_entry;
 		}
 	}
