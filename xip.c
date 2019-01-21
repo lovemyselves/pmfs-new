@@ -158,8 +158,17 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new){
 	struct dedupnode *dnode_entry;
 	long result;
-	
-	dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
+
+	if(last_dnode_list!=NULL && last_node_list->next!=NULL){
+		dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
+		result =  memcmp(dnode_new->strength_hashval, dnode_entry->strength_hashval, 16);
+
+		if(result==0){
+			printk("hit in low_overhead_check!");
+			return dnode_entry;
+		}
+	}
+	return NULL;
 }
 
 struct dedupnode *dedupnode_tree_update(struct super_block *sb
@@ -911,8 +920,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// dnode->strength_hash_status = 1;
 		// memset(dnode->strength_hashval, 0, sizeof(char)<<16); 
 
-		if
-		dnode_entry = dedupnode_tree_update(sb, dnode);
+		dnode_entry = dedupnode_low_overhead_check(dnode);
+		if(!dnode_entry)
+			dnode_entry = dedupnode_tree_update(sb, dnode);
 		if(dnode_entry){
 			dnode = dnode_entry;
 			// dnode->count++;
