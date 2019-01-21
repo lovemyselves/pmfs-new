@@ -211,7 +211,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 
 		printk("onlypoint:%d",(int)sizeof(struct deudpnode_onlypoint));
 
-		memcpy(dnode_entry, dnode_new, 80);//sizeof(struct dedupnode)-sizeof(struct list_head)-sizeof(struct rb_node) equal to 56
+		memcpy(dnode_entry, dnode_new, 56);//sizeof(struct dedupnode)-sizeof(struct list_head)-sizeof(struct rb_node) equal to 56
 		kfree(dnode_new);
 		dnode_new = dnode_entry;
 	}
