@@ -46,8 +46,8 @@ struct refnode{
     unsigned long blocknr;
     struct dedupnode *dnode;
     unsigned int flag; //means the status of this struct node
-    struct list_head list;
     struct rb_node node;
+    struct list_head list;
 };
 
 struct dedup_index{
@@ -71,3 +71,8 @@ struct dedupnode_onlydata{
     char strength_hashval[16];
     atomic_t atomic_ref_count;
 };
+
+struct deudpnode_onlypoint{
+    struct rb_node node;
+    struct list_head list;
+}
