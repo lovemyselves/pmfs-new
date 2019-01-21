@@ -212,7 +212,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 		printk("onlypoint:%d",(int)sizeof(struct deudpnode_onlypoint));
 
 		memcpy(dnode_entry, dnode_new, 80);//sizeof(struct dedupnode)-sizeof(struct list_head)-sizeof(struct rb_node) equal to 56
-		// kfree(dnode_new);
+		kfree(dnode_new);
 		dnode_new = dnode_entry;
 	}
 
@@ -937,7 +937,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// dnode->strength_hash_status = 1;
 		// memset(dnode->strength_hashval, 0, sizeof(char)<<16); 
 
-		dnode_entry = dedupnode_low_overhead_check(dnode, new_dnode_flag);
+		// dnode_entry = dedupnode_low_overhead_check(dnode, new_dnode_flag);
 		if(!dnode_entry)
 			dnode_entry = dedupnode_tree_update(sb, dnode, new_dnode_flag);
 		if(dnode_entry){
