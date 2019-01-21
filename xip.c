@@ -47,10 +47,10 @@ struct list_head *last_dnode_list;
 struct list_head *last_rnode_list;
 struct rb_root root = RB_ROOT;
 
-struct list_head *last_ref = NULL;
-bool ref_find_flag = false;
-struct rb_root ref_root = RB_ROOT;
-static LIST_HEAD(dedup_ref_list);
+// struct list_head *last_ref = NULL;
+// bool ref_find_flag = false;
+// struct rb_root ref_root = RB_ROOT;
+// static LIST_HEAD(dedup_ref_list);
 
 size_t dedup_interval = 1;
 /*
@@ -201,8 +201,10 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 	struct refnode *rnode_new;
 	long result;
 
+	//search from last hit node
+
+
 	entry_node = &(rroot->rb_node);
-	// printk("refnode insert 0");
 	while(*entry_node){
 		parent = *entry_node;
 		rnode_entry = rb_entry(*entry_node, struct refnode, node);
@@ -218,10 +220,7 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 			else if(result > 0)
 				entry_node = &(*entry_node)->rb_right;
 			else{
-				// refnode_free(rnode_new);
-				// printk("result:%ld", result);
-				// rnode_entry->dnode->count--;
-				atomic_dec(&rnode_entry->dnode->atomic_ref_count);
+				atomic_dec(&rnode_entry->dnode->atomic_ref_count);// rnode_entry->dnode->count--;
 				return rnode_entry;
 			}
 		}		
@@ -847,23 +846,21 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		void *xmem = NULL;
 		size_t hashing = 0;
 
-		// slice buf
+		// chunk divide equally
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
-
-		// printk("pmfs write 0");
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
-		// printk("pmfs write 0.1");
+		
 		if(rnode->flag == 1){
 			rnode->flag = 0;
 			dnode = rnode->dnode;
 			if(dnode == NULL){
 				printk("pmfs write error 0");
+				goto nondedup;
 			}
 			else if(atomic_read(&dnode->atomic_ref_count)>1){
-				//update COW
+				//update with multi-version
 				// overwrite_flag = 1;
 				// printk("dnode refence count:%u", dnode->count);
-				// printk("pmfs write COW");
 				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 				memcpy(xmem, pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), pmfs_inode_blk_size(pi));
 				dnode = alloc_dedupnode(sb);
@@ -888,11 +885,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		}
-		
 		// printk("pmfs write 1");
 
 		//alloc and init dnode
-		
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 		dedup_offset = 0;
 		dnode->hash_status = 0;
