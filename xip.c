@@ -928,7 +928,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
 			dnode_hit = true;
-			last_dnode_list = dnode->list; //log last hit node
+			last_dnode_list = &dnode->list; //log last hit node
 			// free(dnode);
 			// printk("dnode is duplicated!");
 			local_hit = true;
