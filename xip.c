@@ -164,7 +164,7 @@ struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new, bool
 		result =  memcmp(dnode_new->strength_hashval, dnode_entry->strength_hashval, 16);
 
 		if(result==0){
-			if(flag) kfree(dnode_new);
+			// if(flag) kfree(dnode_new);
 			return dnode_entry;
 		}
 	}
@@ -198,7 +198,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				// printk("dnode_entry:%u", dnode_entry->count);
-				if(flag) kfree(dnode_new);
+				// if(flag) kfree(dnode_new);
 				return dnode_entry;
 			}
 		}
