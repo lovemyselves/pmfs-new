@@ -904,11 +904,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else{
 			dnode = alloc_dedupnode(sb);
 			dnode->flag = 0;
-			// dnode->count = 1;
+			dnode->count = 0;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			//build a new dnode
-			new_dnode_flag = true;
+			// new_dnode_flag = true;
 		}
 		// printk("pmfs write 1");
 

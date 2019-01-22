@@ -60,19 +60,19 @@ struct dedup_index{
     unsigned long update_flags;
 };
 
-struct dedupnode_onlydata{
-    size_t hashval;
-    unsigned long blocknr;
-    unsigned short hash_status;
-    unsigned short strength_hash_status;
-    unsigned length;
-    unsigned count;
-    unsigned int flag;
-    char strength_hashval[16];
-    atomic_t atomic_ref_count;
-};
+// struct dedupnode_onlydata{
+//     size_t hashval;
+//     unsigned long blocknr;
+//     unsigned short hash_status;
+//     unsigned short strength_hash_status;
+//     unsigned length;
+//     unsigned count;
+//     unsigned int flag;
+//     char strength_hashval[16];
+//     atomic_t atomic_ref_count;
+// };
 
-struct deudpnode_onlypoint{
-    struct rb_node node;
-    struct list_head list;
-};
+// struct deudpnode_onlypoint{
+//     struct rb_node node;
+//     struct list_head list;
+// };
