@@ -162,7 +162,9 @@ struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new){
 
 	if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
 		dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
-		result =  memcmp(dnode_new->strength_hashval, dnode_entry->strength_hashval, 16);
+		result = dnode_new->hashval - dnode_entry->hashval;
+		if(result==0)
+			result =  memcmp(dnode_new->strength_hashval, dnode_entry->strength_hashval, 16);
 
 		if(result==0){
 			// printk("hit in low_overhead_check!");
