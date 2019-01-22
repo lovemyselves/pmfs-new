@@ -832,7 +832,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		if(dnode_hit == true)
 			dnode_entry = dedupnode_low_overhead_check(dnode);
-		if(dnode_entry == NULL)
+		if(dnode_hit ==false || dnode_entry == NULL)
 			dnode_entry = dedupnode_tree_update(sb, dnode);
 		if(dnode_entry){
 			dnode = dnode_entry;
