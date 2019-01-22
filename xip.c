@@ -290,100 +290,6 @@ struct refnode *refnode_search(struct super_block *sb
 	return NULL;
 }
 
-// struct hash_map_addr *rb_search_insert_node(
-// 	struct rb_root *root, struct hash_map_addr *hash_map_addr_new)
-// {
-// 	struct rb_node **entry_node = &(root->rb_node);
-// 	struct rb_node *parent = NULL;
-// 	struct hash_map_addr *hash_map_addr_entry;
-// 	struct list_head *hashing_list_temp;
-
-// 	while(*entry_node){
-// 		parent = *entry_node;
-// 		hash_map_addr_entry = rb_entry(*entry_node, struct hash_map_addr, node);
-// 		if(hash_map_addr_new->hashing < hash_map_addr_entry->hashing)
-// 			entry_node = &(*entry_node)->rb_left;
-// 		else if(hash_map_addr_new->hashing > hash_map_addr_entry->hashing)
-// 			entry_node = &(*entry_node)->rb_right;
-// 		else{
-// 			hashing_list_temp = &hash_map_addr_entry->hashing_list;
-// 			while(hash_map_addr_new->length != hash_map_addr_entry->length ||
-// 				memcmp(hash_map_addr_new->hashing_md5, hash_map_addr_entry->hashing_md5, sizeof(char)<<4)
-// 				){
-// 				if(hash_map_addr_entry->hashing_list.next == hashing_list_temp 
-// 				|| hash_map_addr_entry->hashing_list.next == NULL){
-// 					list_add_tail(&hash_map_addr_new->hashing_list, hashing_list_temp);
-// 					return NULL; 
-// 				}
-// 				else{
-// 					hash_map_addr_entry = list_entry(
-// 						hash_map_addr_entry->hashing_list.next, struct hash_map_addr, hashing_list);
-// 				}	
-// 			}
-// 			return hash_map_addr_entry;
-// 		}	
-// 	}
-// 	rb_link_node(&hash_map_addr_new->node, parent, entry_node);
-// 	rb_insert_color(&hash_map_addr_new->node, root);
-	
-// 	return NULL;
-// }
-
-// struct ref_map* ref_insert_node(struct rb_root *ref_root, struct ref_map *ref_map_new)
-// {
-// 	struct rb_node **entry_node = &(ref_root->rb_node);
-// 	struct rb_node *parent = NULL;
-// 	struct ref_map *ref_map_entry;
-
-// 	while(*entry_node){
-// 		parent = *entry_node;
-// 		ref_map_entry = rb_entry(*entry_node, struct ref_map, node);
-// 		if(ref_map_new->virt_addr < ref_map_entry->virt_addr)
-// 			entry_node = &(*entry_node)->rb_left;
-// 		else if(ref_map_new->virt_addr > ref_map_entry->virt_addr)
-// 			entry_node = &(*entry_node)->rb_right;
-// 		else{
-// 			if(ref_map_new->index < ref_map_entry->index)
-// 				entry_node = &(*entry_node)->rb_left;
-// 			else if(ref_map_new->index > ref_map_entry->index)
-// 				entry_node = &(*entry_node)->rb_right;
-// 			else{
-// 				ref_map_entry->hma->count--;
-// 				kfree(ref_map_new);
-// 				return ref_map_entry;
-// 			}	
-// 		}		
-// 	}
-// 	rb_link_node(&ref_map_new->node, parent, entry_node);
-// 	rb_insert_color(&ref_map_new->node, ref_root);
-
-// 	return NULL;
-// }
-
-// struct ref_map *ref_search_node(struct rb_root *ref_root, void *inode, size_t index)
-// {
-// 	struct rb_node *entry_node = ref_root->rb_node;
-// 	struct ref_map *ref_map_entry;
-
-// 	while(entry_node){
-// 		ref_map_entry = rb_entry(entry_node, struct ref_map, node);
-// 		if(inode < ref_map_entry->virt_addr)
-// 			entry_node = entry_node->rb_left;
-// 		else if(inode > ref_map_entry->virt_addr)
-// 			entry_node = entry_node->rb_right;
-// 		else
-// 		{
-// 			if(index < ref_map_entry->index)
-// 				entry_node = entry_node->rb_left;
-// 			else if(index > ref_map_entry->index)
-// 				entry_node = entry_node->rb_right;
-// 			else
-// 				return ref_map_entry;
-// 		}	
-// 	}
-// 	return NULL;
-// }
-
 bool short_hash(size_t *hashing, char *xmem, size_t len)
 {
 	// size_t trace = len >> 3;
@@ -904,13 +810,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else{
 			dnode = alloc_dedupnode(sb);
 			dnode->flag = 0;
-			dnode->count = 0;
+			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			//build a new dnode
-			// new_dnode_flag = true;
+			new_dnode_flag = true;
 		}
-		// printk("pmfs write 1");
+		printk("pmfs write 1");
 
 		//alloc and init dnode
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
@@ -936,7 +842,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode_hit = true;
 			last_dnode_list = &dnode->list; //log last hit node
 			// free(dnode);
-			// printk("dnode is duplicated!");
+			printk("dnode is duplicated!");
 			local_hit = true;
 			/*add reference content */
 		}else{
