@@ -102,13 +102,13 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	unsigned long flags;
 
 	if(dedupnode_allocation_pos==NULL){
-		dedupnode_allocation_pos = &hma_unused;
+		dedupnode_allocation_pos = &dindex->hma_unused;
 	}
 
 	spin_lock_irqsave(&dedup_index_lock, flags);
 
 	// if(list_empty(&dindex->hma_unused))
-	if(dedupnode_allocation_pos->next == &dindex->unused || list_empty(&dindex->hma_unused))
+	if(dedupnode_allocation_pos->next == &dindex->hma_unused || list_empty(&dindex->hma_unused))
 		new_unused_dedupnode(sb);
 	
 	// p = dindex->hma_unused.next;
