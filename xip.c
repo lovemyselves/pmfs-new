@@ -112,10 +112,10 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	if(dedupnode_allocation_pos == &dindex->hma_unused || list_empty(&dindex->hma_unused))
 		new_unused_dedupnode(sb);
 	
-	p = dindex->hma_unused.next;
-	list_move_tail(p, &dindex->hma_head);
-	// p = dedupnode_allocation_pos;
-	// dedupnode_allocation_pos = dedupnode_allocation_pos->next;
+	// p = dindex->hma_unused.next;
+	// list_move_tail(p, &dindex->hma_head);
+	p = dedupnode_allocation_pos;
+	dedupnode_allocation_pos = dedupnode_allocation_pos->next;
 	// list_move_tail(p, &dindex->hma_head);
 	dnode = list_entry(p, struct dedupnode, list);
 
