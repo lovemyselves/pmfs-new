@@ -830,10 +830,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// dnode->strength_hash_status = 1;
 		// memset(dnode->strength_hashval, 0, sizeof(char)<<16); 
 
-		if(dnode_hit == true)
+		if(dnode_hit == true){
 			dnode_entry = dedupnode_low_overhead_check(dnode);
-		if(dnode_hit ==false || dnode_entry == NULL)
-			dnode_entry = dedupnode_tree_update(sb, dnode);
+			goto dedup_hit;
+		}
+		dnode_entry = dedupnode_tree_update(sb, dnode);
+		deup_hit:
 		if(dnode_entry){
 			dnode = dnode_entry;
 			// dnode->count++;
