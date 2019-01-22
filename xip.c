@@ -40,7 +40,7 @@ DEFINE_SPINLOCK(dedup_index_lock);
 // static LIST_HEAD(hash_map_addr_list);
 // struct list_head *last_hit;
 // struct list_head *new_list = &hash_map_addr_list;
-struct list_head dedupnode_allocation_pos = (struct dedup_index*)DINDEX->hma_unused;
+size_t dedupnode_allocation_offset = 0;
 char dedup_model = 0xFF;
 bool dnode_hit = false;
 bool rnode_hit = false;
