@@ -147,7 +147,8 @@ struct refnode *alloc_refnode(struct super_block *sb){
 		refnode_allocation_pos = dindex->ref_unused.next;
 	}
 
-	if(list_empty(&dindex->ref_unused))
+	// if(list_empty(&dindex->ref_unused))
+	if(refnode_allocation_pos == &dindex->ref_unused || list_empty(&dindex->ref_unused))
 		new_unused_refnode(sb);
 	
 	// p = dindex->ref_unused.next;
