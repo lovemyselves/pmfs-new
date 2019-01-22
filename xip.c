@@ -40,7 +40,7 @@ DEFINE_SPINLOCK(dedup_index_lock);
 // static LIST_HEAD(hash_map_addr_list);
 // struct list_head *last_hit;
 // struct list_head *new_list = &hash_map_addr_list;
-size_t dedupnode_allocation_offset = 0;
+struct list_head *dedupnode_allocation_pos = NULL;
 char dedup_model = 0xFF;
 bool dnode_hit = false;
 bool rnode_hit = false;
@@ -100,6 +100,10 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	struct list_head *p;
 	struct dedup_index *dindex = DINDEX;
 	unsigned long flags;
+
+	// if(dedupnode_allocation_pos==NULL){
+	// 	dedupnode_allocation_pos = &hma_unused;
+	// }
 
 	spin_lock_irqsave(&dedup_index_lock, flags);
 

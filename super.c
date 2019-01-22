@@ -67,7 +67,7 @@ static bool init_dedup_module(struct super_block *sb){
 	struct dedup_index *dindex;
 	
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
-	printk("blocknr:%lu", blocknr);
+	printk("dindex blocknr:%lu", blocknr);
 	
 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
 
@@ -80,13 +80,14 @@ static bool init_dedup_module(struct super_block *sb){
 	dindex->refroot = RB_ROOT;
 
 	printk("init pmfs");
-	printk("size of struct hash_map_addr:%lu", sizeof(struct hash_map_addr));
-	printk("size of struct list_head:%lu", sizeof(struct list_head));
-	printk("size of struct rb_node:%lu", sizeof(struct rb_node));
-	printk("size of size_t:%lu", sizeof(size_t));
-	printk("size of char:%lu", sizeof(char));
-	printk("size of long:%lu", sizeof(long));
-	printk("size of short:%lu", sizeof(short));
+	
+	// printk("size of struct hash_map_addr:%lu", sizeof(struct hash_map_addr));
+	// printk("size of struct list_head:%lu", sizeof(struct list_head));
+	// printk("size of struct rb_node:%lu", sizeof(struct rb_node));
+	// printk("size of size_t:%lu", sizeof(size_t));
+	// printk("size of char:%lu", sizeof(char));
+	// printk("size of long:%lu", sizeof(long));
+	// printk("size of short:%lu", sizeof(short));
 
 	return true;
 }
