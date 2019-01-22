@@ -835,7 +835,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			goto dedup_hit;
 		}
 		dnode_entry = dedupnode_tree_update(sb, dnode);
-		deup_hit:
+		dedup_hit:
 		if(dnode_entry){
 			dnode = dnode_entry;
 			// dnode->count++;
