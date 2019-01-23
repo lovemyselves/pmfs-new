@@ -330,7 +330,7 @@ bool strength_hash(char *result, char* data, size_t len){
 	// crypto_shash_final(desc, result);
 	// crypto_free_shash(desc->tfm);
 	int i,cycles;
-	sizeof *hashing;
+	size_t *hashing;
 
 	*hashing = 0;
 	memset(result, 0, 16);
