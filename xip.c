@@ -103,7 +103,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	unsigned long flags;
 
 	if(dedupnode_allocation_pos==NULL){
-		dedupnode_allocation_pos = &dindex->hma_unused;
+		dedupnode_allocation_pos = dindex->hma_unused.next;
 	}
 
 	spin_lock_irqsave(&dedup_index_lock, flags);
@@ -112,11 +112,11 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	if(dedupnode_allocation_pos == &dindex->hma_unused || list_empty(&dindex->hma_unused))
 		new_unused_dedupnode(sb);
 	
-	p = dindex->hma_unused.next;
-	list_move_tail(p, &dindex->hma_head);
-	// p = dedupnode_allocation_pos->next;
-	// dedupnode_allocation_pos = dedupnode_allocation_pos->next;
+	// p = dindex->hma_unused.next;
 	// list_move_tail(p, &dindex->hma_head);
+	p = dedupnode_allocation_pos;
+	dedupnode_allocation_pos = dedupnode_allocation_pos->next;
+	list_move_tail(p, &dindex->hma_head);
 	dnode = list_entry(p, struct dedupnode, list);
 
 	spin_unlock_irqrestore(&dedup_index_lock, flags);
@@ -147,15 +147,11 @@ struct refnode *alloc_refnode(struct super_block *sb){
 		refnode_allocation_pos = dindex->ref_unused.next;
 	}
 
-	// if(list_empty(&dindex->ref_unused))
-	if(refnode_allocation_pos == &dindex->ref_unused || list_empty(&dindex->ref_unused))
+	if(list_empty(&dindex->ref_unused))
 		new_unused_refnode(sb);
 	
 	p = dindex->ref_unused.next;
 	list_move_tail(p, &dindex->ref_head);
-	// p = refnode_allocation_pos;
-	// refnode_allocation_pos = refnode_allocation_pos->next;
-	// list_move_tail(p, &dindex->ref_head);
 	rnode = list_entry(p, struct refnode, list);
 	return rnode;
 }
