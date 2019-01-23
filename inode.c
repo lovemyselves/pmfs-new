@@ -985,7 +985,7 @@ out:
 	for(i=0;i<blocknum;i++){
 		// printk("i:%u",i);
 		rnode = refnode_search(sb,inode->i_ino,i);
-		if(!rnode || !rnode->dnode){
+		if(!rnode || rnode->dnode){
 			// printk("error, cannot find this refnode!");
 			break;
 		}
@@ -999,7 +999,7 @@ out:
 				;
 				printk("free dnode success!");
 		}
-		else printk("dnode->count:%lu", dnode->count);
+		else printk("dnode->count:%u", dnode->count);
 		// printk("free rnode");
 		if(free_refnode(sb, rnode))
 			;
