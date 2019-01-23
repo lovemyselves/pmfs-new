@@ -167,6 +167,7 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 	//remove from the red black tree
 	rb_erase(&rnode->node, rroot);
 	//flag set 0, remove to unused list
+	rnode->flag = 0;
 	list_move_tail(&rnode->list, &dindex->ref_unused);
 	return true;
 }
@@ -262,7 +263,7 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 	}
 
 	rnode_new = alloc_refnode(sb);
-	// rnode_new->flag = 0;
+	rnode_new->flag = 0;
 	rnode_new->ino = ino;
 	rnode_new->index = index;
 	rnode_new->dnode = NULL;
@@ -419,7 +420,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			rnode_hit = true;
 			error = 0;
 			last_rnode_list = &rnode->list;
-			xip_mem = pmfs_get_block(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
+			xip_mem = pmfs_get_block(sb, rnode->blocknr<<PAGE_SHIFT);
 		}else
 			error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		rnode_find:
@@ -713,7 +714,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	size_t i,j,dedup_offset;	
 	struct dedupnode *dnode_entry;
 	bool local_hit = false;
-	struct dedup_index *dindex;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -793,7 +793,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
 		
-		if(rnode->dnode != NULL){
+		if(rnode->flag == 1){
+			rnode->flag = 0;
 			dnode = rnode->dnode;
 			if(dnode == NULL){
 				printk("pmfs write error 0");
@@ -862,19 +863,22 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// free(dnode);
 			// printk("dnode is duplicated!");
 			local_hit = true;
+			// p = dindex->hma_unused.next;
+			struct dedup_index *dindex = DINDEX;
+			list_move_tail(&dnode->list, &dindex->hma_head));
 		}else{
 			dnode_hit = false;
 			// printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
-			dindex = DINDEX;
-			list_move_tail(&dnode->list, &dindex->hma_head);
 		}
-		rnode->dnode = dnode;
+		
 		kfree(xmem);
-		// rnode->blocknr = dnode->blocknr;
+		rnode->dnode = dnode;
+		rnode->blocknr = dnode->blocknr;
 		dnode->flag = 1;
+		rnode->flag = 1;
 		//part end 
 		i -= block_len;
 	}
