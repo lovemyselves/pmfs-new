@@ -534,6 +534,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		size_t copied;
 		void *xmem;
 		unsigned long xpfn;
+		int i;
+		char *devnull = kmalloc("4096", GFP_KERNEL);
 
 		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 		index = pos >> sb->s_blocksize_bits;
@@ -550,6 +552,8 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 
 		PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 1);
+		for(i=0;i<10;i++)
+            copied = memcpy_to_nvmm((char *)devnull, offset, buf, bytes);
 		copied = memcpy_to_nvmm((char *)xmem, offset, buf, bytes);
 		pmfs_xip_mem_protect(sb, xmem + offset, bytes, 0);
 		PMFS_END_TIMING(memcpy_w_t, memcpy_time);
@@ -575,7 +579,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		if (status < 0)
 			break;	
 	} while (count);
-
+	kfree(devnull);
 	*ppos = pos;
 	
 	/*
