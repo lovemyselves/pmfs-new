@@ -305,7 +305,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 
 	for(k=0;(k+sizeof(size_t))<len;){
 		*hashing += *(size_t*)(xmem + k);
-		*hashing += (*hashing << 3);
+		*hashing += (*hashing << 1);
 		*hashing ^= (*hashing >> 2);
 		if(thick_internal_count>0){
 			k += sizeof(size_t);	
