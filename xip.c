@@ -107,7 +107,8 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 		new_unused_dedupnode(sb);
 	
 	p = dindex->hma_unused.next;
-	list_move_tail(p, &dindex->hma_head);
+	// list_move_tail(p, &dindex->hma_head);
+	list_move_tail(p, &dindex->hma_writing);
 	dnode = list_entry(p, struct dedupnode, list);
 
 	spin_unlock_irqrestore(&dedup_index_lock, flags);
