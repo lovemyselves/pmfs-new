@@ -41,7 +41,6 @@ DEFINE_SPINLOCK(dedup_index_lock);
 // struct list_head *last_hit;
 // struct list_head *new_list = &hash_map_addr_list;
 struct list_head *dedupnode_allocation_pos = NULL;
-struct list_head *refnode_allocation_pos = NULL;
 char dedup_model = 0xFF;
 bool dnode_hit = false;
 bool rnode_hit = false;
@@ -102,20 +101,12 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	struct dedup_index *dindex = DINDEX;
 	unsigned long flags;
 
-	if(dedupnode_allocation_pos==NULL){
-		dedupnode_allocation_pos = dindex->hma_unused.next;
-	}
-
 	spin_lock_irqsave(&dedup_index_lock, flags);
 
-	// if(list_empty(&dindex->hma_unused))
-	if(dedupnode_allocation_pos == &dindex->hma_unused || list_empty(&dindex->hma_unused))
+	if(list_empty(&dindex->hma_unused))
 		new_unused_dedupnode(sb);
 	
-	// p = dindex->hma_unused.next;
-	// list_move_tail(p, &dindex->hma_head);
-	p = dedupnode_allocation_pos;
-	dedupnode_allocation_pos = dedupnode_allocation_pos->next;
+	p = dindex->hma_unused.next;
 	list_move_tail(p, &dindex->hma_head);
 	dnode = list_entry(p, struct dedupnode, list);
 
@@ -142,11 +133,6 @@ struct refnode *alloc_refnode(struct super_block *sb){
 	struct list_head *p;
 	struct refnode *rnode;
 	struct dedup_index *dindex = DINDEX;
-
-	if(refnode_allocation_pos==NULL){
-		refnode_allocation_pos = dindex->ref_unused.next;
-	}
-
 	if(list_empty(&dindex->ref_unused))
 		new_unused_refnode(sb);
 	
