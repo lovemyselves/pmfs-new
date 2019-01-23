@@ -771,7 +771,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		unsigned block_len;
 		void *xmem = NULL;
 		size_t hashing = 0;
-		bool new_dnode = false;
+		bool new_dnode_status = false;
 
 		// chunk divide equally
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
@@ -793,6 +793,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				dnode->flag = 0;
 				// dnode->count = 1;
 				atomic_set(&dnode->atomic_ref_count, 1);
+				new_dnode_status = true;
 			}	
 			else{
 				dnode->flag = 0;
@@ -811,7 +812,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			//build a new dnode
-			new_dnode = true;
+			new_dnode_status = true;
 		}
 		// printk("pmfs write 1");
 
@@ -837,6 +838,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode_entry = dedupnode_tree_update(sb, dnode);
 		dedup_hit:
 		if(dnode_entry){
+			if(new_dnode_status){
+				dindex = DINDEX; 
+				list_move_tail(&dnode->list, &dindex->hma_unused);
+				}
 			dnode = dnode_entry;
 			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
@@ -853,7 +858,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
 			dindex = DINDEX;
-			list_move_tail(&dnode->list, &dindex->hma_writing);
+			list_move_tail(&dnode->list, &dindex->hma_head);
 		}
 		
 		kfree(xmem);
