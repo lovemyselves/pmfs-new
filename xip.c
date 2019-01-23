@@ -175,7 +175,7 @@ struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new){
 }
 
 struct dedupnode *dedupnode_tree_update(struct super_block *sb
-,struct dedupnode *dnode_new){
+,struct dedupnode *dnode_new, void *xmem, unsigned block_len){
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
 	struct rb_node **entry_node = &(droot->rb_node);
@@ -837,7 +837,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(dnode_entry!=NULL)
 				goto dedup_hit;
 		}
-		dnode_entry = dedupnode_tree_update(sb, dnode);
+		dnode_entry = dedupnode_tree_update(sb, dnode, xmem, block_len);
 		dedup_hit:
 		if(dnode_entry){
 			if(new_dnode_status){
