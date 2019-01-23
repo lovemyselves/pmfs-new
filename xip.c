@@ -131,6 +131,7 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	//remove from the tree
 	rb_erase(&dnode->node, droot);
 	//flag set 0, remove to unused list
+	dnode->flag = 0;
 	list_move_tail(&dnode->list, &dindex->hma_unused);
 	return true;
 }
@@ -261,6 +262,7 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 	}
 
 	rnode_new = alloc_refnode(sb);
+	// rnode_new->flag = 0;
 	rnode_new->ino = ino;
 	rnode_new->index = index;
 	rnode_new->dnode = NULL;
@@ -804,10 +806,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 				memcpy(xmem, pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), pmfs_inode_blk_size(pi));
 				dnode = alloc_dedupnode(sb);
+				dnode->flag = 0;
 				// dnode->count = 1;
 				atomic_set(&dnode->atomic_ref_count, 1);
 			}	
 			else{
+				dnode->flag = 0;
 				// xmem = kmalloc(4096, GFP_KERNEL);
 				// printk("pmfs write in-place");
 				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
@@ -818,6 +822,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		else{
 			dnode = alloc_dedupnode(sb);
+			dnode->flag = 0;
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
@@ -848,7 +853,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode_entry = dedupnode_tree_update(sb, dnode);
 		dedup_hit:
 		if(dnode_entry){
-			// if(new_dnode) free_dedupnode(sb, dnode);
+			if(new_dnode) free_dedupnode(sb, dnode);
 			dnode = dnode_entry;
 			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
@@ -863,12 +868,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
-			// dindex = DINDEX;
-			// list_move_tail(&dnode->list, &dindex->hma_head);
+			dindex = DINDEX;
+			list_move_tail(&dnode->list, &dindex->hma_head);
 		}
 		rnode->dnode = dnode;
 		kfree(xmem);
 		// rnode->blocknr = dnode->blocknr;
+		dnode->flag = 1;
 		//part end 
 		i -= block_len;
 	}
