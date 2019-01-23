@@ -827,7 +827,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		atomic_set(&dnode->atomic_ref_count, 1);
 		dnode->strength_hash_status = 0;
 		strength_hash(dnode->strength_hashval, xmem, block_len);
-		// dnode->strength_hash_status = 1;
+		dnode->strength_hash_status = 1;
 		// memset(dnode->strength_hashval, 0, sizeof(char)<<16); 
 
 		if(dnode_hit == true){
@@ -863,7 +863,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		rnode->dnode = dnode;
-		// rnode->blocknr = dnode->blocknr;
 		dnode->flag = 1;
 		//part end 
 		i -= block_len;
