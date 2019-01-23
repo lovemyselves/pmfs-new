@@ -329,7 +329,7 @@ bool strength_hash(char *result, char* data, size_t len){
 	// crypto_shash_update(desc, data, len);
 	// crypto_shash_final(desc, result);
 	// crypto_free_shash(desc->tfm);
-	int i,cycles;
+	int i, cycles;
 
 	memset(result, 0, 16);
 	memcpy(result, data, (len&15)); //remainder divided by 16
@@ -339,6 +339,8 @@ bool strength_hash(char *result, char* data, size_t len){
 	for(i=0;i<cycles;i++){
 		*(long long*)result += *(long long*)( data+(i<<4) );
 		*(long long*)result ^= *(long long*)result >> 1;
+		*(long long*)(result+8) += *(long long*)( data+(i<<4)+8 );
+		*(u32*)(result+8) ^= *(u32*)result >> 1;
 	}
 
 
