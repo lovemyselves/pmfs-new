@@ -990,8 +990,8 @@ out:
 			break;
 		}
 		dnode = rnode->dnode;
-		// printk("count:%u", dnode->count);
-		if(--(rnode->dnode->count) == 0){
+		printk("count:%u", dnode->count);
+		if(--(dnode->count) == 0){
 			// printk("free block");
 			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 			// printk("free dnode");
@@ -999,6 +999,7 @@ out:
 				;
 				printk("free dnode success!");
 		}
+		else printk("dnode->count:%lu", dnode->count);
 		// printk("free rnode");
 		if(free_refnode(sb, rnode))
 			;
