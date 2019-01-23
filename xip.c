@@ -167,7 +167,6 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 	//remove from the red black tree
 	rb_erase(&rnode->node, rroot);
 	//flag set 0, remove to unused list
-	rnode->flag = 0;
 	list_move_tail(&rnode->list, &dindex->ref_unused);
 	return true;
 }
@@ -794,8 +793,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
 		
-		if(rnode->flag == 1){
-			rnode->flag = 0;
+		if(rnode->dnode != NULL){
 			dnode = rnode->dnode;
 			if(dnode == NULL){
 				printk("pmfs write error 0");
@@ -864,22 +862,19 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// free(dnode);
 			// printk("dnode is duplicated!");
 			local_hit = true;
-			// p = dindex->hma_unused.next;
-			dindex = DINDEX;
-			list_move_tail(&dnode->list, &dindex->hma_head);
 		}else{
 			dnode_hit = false;
 			// printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
+			dindex = DINDEX;
+			list_move_tail(&dnode->list, &dindex->hma_head);
 		}
-		
-		kfree(xmem);
 		rnode->dnode = dnode;
+		kfree(xmem);
 		// rnode->blocknr = dnode->blocknr;
 		dnode->flag = 1;
-		rnode->flag = 1;
 		//part end 
 		i -= block_len;
 	}

@@ -45,7 +45,7 @@ struct refnode{
     unsigned long index;
     // unsigned long blocknr;
     struct dedupnode *dnode;
-    unsigned int flag; //means the status of this struct node
+    // unsigned int flag; //means the status of this struct node
     struct rb_node node;
     struct list_head list;
 };
