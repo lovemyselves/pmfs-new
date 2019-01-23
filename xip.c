@@ -420,7 +420,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			rnode_hit = true;
 			error = 0;
 			last_rnode_list = &rnode->list;
-			xip_mem = pmfs_get_block(sb, rnode->blocknr<<PAGE_SHIFT);
+			xip_mem = pmfs_get_block(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
 		}else
 			error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		rnode_find:
@@ -877,7 +877,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		rnode->dnode = dnode;
-		rnode->blocknr = dnode->blocknr;
+		// rnode->blocknr = dnode->blocknr;
 		dnode->flag = 1;
 		rnode->flag = 1;
 		//part end 
