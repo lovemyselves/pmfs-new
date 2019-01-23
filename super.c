@@ -89,7 +89,7 @@ static bool init_dedup_module(struct super_block *sb){
 	// printk("size of char:%lu", sizeof(char));
 	// printk("size of long:%lu", sizeof(long));
 	// printk("size of short:%lu", sizeof(short));
-	printk("size of struct refnode:%d", sizeof(struct refnode));
+	printk("size of struct refnode:%lu", sizeof(struct refnode));
 
 	return true;
 }

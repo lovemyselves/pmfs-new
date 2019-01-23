@@ -33,7 +33,7 @@ struct dedupnode{
     unsigned short strength_hash_status;
     unsigned length;
     unsigned count;
-    // unsigned int flag;
+    unsigned int flag;
     char strength_hashval[16];
     atomic_t atomic_ref_count;
     struct list_head list;
