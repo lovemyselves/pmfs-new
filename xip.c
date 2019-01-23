@@ -151,7 +151,6 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 	//remove from the red black tree
 	rb_erase(&rnode->node, rroot);
 	//flag set 0, remove to unused list
-	rnode->flag = 0;
 	list_move_tail(&rnode->list, &dindex->ref_unused);
 	return true;
 }
@@ -247,7 +246,6 @@ struct refnode *refnode_insert(struct super_block *sb, unsigned long ino
 	}
 
 	rnode_new = alloc_refnode(sb);
-	rnode_new->flag = 0;
 	rnode_new->ino = ino;
 	rnode_new->index = index;
 	rnode_new->dnode = NULL;
@@ -404,7 +402,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			rnode_hit = true;
 			error = 0;
 			last_rnode_list = &rnode->list;
-			xip_mem = pmfs_get_block(sb, rnode->blocknr<<PAGE_SHIFT);
+			xip_mem = pmfs_get_block(sb, rnode->dnode->blocknr<<PAGE_SHIFT);
 		}else
 			error = pmfs_get_xip_mem(mapping, index, 0, &xip_mem, &xip_pfn);
 		rnode_find:
@@ -777,8 +775,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
 		rnode = refnode_insert(sb, inode->i_ino, j+start_blk);
 		
-		if(rnode->flag == 1){
-			rnode->flag = 0;
+		if(rnode->dnode){
 			dnode = rnode->dnode;
 			if(dnode == NULL){
 				printk("pmfs write error 0");
@@ -857,9 +854,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		rnode->dnode = dnode;
-		rnode->blocknr = dnode->blocknr;
+		// rnode->blocknr = dnode->blocknr;
 		dnode->flag = 1;
-		rnode->flag = 1;
 		//part end 
 		i -= block_len;
 	}
