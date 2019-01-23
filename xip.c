@@ -334,7 +334,7 @@ bool strength_hash(char *result, char* data, size_t len){
 	memcpy(result, data, len-(len&15)); //remainder divided by 16
 	cycles = len>>4;
 	for(i=0;i<cycles;i++){
-		*(long long*)result += *(long long*)(data + i<<4);
+		*(long long*)result += *(long long*)( data+(i<<4) );
 		*(long long*)result ^= *(long long*)result >> 1;
 	}
 
