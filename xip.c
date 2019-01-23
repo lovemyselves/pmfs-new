@@ -318,17 +318,27 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 }
 
 bool strength_hash(char *result, char* data, size_t len){
-	struct shash_desc *desc;
-	desc = kmalloc(sizeof(*desc), GFP_KERNEL);
-	desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
+	// struct shash_desc *desc;
+	// desc = kmalloc(sizeof(*desc), GFP_KERNEL);
+	// desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
 
-	if(desc->tfm == NULL)
-		return false;
+	// if(desc->tfm == NULL)
+	// 	return false;
 
-	crypto_shash_init(desc);
-	crypto_shash_update(desc, data, len);
-	crypto_shash_final(desc, result);
-	crypto_free_shash(desc->tfm);
+	// crypto_shash_init(desc);
+	// crypto_shash_update(desc, data, len);
+	// crypto_shash_final(desc, result);
+	// crypto_free_shash(desc->tfm);
+	int i,j,cycles;
+	memset(resuslt, 0, 16);
+	memcpy(result, data, len-(len&15)); //remainder divided by 16
+	cycles = len>>4;
+	for(i=0;i<cycles;i++){
+		*(long long)result += *(long long)(data + i<<4);
+		*(long long)result ^= *(long long)result >> 1;
+	}
+
+
 
 	return true;
 }
