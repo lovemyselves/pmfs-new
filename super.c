@@ -73,7 +73,7 @@ static bool init_dedup_module(struct super_block *sb){
 
 	dindex = xmem;
 	INIT_LIST_HEAD(&dindex->hma_head);
-	INIT_LIST_HEAD(%index->hma_writing);
+	INIT_LIST_HEAD(&dindex->hma_writing);
 	INIT_LIST_HEAD(&dindex->hma_unused);
 	dindex->dedupnode_root = RB_ROOT;
 	INIT_LIST_HEAD(&dindex->ref_head);
