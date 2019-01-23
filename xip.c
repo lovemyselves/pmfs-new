@@ -697,6 +697,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	size_t i,j,dedup_offset;	
 	struct dedupnode *dnode_entry;
 	bool local_hit = false;
+	struct dedup_index *dindex;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -851,6 +852,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
+			dindex = DINDEX;
+			list_move_tail(&dnode->list, &dindex->hma_writing);
 		}
 		
 		kfree(xmem);
