@@ -714,7 +714,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	size_t i,j,dedup_offset;	
 	struct dedupnode *dnode_entry;
 	bool local_hit = false;
-	struct dedup_index *;
+	struct dedup_index *dindex;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
