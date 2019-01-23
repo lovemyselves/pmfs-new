@@ -52,6 +52,7 @@ struct refnode{
 
 struct dedup_index{
     struct list_head hma_head;
+    struct list hma_writing;
     struct list_head hma_unused;
     struct rb_root dedupnode_root;
     struct list_head ref_head;
