@@ -848,7 +848,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode_entry = dedupnode_tree_update(sb, dnode);
 		dedup_hit:
 		if(dnode_entry){
-			if(new_dnode) free_dedupnode(sb, dnode);
+			// if(new_dnode) free_dedupnode(sb, dnode);
 			dnode = dnode_entry;
 			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
