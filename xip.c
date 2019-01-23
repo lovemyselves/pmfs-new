@@ -113,7 +113,8 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 		new_unused_dedupnode(sb);
 	
 	p = dindex->hma_unused.next;
-	list_move_tail(p, &dindex->hma_head);
+	// list_move_tail(p, &dindex->hma_head);
+	list_move_tail(p, &dindex->hma_writing);
 	// p = dedupnode_allocation_pos->next;
 	// dedupnode_allocation_pos = dedupnode_allocation_pos->next;
 	// list_move_tail(p, &dindex->hma_head);

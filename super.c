@@ -73,6 +73,7 @@ static bool init_dedup_module(struct super_block *sb){
 
 	dindex = xmem;
 	INIT_LIST_HEAD(&dindex->hma_head);
+	INIT_LIST_HEAD(%index->hma_writing);
 	INIT_LIST_HEAD(&dindex->hma_unused);
 	dindex->dedupnode_root = RB_ROOT;
 	INIT_LIST_HEAD(&dindex->ref_head);
@@ -80,7 +81,7 @@ static bool init_dedup_module(struct super_block *sb){
 	dindex->refroot = RB_ROOT;
 
 	printk("init pmfs");
-	
+
 	// printk("size of struct hash_map_addr:%lu", sizeof(struct hash_map_addr));
 	// printk("size of struct list_head:%lu", sizeof(struct list_head));
 	// printk("size of struct rb_node:%lu", sizeof(struct rb_node));
