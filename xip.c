@@ -535,7 +535,7 @@ __pmfs_xip_file_write(struct address_space *mapping, const char __user *buf,
 		void *xmem;
 		unsigned long xpfn;
 		int i;
-		char *devnull = kmalloc("4096", GFP_KERNEL);
+		char *devnull = kmalloc(4096, GFP_KERNEL);
 
 		offset = (pos & (sb->s_blocksize - 1)); /* Within page */
 		index = pos >> sb->s_blocksize_bits;
