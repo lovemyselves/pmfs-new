@@ -337,11 +337,11 @@ bool strength_hash(char *result, char* data, size_t len){
 
 	
 	for(i=0;i<cycles;i++){
-		*(u128*)result += *(u128*)( data+(i<<4) );
-		*(u128*)result ^= *(u128*)result >> 1;
-		*(u128*)result += *(u128*)result >> 3;
-		// *(long long*)(result+8) += *(long long*)( data+(i<<4)+8 );
-		// *(u32*)(result+8) ^= *(u32*)result >> 1;
+		*(u64*)result += *(u64*)( data+(i<<4) );
+		*(u64*)result ^= *(u64*)result >> 1;
+		*(u64*)result += *(u64*)result >> 3;
+		*(u64*)(result+8) += *(u64*)( data+(i<<4)+8 );
+		*(u64*)(result+8) ^= *(u64*)result >> 1;
 	}
 
 
