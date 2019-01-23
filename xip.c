@@ -156,8 +156,7 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 	return true;
 }
 
-struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new, 
-	unsigned block_len, void *xmem){
+struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new){
 	struct dedupnode *dnode_entry;
 	long result;
 
@@ -176,7 +175,7 @@ struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new,
 }
 
 struct dedupnode *dedupnode_tree_update(struct super_block *sb
-,struct dedupnode *dnode_new, unsigned block_len, void *xmem){
+,struct dedupnode *dnode_new){
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
 	struct rb_node **entry_node = &(droot->rb_node);
@@ -832,11 +831,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// memset(dnode->strength_hashval, 0, sizeof(char)<<16); 
 
 		if(dnode_hit == true){
-			dnode_entry = dedupnode_low_overhead_check(dnode, xmem, block_len);
+			dnode_entry = dedupnode_low_overhead_check(dnode);
 			if(dnode_entry!=NULL)
 				goto dedup_hit;
 		}
-		dnode_entry = dedupnode_tree_update(sb, dnode, xmem, block_len);
+		dnode_entry = dedupnode_tree_update(sb, dnode);
 		dedup_hit:
 		if(dnode_entry){
 			if(new_dnode_status){
