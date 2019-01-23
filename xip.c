@@ -115,9 +115,6 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	p = dindex->hma_unused.next;
 	// list_move_tail(p, &dindex->hma_head);
 	list_move_tail(p, &dindex->hma_writing);
-	// p = dedupnode_allocation_pos->next;
-	// dedupnode_allocation_pos = dedupnode_allocation_pos->next;
-	// list_move_tail(p, &dindex->hma_head);
 	dnode = list_entry(p, struct dedupnode, list);
 
 	spin_unlock_irqrestore(&dedup_index_lock, flags);
@@ -857,6 +854,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode_entry = dedupnode_tree_update(sb, dnode);
 		dedup_hit:
 		if(dnode_entry){
+			if(new_dnode) free_dedupnode(sb, dnode);
 			dnode = dnode_entry;
 			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
@@ -865,7 +863,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// free(dnode);
 			// printk("dnode is duplicated!");
 			local_hit = true;
-			/*add reference content */
+			// p = dindex->hma_unused.next;
+			list_move_tail(&dnode->list, &dindex->hma_head);
 		}else{
 			dnode_hit = false;
 			// printk("dnode is new!");
