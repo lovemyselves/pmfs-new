@@ -131,7 +131,6 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	//remove from the tree
 	rb_erase(&dnode->node, droot);
 	//flag set 0, remove to unused list
-	dnode->flag = 0;
 	list_move_tail(&dnode->list, &dindex->hma_unused);
 	return true;
 }
@@ -805,12 +804,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 				memcpy(xmem, pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), pmfs_inode_blk_size(pi));
 				dnode = alloc_dedupnode(sb);
-				dnode->flag = 0;
 				// dnode->count = 1;
 				atomic_set(&dnode->atomic_ref_count, 1);
 			}	
 			else{
-				dnode->flag = 0;
 				// xmem = kmalloc(4096, GFP_KERNEL);
 				// printk("pmfs write in-place");
 				xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
@@ -821,7 +818,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		else{
 			dnode = alloc_dedupnode(sb);
-			dnode->flag = 0;
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
@@ -873,7 +869,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rnode->dnode = dnode;
 		kfree(xmem);
 		// rnode->blocknr = dnode->blocknr;
-		dnode->flag = 1;
 		//part end 
 		i -= block_len;
 	}
