@@ -864,7 +864,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// printk("dnode is duplicated!");
 			local_hit = true;
 			// p = dindex->hma_unused.next;
-			list_move_tail(&dnode->list, &dindex->hma_head);
+			list_move_tail(&dnode->list, (struct dedup_index*)DINDEX->hma_head);
 		}else{
 			dnode_hit = false;
 			// printk("dnode is new!");
