@@ -157,7 +157,7 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 }
 
 struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new, 
-	unsigned block_len, void *xmem = NULL){
+	unsigned block_len, void *xmem){
 	struct dedupnode *dnode_entry;
 	long result;
 
@@ -176,7 +176,7 @@ struct dedupnode *dedupnode_low_overhead_check(struct dedupnode *dnode_new,
 }
 
 struct dedupnode *dedupnode_tree_update(struct super_block *sb
-,struct dedupnode *dnode_new, unsigned block_len, void *xmem = NULL){
+,struct dedupnode *dnode_new, unsigned block_len, void *xmem){
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
 	struct rb_node **entry_node = &(droot->rb_node);
