@@ -330,11 +330,10 @@ bool strength_hash(char *result, char* data, size_t len){
 	// crypto_shash_final(desc, result);
 	// crypto_free_shash(desc->tfm);
 	int i,cycles;
-	size_t *hashing;
+	size_t *hashing = 0;
 
-	*hashing = 0;
 	memset(result, 0, 16);
-	memcpy(result, data, len-(len&15)); //remainder divided by 16
+	// memcpy(result, data, len-(len&15)); //remainder divided by 16
 	cycles = len>>4;
 
 	
