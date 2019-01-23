@@ -997,12 +997,12 @@ out:
 			// printk("free dnode");
 			if(free_dedupnode(sb, (void*)rnode->dnode))
 				;
-				// printk("free dnode success!");
+				printk("free dnode success!");
 		}
 		// printk("free rnode");
 		if(free_refnode(sb, rnode))
 			;
-			// printk("free rnode success!");
+			printk("free rnode success!");
 	}
 	//dedup end
 	return err;
