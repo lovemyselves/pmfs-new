@@ -202,7 +202,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				// printk("dnode_entry:%u", dnode_entry->count);
-				// printk("hit in rbtree");
+				printk("hit in rbtree");
 				return dnode_entry;
 			}
 		}
