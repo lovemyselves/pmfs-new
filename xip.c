@@ -109,9 +109,10 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 		new_unused_dedupnode(sb);
 	
 	p = dindex->hma_unused.next;
-	// list_move_tail(p, &dindex->hma_head);
-	list_move_tail(p, &dindex->hma_writing);
 	dnode = list_entry(p, struct dedupnode, list);
+	dnode->flag = 0;
+	list_move_tail(p, &dindex->hma_head);
+	// list_move_tail(p, &dindex->hma_writing);
 
 	spin_unlock_irqrestore(&dedup_index_lock, flags);
 	return dnode;
@@ -831,7 +832,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 
 			dnode = alloc_dedupnode(sb);
-			dnode->flag = 0;
+			// dnode->flag = 0;
 			dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
@@ -839,7 +840,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		else{
 			dnode = alloc_dedupnode(sb);
-			dnode->flag = 0;
+			// dnode->flag = 0;
 			dnode->length = dedup_offset+block_len;
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
