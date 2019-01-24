@@ -209,7 +209,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 		}
 	}
 
-	printk("dnode_new->hashval:%s", (short)dnode_new->hashval);
+	printk("dnode_new->hashval:%d", (short)dnode_new->hashval);
 
 	rb_link_node(&dnode_new->node, parent, entry_node);
 	rb_insert_color(&dnode_new->node, droot);
