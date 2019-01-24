@@ -994,7 +994,7 @@ out:
 		dnode = rnode->dnode;
 		printk("count:%d", atomic_read(&dnode->atomic_ref_count));
 		atomic_dec(&dnode->atomic_ref_count);
-		if(atomic_read(&dnode->atomic_ref_count)){
+		if(!atomic_read(&dnode->atomic_ref_count)){
 			// printk("free block");
 			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 			// printk("free dnode");
