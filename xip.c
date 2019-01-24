@@ -303,8 +303,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	size_t thin_internal = len >> 10;
 	size_t thick_internal_count = (len&1023) >> 3;
 
-	if(*hashing!=0)
-		return false;
+	*hashing = 0;
 				 
 	if(data_remainder!=0)
 		memcpy(hashing, xmem+len-data_remainder, data_remainder);
