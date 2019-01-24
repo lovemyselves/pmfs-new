@@ -1005,6 +1005,7 @@ out:
 		// else printk("dnode->count:%d", atomic_read(&dnode->atomic_ref_count));
 		// printk("free rnode");
 		dnode_miss:
+		;
 		// if(free_refnode(sb, rnode))
 		// 	;
 			// printk("free rnode success!");
