@@ -726,7 +726,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	size_t i,j,dedup_offset;	
 	struct dedupnode *dnode_entry;
 	bool local_hit = false;
-	struct dedup_index *dindex;
+	// struct dedup_index *dindex;
+	struct dedup_index *dindex = DINDEX;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -802,6 +803,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		size_t hashing = 0;
 		char strength_hashing[16];
 		bool new_dnode_status = false;
+		//The following variable use in rbtree update and hashing
+		struct rb_root *droot = &(dindex->dedupnode_root);
+		struct rb_node **entry_node = &(droot->rb_node);
+		struct rb_node *parent = NULL;
+		struct dedupnode *dnode_entry;
+		long result;
+		unsigned long flags;
 
 		// chunk divide equally
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
@@ -855,10 +863,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->hash_status = 1;
 		// dnode->count = 1;
 		atomic_set(&dnode->atomic_ref_count, 1);
-		dnode->strength_hash_status = 0;
-		strength_hash(strength_hashing, xmem, block_len);
-		memcpy(dnode->strength_hashval, strength_hashing, 16);
-		dnode->strength_hash_status = 1;
+		// dnode->strength_hash_status = 0;
+		// strength_hash(strength_hashing, xmem, block_len);
+		// memcpy(dnode->strength_hashval, strength_hashing, 16);
+		// dnode->strength_hash_status = 1;
 		// memset(dnode->strength_hashval, 0, 16); 
 
 		if(dnode_hit == true){
@@ -870,7 +878,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dedup_hit:
 		if(dnode_entry){
 			if(new_dnode_status){
-				dindex = DINDEX; 
+				// dindex = DINDEX; 
 				list_move_tail(&dnode->list, &dindex->hma_unused);
 				}
 			dnode = dnode_entry;
@@ -888,7 +896,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
-			dindex = DINDEX;
+			// dindex = DINDEX;
 			dnode->flag = 1;//
 			list_move_tail(&dnode->list, &dindex->hma_head);
 		}
