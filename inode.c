@@ -992,7 +992,7 @@ out:
 		if(!rnode->dnode)
 			goto dnode_miss;
 		dnode = rnode->dnode;
-		printk("count:%d", atomic_read(&dnode->atomic_ref_count));
+		// printk("count:%d", atomic_read(&dnode->atomic_ref_count));
 		atomic_dec(&dnode->atomic_ref_count);
 		if(!atomic_read(&dnode->atomic_ref_count)){
 			// printk("free block");
@@ -1000,14 +1000,14 @@ out:
 			// printk("free dnode");
 			if(free_dedupnode(sb, (void*)rnode->dnode))
 				;
-				printk("free dnode success!");
+				// printk("free dnode success!");
 		}
-		else printk("dnode->count:%d", atomic_read(&dnode->atomic_ref_count));
+		// else printk("dnode->count:%d", atomic_read(&dnode->atomic_ref_count));
 		// printk("free rnode");
 		dnode_miss:
 		if(free_refnode(sb, rnode))
 			;
-			printk("free rnode success!");
+			// printk("free rnode success!");
 	}
 	//dedup end
 	return err;
