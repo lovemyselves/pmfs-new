@@ -184,6 +184,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 	long result;
 
 	printk("tree update 1");
+	printk("dnode_new->hashval:%ld", dnode_new->hashval);
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -208,8 +209,6 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 			}
 		}
 	}
-
-	printk("dnode_new->hashval:%ld", dnode_new->hashval);
 
 	rb_link_node(&dnode_new->node, parent, entry_node);
 	rb_insert_color(&dnode_new->node, droot);
