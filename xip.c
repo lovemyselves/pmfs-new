@@ -861,6 +861,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(dnode_hit>-32){
 			strength_hash(strength_hashing, xmem, block_len);
 			memcpy(dnode->strength_hashval, strength_hashing, 16);
+			printk("Recover the strength hashing compute!");
 		}
 		else{
 			printk("Bypass the strength hashing compute!");
@@ -874,10 +875,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
 				result = dnode->hashval - dnode_entry->hashval;
 				if(result==0){
-					if(!dnode->strength_hash_status){
-						strength_hash(dnode->strength_hashval, xmem, dedup_offset+block_len);
-						dnode->strength_hash_status = 1;
-					} 
+					// if(!dnode->strength_hash_status){
+					// 	strength_hash(dnode->strength_hashval, xmem, dedup_offset+block_len);
+					// 	dnode->strength_hash_status = 1;
+					// } 
 					if(!dnode_entry->strength_hash_status){
 						strength_hash(dnode_entry->strength_hashval,
 						pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
