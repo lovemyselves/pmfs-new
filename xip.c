@@ -883,6 +883,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 						strength_hash(dnode_entry->strength_hashval,
 						pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
 						dnode_entry->strength_hash_status = 1;
+						printk("add strength hashing of dnode_entry!");
 					}
 
 					result =  memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
@@ -907,6 +908,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				if(!dnode->strength_hash_status){
 					strength_hash(dnode->strength_hashval, xmem, block_len);
 					dnode->strength_hash_status = 1;
+					printk("add strength hashing of dnode!");
 				} 
 				if(!dnode_entry->strength_hash_status){
 					strength_hash(dnode_entry->strength_hashval,
