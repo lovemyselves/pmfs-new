@@ -36,6 +36,7 @@
 #define REFNODE_SIZE sizeof(struct refnode)
 #define DINDEX pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT)
 DEFINE_SPINLOCK(dedup_index_lock);
+DEFINE_SPINLOCK(dnode_rbtree_lock);
 
 // static LIST_HEAD(hash_map_addr_list);
 // struct list_head *last_hit;
@@ -182,6 +183,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 	struct rb_node *parent = NULL;
 	struct dedupnode *dnode_entry;
 	long result;
+	unsigned long flags;
 
 	// printk("tree update 1");
 	// printk("dnode_new->hashval:%ld", dnode_new->hashval);
@@ -210,8 +212,10 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 		}
 	}
 
-	// rb_link_node(&dnode_new->node, parent, entry_node);
-	// rb_insert_color(&dnode_new->node, droot);
+	spin_lock_irqsave(&dnode_rbtree_lock, flags);
+	rb_link_node(&dnode_new->node, parent, entry_node);
+	rb_insert_color(&dnode_new->node, droot);
+	spin_unlock_irqrestore(&dnode_rbtree_lock, flags);
 
 	return NULL;
 }
