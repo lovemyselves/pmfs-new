@@ -870,32 +870,32 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// }
 		// memset(dnode->strength_hashval, 0, 16); 
 
-		// if(dnode_hit > 0){
-		// 	// dnode_entry = dedupnode_low_overhead_check(dnode);
-		// 	if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
-		// 		dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
-		// 		result = dnode->hashval - dnode_entry->hashval;
-		// 		if(result==0){
-		// 			// if(!dnode->strength_hash_status){
-		// 			// 	strength_hash(dnode->strength_hashval, xmem, dedup_offset+block_len);
-		// 			// 	dnode->strength_hash_status = 1;
-		// 			// } 
-		// 			if(!dnode_entry->strength_hash_status){
-		// 				strength_hash(dnode_entry->strength_hashval,
-		// 				pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
-		// 				dnode_entry->strength_hash_status = 1;
-		// 				// printk("add strength hashing of dnode_entry!");
-		// 			}
+		if(dnode_hit > 0){
+			// dnode_entry = dedupnode_low_overhead_check(dnode);
+			if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
+				dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
+				result = dnode->hashval - dnode_entry->hashval;
+				if(result==0){
+					// if(!dnode->strength_hash_status){
+					// 	strength_hash(dnode->strength_hashval, xmem, dedup_offset+block_len);
+					// 	dnode->strength_hash_status = 1;
+					// } 
+					if(!dnode_entry->strength_hash_status){
+						strength_hash(dnode_entry->strength_hashval,
+						pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
+						dnode_entry->strength_hash_status = 1;
+						// printk("add strength hashing of dnode_entry!");
+					}
 
-		// 			result =  memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
+					result =  memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
 					
-		// 		}
-		// 		if(result==0){
-		// 			// printk("hit in low_overhead_check!");
-		// 			goto strength_hashing_hit;
-		// 		}
-		// 	}
-		// }
+				}
+				if(result==0){
+					// printk("hit in low_overhead_check!");
+					goto strength_hashing_hit;
+				}
+			}
+		}
 		// dnode_entry = dedupnode_tree_update(sb, dnode);
 		while(*entry_node){
 			parent = *entry_node;
