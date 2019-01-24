@@ -192,8 +192,8 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 		else if(result > 0)
 			entry_node = &(*entry_node)->rb_right;
 		else{
-			result = memcmp(dnode_new->strength_hashval
-			,dnode_entry->strength_hashval, 16);
+			// result = memcmp(dnode_new->strength_hashval
+			// ,dnode_entry->strength_hashval, 16);
 			if(result < 0)
 				entry_node = &(*entry_node)->rb_left;
 			else if(result > 0)
@@ -318,32 +318,32 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 }
 
 bool strength_hash(char *result, char* data, size_t len){
-	struct shash_desc *desc;
-	desc = kmalloc(sizeof(*desc), GFP_KERNEL);
-	desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
+	// struct shash_desc *desc;
+	// desc = kmalloc(sizeof(*desc), GFP_KERNEL);
+	// desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
 
-	if(desc->tfm == NULL)
-		return false;
+	// if(desc->tfm == NULL)
+	// 	return false;
 
-	crypto_shash_init(desc);
-	crypto_shash_update(desc, data, len);
-	crypto_shash_final(desc, result);
-	crypto_free_shash(desc->tfm);
+	// crypto_shash_init(desc);
+	// crypto_shash_update(desc, data, len);
+	// crypto_shash_final(desc, result);
+	// crypto_free_shash(desc->tfm);
 	
 	
-	// int i, cycles;
+	int i, cycles;
 
-	// memset(result, 0, 16);
-	// memcpy(result, data+len-(len&15), len&15); //remainder divided by 16
-	// cycles = len>>4;
+	memset(result, 0, 16);
+	memcpy(result, data+len-(len&15), len&15); //remainder divided by 16
+	cycles = len>>4;
 	
-	// for(i=0;i<cycles;i++){
-	// 	*(u64*)result += *(u64*)( data+(i<<4) );
-	// 	*(u64*)result ^= *(u64*)result >> 1;
-	// 	*(u64*)result += *(u64*)result >> 3;
-	// 	*(u64*)(result+8) += *(u64*)( data+(i<<4)+8 );
-	// 	*(u64*)(result+8) ^= *(u64*)result >> 1;
-	// }
+	for(i=0;i<cycles;i++){
+		*(u64*)result += *(u64*)( data+(i<<4) );
+		*(u64*)result ^= *(u64*)result >> 1;
+		*(u64*)result += *(u64*)result >> 3;
+		*(u64*)(result+8) += *(u64*)( data+(i<<4)+8 );
+		*(u64*)(result+8) ^= *(u64*)result >> 1;
+	}
 
 
 
