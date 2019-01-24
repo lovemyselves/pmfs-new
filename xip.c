@@ -43,7 +43,7 @@ DEFINE_SPINLOCK(dnode_rbtree_lock);
 // struct list_head *new_list = &hash_map_addr_list;
 struct list_head *dedupnode_allocation_pos = NULL;
 char dedup_model = 0xFF;
-bool dnode_hit = false;
+short dnode_hit = 0;
 bool rnode_hit = false;
 struct list_head *last_dnode_list;
 struct list_head *last_rnode_list;
@@ -808,7 +808,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct rb_node *parent = NULL;
 		struct dedupnode *dnode_entry;
 		long result;
-		unsigned long flags;
 
 		// chunk divide equally
 		block_len = (4096-dedup_offset)<i?(4096-dedup_offset):i;
@@ -864,11 +863,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->strength_hash_status = 1;
 		// memset(dnode->strength_hashval, 0, 16); 
 
-		if(dnode_hit == true){
+		if(dnode_hit > 0){
 			// dnode_entry = dedupnode_low_overhead_check(dnode);
 			if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
 				dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
-				result = dnode_new->hashval - dnode_entry->hashval;
+				result = dnode->hashval - dnode_entry->hashval;
 				if(result==0){
 					if(!dnode->strength_hash_status){
 						strength_hash(dnode->strength_hashval, xmem, dedup_offset+block_len);
@@ -885,11 +884,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				}
 				if(result==0){
 					printk("hit in low_overhead_check!");
-					return dnode_entry;
+					goto strength_hashing_hit;
 				}
 			}
-			if(dnode_entry!=NULL)
-				goto dnode_hit;
 		}
 		// dnode_entry = dedupnode_tree_update(sb, dnode);
 		while(*entry_node){
@@ -918,7 +915,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				else if(result > 0)
 					entry_node = &(*entry_node)->rb_right;
 				else{
-					goto dnode_hit;
+					goto strength_hashing_hit;
 				}
 			}
 		}
@@ -926,20 +923,20 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rb_insert_color(&dnode->node, droot);
 		dnode_entry = NULL;
 
-		dnode_hit:
+		strength_hashing_hit:
 		if(dnode_entry){
 			list_move_tail(&dnode->list, &dindex->hma_unused);
 			dnode = dnode_entry;
 			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
-			dnode_hit = true;
+			dnode_hit = 1;
 			last_dnode_list = &dnode->list; //log last hit node
 			// free(dnode);
 			// printk("dnode is duplicated!");
 			local_hit = true;
 			/*add reference content */
 		}else{
-			dnode_hit = false;
+			dnode_hit--;
 			// printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
@@ -957,7 +954,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 
 	// printk("pmfswrite 7");
-	nondedup:
 	if(local_hit){
 		written = count;
 		*ppos = pos + count;
