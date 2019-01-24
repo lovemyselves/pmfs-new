@@ -318,31 +318,32 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 }
 
 bool strength_hash(char *result, char* data, size_t len){
-	// struct shash_desc *desc;
-	// desc = kmalloc(sizeof(*desc), GFP_KERNEL);
-	// desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
+	struct shash_desc *desc;
+	desc = kmalloc(sizeof(*desc), GFP_KERNEL);
+	desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
 
-	// if(desc->tfm == NULL)
-	// 	return false;
+	if(desc->tfm == NULL)
+		return false;
 
-	// crypto_shash_init(desc);
-	// crypto_shash_update(desc, data, len);
-	// crypto_shash_final(desc, result);
-	// crypto_free_shash(desc->tfm);
-	int i, cycles;
-
-	memset(result, 0, 16);
-	memcpy(result, data, (len&15)); //remainder divided by 16
-	cycles = len>>4;
-
+	crypto_shash_init(desc);
+	crypto_shash_update(desc, data, len);
+	crypto_shash_final(desc, result);
+	crypto_free_shash(desc->tfm);
 	
-	for(i=0;i<cycles;i++){
-		*(u64*)result += *(u64*)( data+(i<<4) );
-		*(u64*)result ^= *(u64*)result >> 1;
-		*(u64*)result += *(u64*)result >> 3;
-		*(u64*)(result+8) += *(u64*)( data+(i<<4)+8 );
-		*(u64*)(result+8) ^= *(u64*)result >> 1;
-	}
+	
+	// int i, cycles;
+
+	// memset(result, 0, 16);
+	// memcpy(result, data+len-(len&15), len&15); //remainder divided by 16
+	// cycles = len>>4;
+	
+	// for(i=0;i<cycles;i++){
+	// 	*(u64*)result += *(u64*)( data+(i<<4) );
+	// 	*(u64*)result ^= *(u64*)result >> 1;
+	// 	*(u64*)result += *(u64*)result >> 3;
+	// 	*(u64*)(result+8) += *(u64*)( data+(i<<4)+8 );
+	// 	*(u64*)(result+8) ^= *(u64*)result >> 1;
+	// }
 
 
 
@@ -880,6 +881,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, pmfs_inode_blk_size(pi));
 			dindex = DINDEX;
+			dnode->flag = 1;//
 			list_move_tail(&dnode->list, &dindex->hma_head);
 		}
 		
