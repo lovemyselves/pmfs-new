@@ -879,7 +879,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 						dnode_entry->strength_hash_status = 1;
 					}
 
-					result =  memcmp(dnode_new->strength_hashval, dnode_entry->strength_hashval, 16);
+					result =  memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
 					
 				}
 				if(result==0){
