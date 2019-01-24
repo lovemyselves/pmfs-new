@@ -183,8 +183,8 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 	struct dedupnode *dnode_entry;
 	long result;
 
-	printk("tree update 1");
-	printk("dnode_new->hashval:%ld", dnode_new->hashval);
+	// printk("tree update 1");
+	// printk("dnode_new->hashval:%ld", dnode_new->hashval);
 
 	while(*entry_node){
 		parent = *entry_node;
@@ -197,14 +197,14 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 		else{
 			result = memcmp(dnode_new->strength_hashval
 			,dnode_entry->strength_hashval, 16);
-			printk("result:%ld", result);
+			// printk("result:%ld", result);
 			if(result < 0)
 				entry_node = &(*entry_node)->rb_left;
 			else if(result > 0)
 				entry_node = &(*entry_node)->rb_right;
 			else{
 				// printk("dnode_entry:%u", dnode_entry->count);
-				printk("hit in rbtree");
+				// printk("hit in rbtree");
 				return dnode_entry;
 			}
 		}
