@@ -196,6 +196,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 		else{
 			result = memcmp(dnode_new->strength_hashval
 			,dnode_entry->strength_hashval, 16);
+			printk("result:%ld", result);
 			if(result < 0)
 				entry_node = &(*entry_node)->rb_left;
 			else if(result > 0)
