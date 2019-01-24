@@ -67,6 +67,7 @@ static bool init_dedup_module(struct super_block *sb){
 	struct dedup_index *dindex;
 	struct dedupnode *dnode;
 	unsigned offset = 0;
+	int i,dedupnode_size;
 	
 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 	printk("dindex blocknr:%lu", blocknr);
@@ -93,16 +94,17 @@ static bool init_dedup_module(struct super_block *sb){
 	// printk("size of short:%lu", sizeof(short));
 	printk("size of struct refnode:%lu", sizeof(struct refnode));
 
+	dedupnode_size = sizeof(struct dedupnode);
 	for(i=0;i<8192;i++){
 		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 		xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
 	
-		while(offset + DEDUPNODE_SIZE < 4096)
+		while(offset + dedupnode_size < 4096)
 		{	
 			dnode = xmem + offset;
 			INIT_LIST_HEAD(&dnode->list);
 			list_add_tail(&dnode->list, &dindex->hma_unused);
-			offset += DEDUPNODE_SIZE;
+			offset += dedupnode_size;
 		}
 	}
 
