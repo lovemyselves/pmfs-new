@@ -112,7 +112,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	dnode = list_entry(p, struct dedupnode, list);
 	dnode->flag = 0;
 	// list_move_tail(p, &dindex->hma_head);
-	// list_move_tail(p, &dindex->hma_writing);
+	list_move_tail(p, &dindex->hma_writing);
 
 	spin_unlock_irqrestore(&dedup_index_lock, flags);
 	return dnode;
@@ -954,7 +954,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		dnode->flag = 1;
-		list_move_tail(&dnode->list, &dindex->hma_head);
+		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
 		//part end 
 		i -= block_len;
