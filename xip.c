@@ -940,7 +940,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			/*add reference content */
 		}else{
 			dnode_hit = false;
-			dnode->length = dnode->length>(dedup_offset+block_len)?dnode->length:(dedup_offset+block_len);
 			// printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
