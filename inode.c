@@ -989,6 +989,8 @@ out:
 			printk("error, cannot find this refnode!");
 			break;
 		}
+		if(!rnode->dnode)
+			goto dnode_miss;
 		dnode = rnode->dnode;
 		printk("count:%u", dnode->count);
 		if(--(dnode->count) == 0){
@@ -1001,6 +1003,7 @@ out:
 		}
 		else printk("dnode->count:%u", dnode->count);
 		// printk("free rnode");
+		dnode_miss:
 		if(free_refnode(sb, rnode))
 			;
 			printk("free rnode success!");
