@@ -98,10 +98,10 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	struct dedup_index *dindex = DINDEX;
 	unsigned long flags;
 
-	// if(filesystem_restart){
-	// 	filesystem_restart = false;
-	// 	list_splice(&dindex->hma_writing, &dindex->hma_unused);
-	// }
+	if(filesystem_restart){
+		filesystem_restart = false;
+		list_splice(&dindex->hma_writing, &dindex->hma_unused);
+	}
 
 	spin_lock_irqsave(&dedup_index_lock, flags);
 
@@ -953,7 +953,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		dnode->flag = 1;
-		list_move_tail(&dnode->list, &dindex->hma_head);
+		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
 		//part end 
 		i -= block_len;
