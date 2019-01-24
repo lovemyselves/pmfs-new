@@ -42,17 +42,13 @@ DEFINE_SPINLOCK(dnode_rbtree_lock);
 // struct list_head *last_hit;
 // struct list_head *new_list = &hash_map_addr_list;
 struct list_head *dedupnode_allocation_pos = NULL;
-char dedup_model = 0xFF;
+// char dedup_model = 0xFF;
 short dnode_hit = 0;
 bool rnode_hit = false;
 struct list_head *last_dnode_list;
 struct list_head *last_rnode_list;
-struct rb_root root = RB_ROOT;
-
-// struct list_head *last_ref = NULL;
-// bool ref_find_flag = false;
-// struct rb_root ref_root = RB_ROOT;
-// static LIST_HEAD(dedup_ref_list);
+bool filesystem_restart = true;
+// struct rb_root root = RB_ROOT;
 
 size_t dedup_interval = 1;
 /*
@@ -101,6 +97,11 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	struct list_head *p;
 	struct dedup_index *dindex = DINDEX;
 	unsigned long flags;
+
+	if(filesystem_restart){
+		filesystem_restart = false;
+		list_splice(&dindex->hma_writing, &dindex->hma_unused);
+	}
 
 	spin_lock_irqsave(&dedup_index_lock, flags);
 
