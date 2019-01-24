@@ -985,8 +985,8 @@ out:
 	for(i=0;i<blocknum;i++){
 		// printk("i:%u",i);
 		rnode = refnode_search(sb,inode->i_ino,i);
-		if(!rnode || rnode->dnode){
-			// printk("error, cannot find this refnode!");
+		if(!rnode /*|| rnode->dnode==NULL*/){
+			printk("error, cannot find this refnode!");
 			break;
 		}
 		dnode = rnode->dnode;
