@@ -209,7 +209,6 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 	}
 
 	printk("tree update 2");
-	return NULL;
 
 	rb_link_node(&dnode_new->node, parent, entry_node);
 	rb_insert_color(&dnode_new->node, droot);
