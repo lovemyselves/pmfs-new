@@ -816,14 +816,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		if(rnode->dnode){
 			dnode_entry = rnode->dnode;
+			rnode->node = NULL;
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			memcpy(xmem, pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
 			
-			if(!dnode_entry){
-				printk("pmfs write error 0");
-				goto nondedup;
-			}
-			else if(atomic_read(&dnode_entry->atomic_ref_count)>1){
+			if(atomic_read(&dnode_entry->atomic_ref_count)>1){
 				//update with multi-version
 				// overwrite_flag = 1;
 				// printk("dnode refence count:%u", dnode->count);
