@@ -993,7 +993,7 @@ out:
 			goto dnode_miss;
 		dnode = rnode->dnode;
 		printk("count:%u", dnode->count);
-		if(--(dnode->count) == 0){
+		if((dnode->count)-- == 0){
 			// printk("free block");
 			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 			// printk("free dnode");
