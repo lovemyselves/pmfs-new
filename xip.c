@@ -858,8 +858,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// dnode->count = 1;
 		atomic_set(&dnode->atomic_ref_count, 1);
 		dnode->strength_hash_status = 0;
-		strength_hash(strength_hashing, xmem, block_len);
-		memcpy(dnode->strength_hashval, strength_hashing, 16);
+		if(dnode_hit>-32){
+			strength_hash(strength_hashing, xmem, block_len);
+			memcpy(dnode->strength_hashval, strength_hashing, 16);
+		}
+		else{
+			printk("Bypass the strength hashing compute!");
+		}
 		dnode->strength_hash_status = 1;
 		// memset(dnode->strength_hashval, 0, 16); 
 
@@ -883,7 +888,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					
 				}
 				if(result==0){
-					printk("hit in low_overhead_check!");
+					// printk("hit in low_overhead_check!");
 					goto strength_hashing_hit;
 				}
 			}
