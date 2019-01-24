@@ -940,9 +940,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// dnode->count++;
 			atomic_inc(&dnode->atomic_ref_count);
 			dnode_hit = 1;
-			last_dnode_list = &dnode->list; //log last hit node
-			// free(dnode);
-			// printk("dnode is duplicated!");
+			last_dnode_list = &dnode->list; //note down last hit node
 			local_hit = true;
 			/*add reference content */
 		}else{
@@ -951,14 +949,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, dnode->length);
-			// dindex = DINDEX;
-			dnode->flag = 1;//
-			list_move_tail(&dnode->list, &dindex->hma_head);
 		}
 		
 		kfree(xmem);
-		rnode->dnode = dnode;
 		dnode->flag = 1;
+		list_move_tail(&dnode->list, &dindex->hma_head);
+		rnode->dnode = dnode;
 		//part end 
 		i -= block_len;
 	}
