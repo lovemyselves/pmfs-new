@@ -953,7 +953,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		dnode->flag = 1;
-		// list_move_tail(&dnode->list, &dindex->hma_head);
+		list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
 		//part end 
 		i -= block_len;
