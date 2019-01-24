@@ -832,7 +832,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 			dnode = alloc_dedupnode(sb);
 			dnode->flag = 0;
-			dnode->length = dnode_entry->length;
+			dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			new_dnode_status = true;
@@ -840,7 +840,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		else{
 			dnode = alloc_dedupnode(sb);
 			dnode->flag = 0;
-			dnode->length = 0;
+			dnode->length = dedup_offset+block_len;
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
@@ -864,43 +864,69 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->strength_hash_status = 1;
 		// memset(dnode->strength_hashval, 0, 16); 
 
-		dnode_entry = NULL;
 		if(dnode_hit == true){
-			dnode_entry = dedupnode_low_overhead_check(dnode);
+			// dnode_entry = dedupnode_low_overhead_check(dnode);
+			if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
+				dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
+				result = dnode_new->hashval - dnode_entry->hashval;
+				if(result==0){
+					if(!dnode->strength_hash_status){
+						strength_hash(dnode->strength_hashval, xmem, dedup_offset+block_len);
+						dnode->strength_hash_status = 1;
+					} 
+					if(!dnode_entry->strength_hash_status){
+						strength_hash(dnode_entry->strength_hashval,
+						pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
+						dnode_entry->strength_hash_status = 1;
+					}
+
+					result =  memcmp(dnode_new->strength_hashval, dnode_entry->strength_hashval, 16);
+					
+				}
+				if(result==0){
+					printk("hit in low_overhead_check!");
+					return dnode_entry;
+				}
+			}
 			if(dnode_entry!=NULL)
-				goto dedup_hit;
+				goto dnode_hit;
 		}
-		dnode_entry = dedupnode_tree_update(sb, dnode);
-		// while(*entry_node){
-		// 	parent = *entry_node;
-		// 	dnode_entry = rb_entry(*entry_node, struct dedupnode, node);
-		// 	result = dnode->hashval - dnode_entry->hashval;
-		// 	if(result < 0)
-		// 		entry_node = &(*entry_node)->rb_left;
-		// 	else if(result > 0)
-		// 		entry_node = &(*entry_node)->rb_right;
-		// 	else{
-		// 		if(!dnode->strength_hash_status)
-		// 			strength_hash(dnode->strength_hashval,
-		// 			 xmem, block_len);
-		// 		if(!dnode_entry->strength_hash_status)
-		// 			strength_hash(dnode_entry->strength_hashval,
-		// 			 pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
-		// 		result = memcmp(dnode->strength_hashval
-		// 		,dnode_entry->strength_hashval, 16);
-		// 		// printk("result:%ld", result);
-		// 		if(result < 0)
-		// 			entry_node = &(*entry_node)->rb_left;
-		// 		else if(result > 0)
-		// 			entry_node = &(*entry_node)->rb_right;
-		// 		else{
-		// 			// printk("dnode_entry:%u", dnode_entry->count);
-		// 			// printk("hit in rbtree");
-		// 			return dnode_entry;
-		// 		}
-		// 	}
-		// }
-		dedup_hit:
+		// dnode_entry = dedupnode_tree_update(sb, dnode);
+		while(*entry_node){
+			parent = *entry_node;
+			dnode_entry = rb_entry(*entry_node, struct dedupnode, node);
+			result = dnode->hashval - dnode_entry->hashval;
+			if(result < 0)
+				entry_node = &(*entry_node)->rb_left;
+			else if(result > 0)
+				entry_node = &(*entry_node)->rb_right;
+			else{
+				if(!dnode->strength_hash_status){
+					strength_hash(dnode->strength_hashval, xmem, block_len);
+					dnode->strength_hash_status = 1;
+				} 
+				if(!dnode_entry->strength_hash_status){
+					strength_hash(dnode_entry->strength_hashval,
+					 pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
+					 dnode_entry->strength_hash_status = 1;
+				}			
+				
+				result = memcmp(dnode->strength_hashval,dnode_entry->strength_hashval, 16);
+				// printk("result:%ld", result);
+				if(result < 0)
+					entry_node = &(*entry_node)->rb_left;
+				else if(result > 0)
+					entry_node = &(*entry_node)->rb_right;
+				else{
+					goto dnode_hit;
+				}
+			}
+		}
+		rb_link_node(&dnode->node, parent, entry_node);
+		rb_insert_color(&dnode->node, droot);
+		dnode_entry = NULL;
+
+		dnode_hit:
 		if(dnode_entry){
 			list_move_tail(&dnode->list, &dindex->hma_unused);
 			dnode = dnode_entry;
