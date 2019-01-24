@@ -816,7 +816,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		if(rnode->dnode){
 			dnode_entry = rnode->dnode;
-			rnode->node = NULL;
+			rnode->dnode = NULL;
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			memcpy(xmem, pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
 			
