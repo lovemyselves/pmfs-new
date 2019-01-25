@@ -995,12 +995,10 @@ out:
 		// printk("count:%d", atomic_read(&dnode->atomic_ref_count));
 		atomic_dec(&dnode->atomic_ref_count);
 		if(!atomic_read(&dnode->atomic_ref_count)){
-			// printk("free block");
-			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
-			// printk("free dnode");
-			if(rnode->dnode->flag == 1)
-				free_dedupnode(sb, (void*)rnode->dnode);
-
+			if(rnode->dnode->flag == 1){
+				pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);// printk("free block");
+				free_dedupnode(sb, rnode->dnode);// printk("free dnode");
+			}
 				// printk("free dnode success!");
 		}
 		// else printk("dnode->count:%d", atomic_read(&dnode->atomic_ref_count));
