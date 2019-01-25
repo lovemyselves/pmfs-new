@@ -65,7 +65,7 @@ static bool init_dedup_module(struct super_block *sb){
 	unsigned long blocknr;
 	void *xmem;
 	struct dedup_index *dindex;
-	struct dedupnode *dnode;
+	// struct dedupnode *dnode;
 	// struct refnode *rnode;
 	// unsigned offset;
 	// int i,dedupnode_size, refnode_size;
