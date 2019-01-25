@@ -116,7 +116,7 @@ static bool init_dedup_module(struct super_block *sb){
 	
 		while(offset + refnode_size < 4096)
 		{	
-			dnode = xmem + offset;
+			rnode = xmem + offset;
 			INIT_LIST_HEAD(&rnode->list);
 			list_add_tail(&rnode->list, &dindex->ref_unused);
 			offset += refnode_size;
