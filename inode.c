@@ -986,11 +986,11 @@ out:
 		// printk("i:%u",i);
 		rnode = refnode_search(sb,inode->i_ino,i);
 		if(!rnode /*|| rnode->dnode==NULL*/){
-			printk("error, cannot find this refnode!");
+			// printk("error, cannot find this refnode!");
 			continue;
 		}
 		if(!rnode->dnode)
-			goto dnode_miss;
+			continue;
 		dnode = rnode->dnode;
 		// printk("count:%d", atomic_read(&dnode->atomic_ref_count));
 		atomic_dec(&dnode->atomic_ref_count);
@@ -1003,7 +1003,7 @@ out:
 		}
 		// else printk("dnode->count:%d", atomic_read(&dnode->atomic_ref_count));
 		// printk("free rnode");
-		dnode_miss:
+		// dnode_miss:
 		if(free_refnode(sb, rnode))
 			;
 			// printk("free rnode success!");
