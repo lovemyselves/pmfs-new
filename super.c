@@ -97,7 +97,7 @@ static bool init_dedup_module(struct super_block *sb){
 
 	dedupnode_size = sizeof(struct dedupnode);
 	refnode_size = sizeof(struct refnode);
-	for(i=0;i<8192;i++){
+	for(i=0;i<65536;i++){
 		offset = 0;
 		pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
 		xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
