@@ -123,7 +123,7 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	struct rb_root *droot = &dindex->dedupnode_root;
 	struct dedupnode *dnode = (struct dedupnode*)dedupnode;
 
-	if(dnode == NULL)
+	if(!dnode->flag)
 		return false;
 	//remove from the tree
 	rb_erase(&dnode->node, droot);
@@ -828,9 +828,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				atomic_dec(&dnode_entry->atomic_ref_count);
 			}	
 			else{
-				printk("ino:%lu", inode->i_ino);
-				printk("index:%lu", j+start_blk);
-				// free_dedupnode(sb, dnode_entry);
+				if(!dedup_offset)
+					free_dedupnode(sb, dnode_entry);
 			}
 
 			dnode = alloc_dedupnode(sb);
