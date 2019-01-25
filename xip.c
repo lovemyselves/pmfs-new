@@ -828,8 +828,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				atomic_dec(&dnode_entry->atomic_ref_count);
 			}	
 			else{
-				if(!dedup_offset)
-					free_dedupnode(sb, dnode_entry);
+				free_dedupnode(sb, dnode_entry);
 			}
 
 			dnode = alloc_dedupnode(sb);
