@@ -129,8 +129,8 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	// printk("flag:%u",dnode->flag);
 	//flag set 0, remove to unused list
 	dnode->flag = 0;
-	rb_erase(&dnode->node, droot);
 	pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
+	rb_erase(&dnode->node, droot);
 	list_move_tail(&dnode->list, &dindex->hma_unused);
 	return true;
 }
@@ -832,6 +832,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}	
 			else{
 				// dnode_obsolete = dnode_entry;//
+				printk("try to free dnode!");
 				free_dedupnode(sb, dnode_entry);
 				// printk("udpate in-place!");
 			}
