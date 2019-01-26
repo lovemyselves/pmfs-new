@@ -833,7 +833,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			else{
 				// dnode_obsolete = dnode_entry;//
 				free_dedupnode(sb, dnode_entry);
-				printk("udpate in-place!");
+				// printk("udpate in-place!");
 			}
 
 			dnode = alloc_dedupnode(sb);
@@ -897,7 +897,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					
 				}
 				if(result==0){
-					printk("hit in low_overhead_check!");
+					// printk("hit in low_overhead_check!");
 					goto strength_hashing_hit;
 				}
 			}
@@ -931,7 +931,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				else if(result > 0)
 					entry_node = &(*entry_node)->rb_right;
 				else{
-					printk("hit in rb_tree_search!");
+					// printk("hit in rb_tree_search!");
 					goto strength_hashing_hit;
 				}
 			}
