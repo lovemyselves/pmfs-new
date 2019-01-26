@@ -825,7 +825,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(atomic_read(&dnode_entry->atomic_ref_count)>1){
 				//update with multi-version
 				// overwrite_flag = 1;
-				printk("dnode refence count:%u", dnode->count);
+				printk("update Copy and Write");
 				atomic_dec(&dnode_entry->atomic_ref_count);
 			}	
 			else{
