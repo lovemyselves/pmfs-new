@@ -832,7 +832,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}	
 			else{
 				// dnode_obsolete = dnode_entry;//
-				printk("try to free dnode!");
 				free_dedupnode(sb, dnode_entry);
 				// printk("udpate in-place!");
 			}
