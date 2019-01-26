@@ -826,17 +826,21 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(atomic_read(&dnode_entry->atomic_ref_count)>1){
 				//update with multi-version
 				// overwrite_flag = 1;
-				printk("update Copy and Write");
+				// printk("update Copy and Write");
 				atomic_dec(&dnode_entry->atomic_ref_count);
 			}	
 			else{
 				dnode_obsolete = dnode_entry;//
 				free_dedupnode(sb, dnode_entry);
-				printk("udpate in-place!");
+				// printk("udpate in-place!");
 			}
 
-			if(dnode_obsolete) 
-				free_dedupnode(sb, dnode_obsolete); 
+			if(dnode_obsolete) {
+				if(dnode->flag){
+					dnode->flag = 0;
+					rb_erase(&dnode->node, droot);
+				}
+			}
 			dnode = alloc_dedupnode(sb);
 			// dnode->flag = 0;
 			dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
