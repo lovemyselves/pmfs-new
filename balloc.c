@@ -131,7 +131,7 @@ void __pmfs_free_block(struct super_block *sb, unsigned long blocknr,
 		}
 	}
 
-	pmfs_error_mng(sb, "Unable to free block %ld\n", blocknr);
+	// pmfs_error_mng(sb, "Unable to free block %ld\n", blocknr);
 
 block_found:
 
