@@ -809,6 +809,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct rb_node **entry_node = &(droot->rb_node);
 		struct rb_node *parent = NULL;
 		struct dedupnode *dnode_entry;
+		struct dedupnode *dnode_obsolete=NULL;
 		long result;
 
 		// chunk divide equally
@@ -824,11 +825,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(atomic_read(&dnode_entry->atomic_ref_count)>1){
 				//update with multi-version
 				// overwrite_flag = 1;
-				// printk("dnode refence count:%u", dnode->count);
+				printk("dnode refence count:%u", dnode->count);
 				atomic_dec(&dnode_entry->atomic_ref_count);
 			}	
 			else{
-				free_dedupnode(sb, dnode_entry);
+				dnode_obsolete = dnode_entry;//free_dedupnode(sb, dnode_entry);
+				printk("udpate in-place!");
 			}
 
 			dnode = alloc_dedupnode(sb);
@@ -957,6 +959,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
+		free_dedupnode(sb, dnode_obsolete); 
 		//part end 
 		i -= block_len;
 	}
