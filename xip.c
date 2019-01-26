@@ -834,6 +834,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				printk("udpate in-place!");
 			}
 
+			if(dnode_obsolete) 
+				free_dedupnode(sb, dnode_obsolete); 
 			dnode = alloc_dedupnode(sb);
 			// dnode->flag = 0;
 			dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
