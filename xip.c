@@ -126,10 +126,11 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	if(!dnode->flag)
 		return false;
 	//remove from the tree
-	printk("flag:%u",dnode->flag);
+	// printk("flag:%u",dnode->flag);
 	//flag set 0, remove to unused list
 	dnode->flag = 0;
 	rb_erase(&dnode->node, droot);
+	pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 	list_move_tail(&dnode->list, &dindex->hma_unused);
 	return true;
 }
@@ -810,7 +811,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct rb_node **entry_node = &(droot->rb_node);
 		struct rb_node *parent = NULL;
 		struct dedupnode *dnode_entry;
-		struct dedupnode *dnode_obsolete=NULL;
+		// struct dedupnode *dnode_obsolete=NULL;
 		long result;
 
 		// chunk divide equally
@@ -830,17 +831,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				atomic_dec(&dnode_entry->atomic_ref_count);
 			}	
 			else{
-				dnode_obsolete = dnode_entry;//
+				// dnode_obsolete = dnode_entry;//
 				free_dedupnode(sb, dnode_entry);
-				// printk("udpate in-place!");
+				printk("udpate in-place!");
 			}
 
-			if(dnode_obsolete) {
-				if(dnode->flag){
-					dnode->flag = 0;
-					rb_erase(&dnode->node, droot);
-				}
-			}
 			dnode = alloc_dedupnode(sb);
 			// dnode->flag = 0;
 			dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
