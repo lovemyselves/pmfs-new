@@ -126,6 +126,7 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	if(!dnode->flag)
 		return false;
 	//remove from the tree
+	printk("flag:%u",dnode->flag);
 	rb_erase(&dnode->node, droot);
 	//flag set 0, remove to unused list
 	dnode->flag = 0;
