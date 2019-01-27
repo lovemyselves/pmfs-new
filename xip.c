@@ -811,7 +811,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct rb_node **entry_node = &(droot->rb_node);
 		struct rb_node *parent = NULL;
 		struct dedupnode *dnode_entry;
-		// struct dedupnode *dnode_obsolete=NULL;
+		struct dedupnode *dnode_obsolete=NULL;
 		long result;
 
 		// chunk divide equally
@@ -831,8 +831,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				atomic_dec(&dnode_entry->atomic_ref_count);
 			}	
 			else{
-				// dnode_obsolete = dnode_entry;//
-				free_dedupnode(sb, dnode_entry);
+				dnode_obsolete = dnode_entry;//
+				// free_dedupnode(sb, dnode_entry);
 				// printk("udpate in-place!");
 			}
 
@@ -942,6 +942,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		strength_hashing_hit:
 		if(dnode_entry){
+			if(dnode_obsolete){
+				if(dnode_obsolete == dnode_entry)
+					printk("the same data in-place update!");
+			}
 			list_move_tail(&dnode->list, &dindex->hma_unused);
 			dnode = dnode_entry;
 			// dnode->count++;
