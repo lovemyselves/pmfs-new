@@ -963,11 +963,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		
 		kfree(xmem);
+		if(dnode_obsolete)
+			free_dedupnode(sb, dnode_obsolete);
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
-		if(dnode_obsolete) 
-			free_dedupnode(sb, dnode_obsolete); 
+		 
 		//part end 
 		i -= block_len;
 	}
