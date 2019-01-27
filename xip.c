@@ -831,6 +831,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				atomic_dec(&dnode_entry->atomic_ref_count);
 			}	
 			else{
+				atomic_dec(&dnode_entry->atomic_ref_count);
 				dnode_obsolete = dnode_entry;//
 				// free_dedupnode(sb, dnode_entry);
 				// printk("udpate in-place!");
@@ -942,10 +943,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 		strength_hashing_hit:
 		if(dnode_entry){
-			if(dnode_obsolete){
-				if(dnode_obsolete == dnode_entry)
-					dnode_obsolete = NULL;
-			}
 			list_move_tail(&dnode->list, &dindex->hma_unused);
 			dnode = dnode_entry;
 			// dnode->count++;
@@ -964,7 +961,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		if(dnode_obsolete)
-			free_dedupnode(sb, dnode_obsolete);
+			if(!atomic_read(&dnode_obsolete->atomic_ref_count))
+				free_dedupnode(sb, dnode_obsolete);
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
