@@ -944,7 +944,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(dnode_entry){
 			if(dnode_obsolete){
 				if(dnode_obsolete == dnode_entry)
-					dnode_obsolete = 0;
+					dnode_obsolete = NULL;
 			}
 			list_move_tail(&dnode->list, &dindex->hma_unused);
 			dnode = dnode_entry;
