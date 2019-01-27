@@ -944,7 +944,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		if(dnode_entry){
 			if(dnode_obsolete){
 				if(dnode_obsolete == dnode_entry)
-					printk("the same data in-place update!");
+					dnode_obsolete = 0;
 			}
 			list_move_tail(&dnode->list, &dindex->hma_unused);
 			dnode = dnode_entry;
@@ -966,8 +966,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
-		// if(dnode_obsolete) 
-		// 	free_dedupnode(sb, dnode_obsolete); 
+		if(dnode_obsolete) 
+			free_dedupnode(sb, dnode_obsolete); 
 		//part end 
 		i -= block_len;
 	}
