@@ -1034,7 +1034,7 @@ out:
 	sb_end_write(inode->i_sb);
 	//dedup part
 	// printk("pmfs write out");
-	xip_writing = false;
+	// xip_writing = false;
 	//part end
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
 	return ret;
