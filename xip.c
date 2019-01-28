@@ -132,8 +132,8 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 		return false;
 		
 	dnode->flag = 0;
-	pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
-	rb_erase(&dnode->node, droot);
+	// pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
+	// rb_erase(&dnode->node, droot);
 	list_move_tail(&dnode->list, &dindex->hma_unused);
 	return true;
 }
