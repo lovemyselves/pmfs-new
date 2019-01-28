@@ -123,7 +123,7 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	struct rb_root *droot = &dindex->dedupnode_root;
 	struct dedupnode *dnode = (struct dedupnode*)dedupnode;
 
-	if(!dnode->flag)
+	if(dnode->flag!=1)
 		return false;
 	//remove from the tree
 	// printk("flag:%u",dnode->flag);
@@ -824,18 +824,19 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			memcpy(xmem, pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
 			
-			if(atomic_read(&dnode_entry->atomic_ref_count)>1){
+			// if(atomic_read(&dnode_entry->atomic_ref_count)>1){
 			// 	//update with multi-version
 			// 	// overwrite_flag = 1;
 			// 	// printk("update Copy and Write");
+			// 	atomic_dec(&dnode_entry->atomic_ref_count);
+			// }	
+			// else{
 				atomic_dec(&dnode_entry->atomic_ref_count);
-			}	
-			else{
-				atomic_dec(&dnode_entry->atomic_ref_count);
+				dnode_entry->flag = 2;
 				dnode_obsolete = dnode_entry;//
 				// free_dedupnode(sb, dnode_entry);
 				// printk("udpate in-place!");
-			}
+			// }
 
 			dnode = alloc_dedupnode(sb);
 			// dnode->flag = 0;
@@ -904,9 +905,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 		}
 		// dnode_entry = dedupnode_tree_update(sb, dnode);
-		dnode_entry = NULL;
-		if(dnode_obsolete)
-			goto strength_hashing_hit;
 		while(*entry_node){
 			parent = *entry_node;
 			dnode_entry = rb_entry(*entry_node, struct dedupnode, node);
@@ -964,11 +962,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		// printk("a dedupnode be checked!");
-		// if(dnode_obsolete)
-		// 	if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
-		// 		free_dedupnode(sb, dnode_obsolete);
-				// printk("update with same data!");
-			// }
+		if(dnode_obsolete)
+			if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
+				dnode_obsolete->flag = 1;
+				free_dedupnode(sb, dnode_obsolete);
+				printk("update with same data!");
+			}
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
