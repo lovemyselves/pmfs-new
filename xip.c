@@ -1048,7 +1048,7 @@ out:
 	//dedup part
 	// printk("pmfs write out");
 	//part end
-	xip_writing = false;
+	// xip_writing = false;
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
 	return ret;
 }
