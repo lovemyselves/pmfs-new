@@ -811,7 +811,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct rb_node **entry_node = &(droot->rb_node);
 		struct rb_node *parent = NULL;
 		struct dedupnode *dnode_entry;
-		// struct dedupnode *dnode_obsolete=NULL;
+		struct dedupnode *dnode_obsolete=NULL;
 		long result;
 
 		// chunk divide equally
@@ -824,18 +824,18 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			memcpy(xmem, pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
 			
-			// if(atomic_read(&dnode_entry->atomic_ref_count)>1){
+			if(atomic_read(&dnode_entry->atomic_ref_count)>1){
 			// 	//update with multi-version
 			// 	// overwrite_flag = 1;
 			// 	// printk("update Copy and Write");
-			// 	atomic_dec(&dnode_entry->atomic_ref_count);
-			// }	
-			// else{
 				atomic_dec(&dnode_entry->atomic_ref_count);
-				// dnode_obsolete = dnode_entry;//
+			}	
+			else{
+				atomic_dec(&dnode_entry->atomic_ref_count);
+				dnode_obsolete = dnode_entry;//
 				// free_dedupnode(sb, dnode_entry);
 				// printk("udpate in-place!");
-			// }
+			}
 
 			dnode = alloc_dedupnode(sb);
 			// dnode->flag = 0;
@@ -904,6 +904,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			}
 		}
 		// dnode_entry = dedupnode_tree_update(sb, dnode);
+		dnode_entry = NULL;
+		if(dnode_obsolete)
+			goto strength_hashing_hit;
 		while(*entry_node){
 			parent = *entry_node;
 			dnode_entry = rb_entry(*entry_node, struct dedupnode, node);
