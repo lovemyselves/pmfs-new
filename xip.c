@@ -128,8 +128,6 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	if(xip_writing)
 		return false; 
 
-	if(dnode->flag!=1)
-		return false;
 	//remove from the tree
 	// printk("flag:%u",dnode->flag);
 	//flag set 0, remove to unused list
@@ -137,6 +135,9 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	droot = &dindex->dedupnode_root;
 	dnode = (struct dedupnode*)dedupnode;
 
+	if(dnode->flag!=1)
+		return false;
+		
 	dnode->flag = 0;
 	pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 	rb_erase(&dnode->node, droot);
