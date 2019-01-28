@@ -739,7 +739,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
 
-	printk("pmfs xip file write start!");
+	// printk("pmfs xip file write start!");
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -1037,7 +1037,7 @@ out:
 	sb_end_write(inode->i_sb);
 	//dedup part
 	// printk("pmfs write out");
-	printk("pmfs xip file write end!");
+	// printk("pmfs xip file write end!");
 	//part end
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
 	return ret;
