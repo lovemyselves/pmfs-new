@@ -965,7 +965,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
 		// 		free_dedupnode(sb, dnode_obsolete);
 				// printk("update with same data!");
-			}
+			// }
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
