@@ -978,8 +978,6 @@ static int pmfs_free_inode(struct inode *inode)
 out:
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
 	
-	if(xip_writing)
-		return err;
 	blocknum = (inode->i_size>>12) + ((inode->i_size&4096)?1:0);
 	// printk("blocknum:%u", blocknum);
 	for(i=0;i<blocknum;i++){
