@@ -124,6 +124,7 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	struct rb_root *droot = &dindex->dedupnode_root;
 	struct dedupnode *dnode = (struct dedupnode*)dedupnode;
 
+	printk("free dedupnode!");
 	if(dnode->flag!=1)
 		return false;
 	//remove from the tree
