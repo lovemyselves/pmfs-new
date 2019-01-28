@@ -121,15 +121,22 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 }
 
 bool free_dedupnode(struct super_block *sb, void *dedupnode){
-	struct dedup_index *dindex = DINDEX;
-	struct rb_root *droot = &dindex->dedupnode_root;
-	struct dedupnode *dnode = (struct dedupnode*)dedupnode;
+	struct dedup_index *dindex;
+	struct rb_root *droot;
+	struct dedupnode *dnode;;
+
+	if(xip_writing)
+		return false; 
 
 	if(dnode->flag!=1)
 		return false;
 	//remove from the tree
 	// printk("flag:%u",dnode->flag);
 	//flag set 0, remove to unused list
+	dindex = DINDEX;
+	droot = &dindex->dedupnode_root;
+	dnode = (struct dedupnode*)dedupnode;
+
 	dnode->flag = 0;
 	pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 	rb_erase(&dnode->node, droot);
@@ -151,11 +158,17 @@ struct refnode *alloc_refnode(struct super_block *sb){
 }
 
 bool free_refnode(struct super_block *sb, struct refnode *rnode){
-	struct dedup_index *dindex = DINDEX;
-	struct rb_root *rroot = &dindex->refroot;
+	struct dedup_index *dindex;
+	struct rb_root *rroot;
+
+	if(xip_writing)
+		return false;
 
 	if(rnode == NULL)
 		return false;
+	
+	dindex = DINDEX;
+	rroot = &dindex->refroot;
 	//remove from the red black tree
 	rb_erase(&rnode->node, rroot);
 	//flag set 0, remove to unused list
@@ -734,7 +747,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// struct dedup_index *dindex;
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
-	// xip_writing = true;
+	xip_writing = true;
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -801,7 +814,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	// if(!dnode_hit && (start_blk&1023))
 	// 	goto nondedup;
-
+	xip_writing = false;
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
