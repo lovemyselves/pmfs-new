@@ -168,6 +168,7 @@ bool free_refnode(struct super_block *sb, struct refnode *rnode){
 	if(rnode == NULL)
 		return false;
 	
+	printk("free refnode");
 	dindex = DINDEX;
 	rroot = &dindex->refroot;
 	//remove from the red black tree
@@ -815,7 +816,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	// if(!dnode_hit && (start_blk&1023))
 	// 	goto nondedup;
-	xip_writing = false;
+	
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
@@ -1047,6 +1048,7 @@ out:
 	//dedup part
 	// printk("pmfs write out");
 	//part end
+	xip_writing = false;
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
 	return ret;
 }
