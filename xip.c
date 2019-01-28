@@ -49,6 +49,7 @@ struct list_head *last_dnode_list;
 struct list_head *last_rnode_list;
 bool filesystem_restart = true;
 // struct rb_root root = RB_ROOT;
+long circle_count = 0;
 
 size_t dedup_interval = 1;
 /*
@@ -961,7 +962,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		
 		kfree(xmem);
-		// printk("a dedupnode be checked!");
+		printk("a dedupnode be checked:%ld", circle_count);
+
 		if(dnode_obsolete)
 			if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
 				dnode_obsolete->flag = 1;
