@@ -47,7 +47,7 @@ short dnode_hit = 0;
 bool rnode_hit = false;
 struct list_head *last_dnode_list;
 struct list_head *last_rnode_list;
-bool xip_writing = false;
+extern bool xip_writing = false;
 bool filesystem_restart = true;
 // struct rb_root root = RB_ROOT;
 long circle_count = 0;
@@ -736,7 +736,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
 
-	printk("1 pmfs_xip_file_write start!");
+	printk("pmfs_xip_file_write start!");
+	xip_writing = true;
 
 	//end
 
@@ -781,8 +782,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	max_logentries = num_blocks / MAX_PTRS_PER_LENTRY + 2;
 	if (max_logentries > MAX_METABLOCK_LENTRIES)
 		max_logentries = MAX_METABLOCK_LENTRIES;
-
-	printk("2 pmfs_xip_file_write start!");
 
 	trans = pmfs_new_transaction(sb, MAX_INODE_LENTRIES + max_logentries);
 	if (IS_ERR(trans)) {

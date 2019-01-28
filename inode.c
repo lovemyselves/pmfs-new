@@ -977,9 +977,9 @@ static int pmfs_free_inode(struct inode *inode)
 		   sbi->s_free_inode_hint);
 out:
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
-	//dedup del part
-	// printk("del inode, ino:%lu", inode->i_ino);
-	// printk("isize:%llu, num of block:%llu", inode->i_size, inode->i_size>>12);
+	
+	if(xip_writing)
+		return err;
 	blocknum = (inode->i_size>>12) + ((inode->i_size&4096)?1:0);
 	// printk("blocknum:%u", blocknum);
 	for(i=0;i<blocknum;i++){
