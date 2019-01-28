@@ -734,6 +734,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// struct dedup_index *dindex;
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
+
+	printk("pmfs_xip_file_write start!");
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
