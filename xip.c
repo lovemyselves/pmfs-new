@@ -963,6 +963,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		printk("a dedupnode be checked:%ld", circle_count);
+		circle_count++;
 
 		if(dnode_obsolete)
 			if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
