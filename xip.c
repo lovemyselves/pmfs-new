@@ -750,6 +750,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
 	xip_writing = true;
+	printk("set xip writing true");
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -1048,7 +1049,8 @@ out:
 	//dedup part
 	// printk("pmfs write out");
 	//part end
-	// xip_writing = false;
+	printk("set xip writing false");
+	xip_writing = false;
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
 	return ret;
 }
