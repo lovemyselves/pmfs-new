@@ -977,7 +977,7 @@ static int pmfs_free_inode(struct inode *inode)
 		   sbi->s_free_inode_hint);
 out:
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
-	
+
 	blocknum = (inode->i_size>>12) + ((inode->i_size&4096)?1:0);
 	// printk("blocknum:%u", blocknum);
 	for(i=0;i<blocknum;i++){
@@ -993,17 +993,15 @@ out:
 		// printk("count:%d", atomic_read(&dnode->atomic_ref_count));
 		atomic_dec(&dnode->atomic_ref_count);
 		if(!atomic_read(&dnode->atomic_ref_count)){
-			if(rnode->dnode->flag == 1){
-				pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);// printk("free block");
-				free_dedupnode(sb, rnode->dnode);// printk("free dnode");
-			}
-				// printk("free dnode success!");
+			// pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);// printk("free block");
+			free_dedupnode(sb, rnode->dnode);// printk("free dnode");
+			// printk("free dnode success!");
 		}
 		// else printk("dnode->count:%d", atomic_read(&dnode->atomic_ref_count));
 		// printk("free rnode");
 		// dnode_miss:
-		if(free_refnode(sb, rnode))
-			;
+		// if(free_refnode(sb, rnode))
+		// 	;
 			// printk("free rnode success!");
 	}
 	//dedup end
