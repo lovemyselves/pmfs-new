@@ -29,6 +29,10 @@
 unsigned int blk_type_to_shift[PMFS_BLOCK_TYPE_MAX] = {12, 21, 30};
 uint32_t blk_type_to_size[PMFS_BLOCK_TYPE_MAX] = {0x1000, 0x200000, 0x40000000};
 
+//dedup use
+extern bool xip_writing;
+//dedup use end
+
 /*
  * allocate a data block for inode and return it's absolute blocknr.
  * Zeroes out the block if zero set. Increments inode->i_blocks.

@@ -47,7 +47,7 @@ short dnode_hit = 0;
 bool rnode_hit = false;
 struct list_head *last_dnode_list;
 struct list_head *last_rnode_list;
-extern bool xip_writing = false;
+bool xip_writing = false;
 bool filesystem_restart = true;
 // struct rb_root root = RB_ROOT;
 long circle_count = 0;
