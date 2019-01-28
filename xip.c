@@ -47,7 +47,6 @@ short dnode_hit = 0;
 bool rnode_hit = false;
 struct list_head *last_dnode_list;
 struct list_head *last_rnode_list;
-bool xip_writing = false;
 bool filesystem_restart = true;
 // struct rb_root root = RB_ROOT;
 long circle_count = 0;
@@ -123,10 +122,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	struct dedup_index *dindex;
 	struct rb_root *droot;
-	struct dedupnode *dnode;;
-
-	if(xip_writing)
-		return false; 
+	struct dedupnode *dnode;; 
 
 	//remove from the tree
 	// printk("flag:%u",dnode->flag);
@@ -161,9 +157,6 @@ struct refnode *alloc_refnode(struct super_block *sb){
 bool free_refnode(struct super_block *sb, struct refnode *rnode){
 	struct dedup_index *dindex;
 	struct rb_root *rroot;
-
-	if(xip_writing)
-		return false;
 
 	if(rnode == NULL)
 		return false;
@@ -749,8 +742,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// struct dedup_index *dindex;
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
-	xip_writing = true;
-	printk("set xip writing true");
+
+	printk("pmfs xip file write start!");
 	//end
 
 	PMFS_START_TIMING(xip_write_t, xip_write_time);
@@ -1048,9 +1041,8 @@ out:
 	sb_end_write(inode->i_sb);
 	//dedup part
 	// printk("pmfs write out");
+	printk("pmfs xip file write end!");
 	//part end
-	printk("set xip writing false");
-	xip_writing = false;
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
 	return ret;
 }
