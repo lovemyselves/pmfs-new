@@ -735,8 +735,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	// struct dedup_index *dindex;
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
-
-	printk("pmfs_xip_file_write start!");
 	xip_writing = true;
 
 	//end
@@ -941,12 +939,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					entry_node = &(*entry_node)->rb_right;
 				else{
 					if(dnode_entry->flag == 2){
-						circle_count++;
-						printk("incident count:%ld", circle_count);
+						// circle_count++;
+						// printk("incident count:%ld", circle_count);
 						dnode_obsolete = NULL;
 						dnode_entry->flag = 1;
 					}
-					printk("hit in rb_tree_search!");
+					// printk("hit in rb_tree_search!");
 					goto strength_hashing_hit;
 				}
 			}
