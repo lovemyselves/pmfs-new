@@ -832,7 +832,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// }	
 			// else{
 				atomic_dec(&dnode_entry->atomic_ref_count);
-				dnode_obsolete = dnode_entry;//
+				// dnode_obsolete = dnode_entry;//
 				// free_dedupnode(sb, dnode_entry);
 				// printk("udpate in-place!");
 			// }
@@ -899,8 +899,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				}
 				if(result==0){
 					// printk("hit in low_overhead_check!");
-					if(dnode_obsolete == dnode_entry)
-						dnode_obsolete = NULL;
+					// if(dnode_obsolete == dnode_entry)
+					// 	dnode_obsolete = NULL;
 					goto strength_hashing_hit;
 				}
 			}
@@ -935,8 +935,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					entry_node = &(*entry_node)->rb_right;
 				else{
 					// printk("hit in rb_tree_search!");
-					if(dnode_obsolete == dnode_entry)
-						dnode_obsolete = NULL;
+					// if(dnode_obsolete == dnode_entry)
+					// 	dnode_obsolete = NULL;
 					goto strength_hashing_hit;
 				}
 			}
@@ -965,9 +965,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		kfree(xmem);
 		// printk("a dedupnode be checked!");
-		if(dnode_obsolete)
-			if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
-				free_dedupnode(sb, dnode_obsolete);
+		// if(dnode_obsolete)
+		// 	if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
+		// 		free_dedupnode(sb, dnode_obsolete);
 				// printk("update with same data!");
 			}
 		dnode->flag = 1;
