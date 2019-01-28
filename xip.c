@@ -927,7 +927,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					//  printk("add strength hashing of dnode_entry!");
 				}			
 				
-				result = memcmp(dnode->strength_hashval,dnode_entry->strength_hashval, 16);
+				result = memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
 				// printk("result:%ld", result);
 				if(result < 0)
 					entry_node = &(*entry_node)->rb_left;
@@ -935,9 +935,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					entry_node = &(*entry_node)->rb_right;
 				else{
 					if(dnode_entry->flag == 2){
-						printk("incident!");
 						circle_count++;
-						printk("a dedupnode be checked:%ld", circle_count);
+						printk("incident count:%ld", circle_count);
+						dnode_obsolete = NULL;
+						dnode_entry->flag = 1;
 					}
 					printk("hit in rb_tree_search!");
 					goto strength_hashing_hit;
@@ -971,11 +972,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
-		if(dnode_obsolete)
-			if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
-				dnode_obsolete->flag = 1;
-				free_dedupnode(sb, dnode_obsolete);
-			}
+		// if(dnode_obsolete)
+		// 	if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
+		// 		dnode_obsolete->flag = 1;
+		// 		free_dedupnode(sb, dnode_obsolete);
+		// 	}
 		 
 		//part end 
 		i -= block_len;
