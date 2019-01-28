@@ -988,6 +988,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		i -= block_len;
 	}
 
+
 	// printk("pmfswrite 7");
 	if(local_hit){
 		written = count;
@@ -1033,7 +1034,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 out:
 	inode_unlock(inode);
 	sb_end_write(inode->i_sb);
+	//dedup part
 	// printk("pmfs write out");
+	xip_writing = false;
+	//part end
 	PMFS_END_TIMING(xip_write_t, xip_write_time);
 	return ret;
 }
