@@ -934,8 +934,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				else if(result > 0)
 					entry_node = &(*entry_node)->rb_right;
 				else{
-					if(dnode_entry->flag == 2)
+					if(dnode_entry->flag == 2){
 						printk("incident!");
+						circle_count++;
+						printk("a dedupnode be checked:%ld", circle_count);
+					}
 					printk("hit in rb_tree_search!");
 					goto strength_hashing_hit;
 				}
@@ -964,8 +967,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		
 		kfree(xmem);
-		printk("a dedupnode be checked:%ld", circle_count);
-		circle_count++;
 			
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
@@ -974,7 +975,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
 				dnode_obsolete->flag = 1;
 				free_dedupnode(sb, dnode_obsolete);
-				printk("update with same data!");
 			}
 		 
 		//part end 
