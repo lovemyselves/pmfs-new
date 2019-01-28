@@ -124,9 +124,6 @@ bool free_dedupnode(struct super_block *sb, void *dedupnode){
 	struct rb_root *droot;
 	struct dedupnode *dnode;; 
 
-	//remove from the tree
-	// printk("flag:%u",dnode->flag);
-	//flag set 0, remove to unused list
 	dindex = DINDEX;
 	droot = &dindex->dedupnode_root;
 	dnode = (struct dedupnode*)dedupnode;
@@ -155,19 +152,18 @@ struct refnode *alloc_refnode(struct super_block *sb){
 }
 
 bool free_refnode(struct super_block *sb, struct refnode *rnode){
-	struct dedup_index *dindex;
-	struct rb_root *rroot;
+	// struct dedup_index *dindex;
+	// struct rb_root *rroot;
 
-	if(rnode == NULL)
-		return false;
+	// if(rnode == NULL)
+	// 	return false;
 	
-	printk("free refnode");
-	dindex = DINDEX;
-	rroot = &dindex->refroot;
-	//remove from the red black tree
-	rb_erase(&rnode->node, rroot);
-	//flag set 0, remove to unused list
-	list_move_tail(&rnode->list, &dindex->ref_unused);
+	// dindex = DINDEX;
+	// rroot = &dindex->refroot;
+	// //remove from the red black tree
+	// rb_erase(&rnode->node, rroot);
+	// //flag set 0, remove to unused list
+	// list_move_tail(&rnode->list, &dindex->ref_unused);
 	return true;
 }
 
