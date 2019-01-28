@@ -987,11 +987,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
-		// if(dnode_obsolete)
-		// 	if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
-		// 		dnode_obsolete->flag = 1;
-		// 		free_dedupnode(sb, dnode_obsolete);
-		// 	}
+		if(dnode_obsolete)
+			if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
+				dnode_obsolete->flag = 1;
+				free_dedupnode(sb, dnode_obsolete);
+			}
 		 
 		//part end 
 		i -= block_len;
