@@ -806,7 +806,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		void *xmem = NULL;
 		size_t hashing = 0;
 		char strength_hashing[16];
-		bool new_dnode_status = false;
+		// bool new_dnode_status = false;
 		//The following variable use in rbtree update and hashing
 		struct rb_node **entry_node = &(droot->rb_node);
 		struct rb_node *parent = NULL;
@@ -842,7 +842,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
-			new_dnode_status = true;
+			// new_dnode_status = true;
 		}
 		else{
 			dnode = alloc_dedupnode(sb);
@@ -852,7 +852,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			atomic_set(&dnode->atomic_ref_count, 1);
 			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			//build a new dnode
-			new_dnode_status = true;
+			// new_dnode_status = true;
 		}
 		// printk("pmfs write 1");
 
@@ -960,9 +960,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		
 		kfree(xmem);
+		printk("a dedupnode be checked!");
 		if(dnode_obsolete)
-			if(!atomic_read(&dnode_obsolete->atomic_ref_count))
+			if(!atomic_read(&dnode_obsolete->atomic_ref_count)){
 				free_dedupnode(sb, dnode_obsolete);
+				printk("update with same data!");
+			}
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
