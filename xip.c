@@ -880,11 +880,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			strength_hash(strength_hashing, xmem, block_len);
 			memcpy(dnode->strength_hashval, strength_hashing, 16);
 			dnode->strength_hash_status = 1;
-			printk("Recover the strength hashing compute!");
+			// printk("Recover the strength hashing compute!");
 		}
-		else{
-			printk("Bypass the strength hashing compute!");
-		}
+		// else{
+		// 	printk("Bypass the strength hashing compute!");
+		// }
 		// memset(dnode->strength_hashval, 0, 16); 
 
 		if(dnode_hit > 0){
@@ -908,7 +908,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					
 				}
 				if(result==0){
-					printk("hit in low_overhead_check!");
+					// printk("hit in low_overhead_check!");
 					goto strength_hashing_hit;
 				}
 			}
@@ -942,7 +942,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 				else if(result > 0)
 					entry_node = &(*entry_node)->rb_right;
 				else{
-					printk("hit in rb_tree_search!");
+					// printk("hit in rb_tree_search!");
 					goto strength_hashing_hit;
 				}
 			}
