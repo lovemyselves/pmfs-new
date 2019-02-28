@@ -967,6 +967,12 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, dnode->length);
+			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
+			, dnode->length);
+			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
+			, dnode->length);
+			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
+			, dnode->length);
 		}
 		
 		kfree(xmem);
