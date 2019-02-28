@@ -2,34 +2,34 @@
 #include <linux/rbtree.h>
 #include <linux/types.h>
 
-struct hash_map_addr{
-    size_t hashval;
-    char strength_hashval[16];
-    // unsigned short strength_hash_status;
-    unsigned long blocknr;
-    short length;
-    short count;
-    // unsigned int flag;
-    u8 status; //similar chmod command, 111 respectively represent transaction, short hash, strength hash
-    u8 node_flag; //101, list_head update success mean 100, rb_node update success mean 001
-    struct list_head list;
-    struct rb_node node;
-};
+// struct hash_map_addr{
+//     size_t hashval;
+//     char strength_hashval[16];
+//     // unsigned short strength_hash_status;
+//     unsigned long blocknr;
+//     short length;
+//     short count;
+//     // unsigned int flag;
+//     u8 status; //similar chmod command, 111 respectively represent transaction, short hash, strength hash
+//     u8 node_flag; //101, list_head update success mean 100, rb_node update success mean 001
+//     struct list_head list;
+//     struct rb_node node;
+// };
 
-struct ref_map{
-    void *virt_addr;
-    size_t index;
-    void **phys_addr;
-    unsigned long *pfn;
-    struct hash_map_addr *hma;
-    struct list_head list;
-    struct rb_node node;
-};
+// struct ref_map{
+//     void *virt_addr;
+//     size_t index;
+//     void **phys_addr;
+//     unsigned long *pfn;
+//     struct hash_map_addr *hma;
+//     struct list_head list;
+//     struct rb_node node;
+// };
 
 struct dedupnode{
     long hashval;
     unsigned long blocknr;
-    unsigned short hash_status;
+    // unsigned short hash_status;
     unsigned short strength_hash_status;
     unsigned length;
     // unsigned count;

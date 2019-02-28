@@ -986,7 +986,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 
 	// printk("pmfswrite 7");
-	if(local_hit){
+	if(true){
 		written = count;
 		*ppos = pos + count;
 		if (*ppos > inode->i_size) {
