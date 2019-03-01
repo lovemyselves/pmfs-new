@@ -807,9 +807,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	// if(!dnode_hit && (start_blk&1023))
-	// 	goto sequential_nondup;
-	
+	if((start_blk&255) && dnode_hit<=-32){
+			goto sequential_nondup;
+	}
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
@@ -952,9 +952,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rb_link_node(&dnode->node, parent, entry_node);
 		rb_insert_color(&dnode->node, droot);
 		dnode_entry = NULL;
-		if(dnode_hit<=-32){
-			goto sequential_nondup;
-		}
+
 		strength_hashing_hit:
 		if(dnode_entry){
 			list_move_tail(&dnode->list, &dindex->hma_unused);
@@ -972,7 +970,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, dnode->length);
 		}
-		
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
 		rnode->dnode = dnode;
@@ -981,13 +978,13 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 		dnode_obsolete->flag = 1;
 		// 		free_dedupnode(sb, dnode_obsolete);
 		// 	}
-		
 		kfree(xmem);	 
 		//part end 
 		i -= block_len;
 	}
 
 	// printk("pmfswrite 7");
+	sequential_nondup:
 	if(local_hit){
 		written = count;
 		*ppos = pos + count;
