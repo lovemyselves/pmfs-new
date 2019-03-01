@@ -49,6 +49,7 @@ struct list_head *last_dnode_list;
 struct list_head *last_rnode_list;
 bool filesystem_restart = true;
 // struct rb_root root = RB_ROOT;
+bool local_hit = false;
 long circle_count = 0;
 
 size_t dedup_interval = 1;
@@ -735,10 +736,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 	//dedup claiming start
 	size_t i,j,dedup_offset;	
-	bool local_hit = false;
 	// struct dedup_index *dindex;
 	struct dedup_index *dindex = DINDEX;
 	struct rb_root *droot = &(dindex->dedupnode_root);
+	
+	local_hit = false;
 
 	// printk("pmfs xip file write start!");
 	//end
@@ -950,7 +952,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rb_link_node(&dnode->node, parent, entry_node);
 		rb_insert_color(&dnode->node, droot);
 		dnode_entry = NULL;
-
+		if(dnode_hit=<-32){
+			goto sequential_nondup;
+		}
 		strength_hashing_hit:
 		if(dnode_entry){
 			list_move_tail(&dnode->list, &dindex->hma_unused);
@@ -965,12 +969,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode_hit--;
 			// printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
-			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
-			, dnode->length);
-			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
-			, dnode->length);
-			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
-			, dnode->length);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem
 			, dnode->length);
 		}
@@ -992,7 +990,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 
 	// printk("pmfswrite 7");
-	if(true){
+	goto sequential_nondup:
+	if(local_hit){
 		written = count;
 		*ppos = pos + count;
 		if (*ppos > inode->i_size) {
