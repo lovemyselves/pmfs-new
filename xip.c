@@ -878,7 +878,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// dnode->count = 1;
 		atomic_set(&dnode->atomic_ref_count, 1);
 		dnode->strength_hash_status = 0;
-		if(dnode_hit>-32){
+		if(false){
 			strength_hash(strength_hashing, xmem, block_len);
 			memcpy(dnode->strength_hashval, strength_hashing, 16);
 			dnode->strength_hash_status = 1;
