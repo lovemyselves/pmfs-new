@@ -952,7 +952,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		rb_link_node(&dnode->node, parent, entry_node);
 		rb_insert_color(&dnode->node, droot);
 		dnode_entry = NULL;
-		if(dnode_hit=<-32){
+		if(dnode_hit<=-32){
 			goto sequential_nondup;
 		}
 		strength_hashing_hit:
