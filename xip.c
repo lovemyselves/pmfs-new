@@ -990,7 +990,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 
 	// printk("pmfswrite 7");
-	goto sequential_nondup:
 	if(local_hit){
 		written = count;
 		*ppos = pos + count;
@@ -1001,6 +1000,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		// printk("dedup system in work!");
 	}else{
+		sequential_nondup:
 		// printk("raw pmfs write");
 		/* We avoid zeroing the alloc'd range, which is going to be overwritten
 		 * by this system call anyway */
