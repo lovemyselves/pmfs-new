@@ -313,7 +313,7 @@ struct refnode *refnode_search(struct super_block *sb
 bool short_hash(size_t *hashing, char *xmem, size_t len)
 {
 	// size_t trace = len >> 3;
-	size_t data_remainder = len & (sizeof(size_t)-1);
+	size_t tail = len & (sizeof(size_t)-1);
 	size_t k;//,hash_offset=0;
 
 	size_t thin_internal = len >> 10;
@@ -321,8 +321,8 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 
 	*hashing = 0;
 				 
-	if(data_remainder!=0)
-		memcpy(hashing, xmem+len-data_remainder, data_remainder);
+	if(tail != 0)
+		memcpy(hashing, xmem+tail, tail);
 
 	for(k=0;(k+sizeof(size_t))<len;){
 		*hashing += *(size_t*)(xmem + k);
@@ -371,6 +371,7 @@ bool strength_hash(char *result, char* data, size_t len){
 	/*weak hash*/
 
 	MurmurHash3_x64_128(data, (int)len, 42, result);
+	MurmurHash3_x64_128(data, (int)len, 32, result+16);
 	return true;
 }
 
@@ -910,7 +911,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 						// printk("add strength hashing of dnode_entry!");
 					}
 
-					result =  memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
+					result =  memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 32);
 					
 				}
 				if(result==0){
@@ -941,7 +942,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					//  printk("add strength hashing of dnode_entry!");
 				}			
 				
-				result = memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
+				result = memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 32);
 				// printk("result:%ld", result);
 				if(result < 0)
 					entry_node = &(*entry_node)->rb_left;
@@ -997,7 +998,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 
 	// printk("pmfswrite 7");
-	sequential_nondup:
+	// sequential_nondup:
 	if(true){
 		written = count;
 		*ppos = pos + count;
