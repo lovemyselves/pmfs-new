@@ -366,8 +366,7 @@ bool strength_hash(char *result, char* data, size_t len){
 		*(u64*)(result+8) ^= *(u64*)result >> 1;
 	}
 
-
-
+	MurmurHash3_x64_128(data, (int)len, 42, result);
 	return true;
 }
 
