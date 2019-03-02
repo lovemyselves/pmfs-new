@@ -339,6 +339,8 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 }
 
 bool strength_hash(char *result, char* data, size_t len){
+
+	/* md5 compute */
 	// struct shash_desc *desc;
 	// desc = kmalloc(sizeof(*desc), GFP_KERNEL);
 	// desc->tfm = crypto_alloc_shash("md5", 0, CRYPTO_ALG_ASYNC);
@@ -350,21 +352,23 @@ bool strength_hash(char *result, char* data, size_t len){
 	// crypto_shash_update(desc, data, len);
 	// crypto_shash_final(desc, result);
 	// crypto_free_shash(desc->tfm);
+	/* md5 compute */
 	
-	
-	int i, cycles;
+	/*weak hash*/
+	// int i, cycles;
 
-	memset(result, 0, 16);
-	memcpy(result, data+len-(len&15), len&15); //remainder divided by 16
-	cycles = len>>4;
+	// memset(result, 0, 16);
+	// memcpy(result, data+len-(len&15), len&15); //remainder divided by 16
+	// cycles = len>>4;
 	
-	for(i=0;i<cycles;i++){
-		*(u64*)result += *(u64*)( data+(i<<4) );
-		*(u64*)result ^= *(u64*)result >> 1;
-		*(u64*)result += *(u64*)result >> 3;
-		*(u64*)(result+8) += *(u64*)( data+(i<<4)+8 );
-		*(u64*)(result+8) ^= *(u64*)result >> 1;
-	}
+	// for(i=0;i<cycles;i++){
+	// 	*(u64*)result += *(u64*)( data+(i<<4) );
+	// 	*(u64*)result ^= *(u64*)result >> 1;
+	// 	*(u64*)result += *(u64*)result >> 3;
+	// 	*(u64*)(result+8) += *(u64*)( data+(i<<4)+8 );
+	// 	*(u64*)(result+8) ^= *(u64*)result >> 1;
+	// }
+	/*weak hash*/
 
 	MurmurHash3_x64_128(data, (int)len, 42, result);
 	return true;
