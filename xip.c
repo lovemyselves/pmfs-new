@@ -370,8 +370,9 @@ bool strength_hash(char *result, char* data, size_t len){
 	// }
 	/*weak hash*/
 
-	MurmurHash3_x64_128(data, (int)len, 42, result);
-	MurmurHash3_x64_128(data, (int)len, 32, result+16);
+	memcpy(result+16,data,16);
+	MurmurHash3_x64_128(data, (int)len, 41, result);
+	
 	return true;
 }
 
@@ -821,7 +822,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		unsigned block_len;
 		void *xmem = NULL;
 		size_t hashing = 0;
-		char strength_hashing[16];
+		char strength_hashing[32];
 		// bool new_dnode_status = false;
 		//The following variable use in rbtree update and hashing
 		struct rb_node **entry_node = &(droot->rb_node);
@@ -885,7 +886,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->strength_hash_status = 0;
 		if(dnode_hit>-1){
 			strength_hash(strength_hashing, xmem, block_len);
-			memcpy(dnode->strength_hashval, strength_hashing, 16);
+			memcpy(dnode->strength_hashval, strength_hashing, 32);
 			dnode->strength_hash_status = 1;
 			// printk("Recover the strength hashing compute!");
 		}
@@ -911,7 +912,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 						// printk("add strength hashing of dnode_entry!");
 					}
 
-					result =  memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 32);
+					result =  memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
 					
 				}
 				if(result==0){
@@ -942,7 +943,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 					//  printk("add strength hashing of dnode_entry!");
 				}			
 				
-				result = memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 32);
+				result = memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
 				// printk("result:%ld", result);
 				if(result < 0)
 					entry_node = &(*entry_node)->rb_left;
