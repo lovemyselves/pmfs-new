@@ -75,6 +75,7 @@ void MurmurHash3_x86_32 ( const void * key, int len,
   const int nblocks = len / 4;
   int i;
   const uint8_t * tail;
+  uint32_t k1;
 
   uint32_t h1 = seed;
 
@@ -104,7 +105,7 @@ void MurmurHash3_x86_32 ( const void * key, int len,
 
   tail = (const uint8_t*)(data + nblocks*4);
 
-  uint32_t k1 = 0;
+  k1 = 0;
 
   switch(len & 3)
   {
@@ -145,6 +146,11 @@ void MurmurHash3_x86_128 ( const void * key, const int len,
 
   const uint8_t * tail = (const uint8_t*)(data + nblocks*16);
 
+  uint32_t k1 = 0;
+  uint32_t k2 = 0;
+  uint32_t k3 = 0;
+  uint32_t k4 = 0;
+
   //----------
   // body
 
@@ -176,11 +182,6 @@ void MurmurHash3_x86_128 ( const void * key, const int len,
 
   //----------
   // tail
-
-  uint32_t k1 = 0;
-  uint32_t k2 = 0;
-  uint32_t k3 = 0;
-  uint32_t k4 = 0;
 
   switch(len & 15)
   {
@@ -246,6 +247,8 @@ void MurmurHash3_x64_128 ( const void * key, const int len,
   uint64_t c2 = BIG_CONSTANT(0x4cf5ad432745937f);
 
   const uint8_t * tail = (const uint8_t*)(data + nblocks*16);
+  uint64_t k1 = 0;
+  uint64_t k2 = 0;
 
   //----------
   // body
@@ -268,9 +271,6 @@ void MurmurHash3_x64_128 ( const void * key, const int len,
 
   //----------
   // tail
-
-  uint64_t k1 = 0;
-  uint64_t k2 = 0;
 
   switch(len & 15)
   {
