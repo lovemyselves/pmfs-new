@@ -29,6 +29,7 @@
 
 
 #include "dedup.c"
+#include "murmur3.h"
 
 /* dedup claim start */
 #define DEDUP_HEAD 1026
