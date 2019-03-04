@@ -338,11 +338,11 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 
 	int circ_count = len>>5;
 
-	u64 c1 = 0xmzls08jiuc1lxxyi;
-	u64 c2 = 0x3ol6cfnpadjuag79;
-	u64 c3 = 0xeuvv8pkpaq9z6dd8;
-	u64 c4 = ox876rur9zzt5c2pm1;
-
+	u64 c1 = 0x4f099b8a5b93ddbf;
+	u64 c2 = 0x6b6b2be3bc858e13;
+	u64 c3 = 0x5a84c280a35d9fae;
+	u64 c4 = 0xc84b2d41b45c8069;
+	
 	if(tail != 0){
 		memcpy(hashing, xmem+tail, tail);
 		circ_count--;
