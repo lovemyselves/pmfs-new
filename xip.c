@@ -334,22 +334,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 		k += (thin_internal<<3);
 	}
 
-	// size_t tail = len & (sizeof(size_t)-1);
-	// size_t k;//,hash_offset=0;
-
-	// *hashing = 0;
-				 
-	// if(tail != 0)
-	// 	memcpy(hashing, xmem+tail, tail);
-
-	// for(k=0;(k+sizeof(size_t))<len;){
-	// 	*hashing += *(size_t*)(xmem+k);
-	// 	*hashing += (*hashing << 1);
-	// 	*hashing ^= (*hashing >> 2);
-	// 	k += sizeof(size_t);
-	// }
-
-	// MurmurHash3_x86_32(xmem, len, 12, hashing);
+	MurmurHash3_x86_32(xmem, len, 12, hashing);
 
 	return true;
 }
@@ -386,7 +371,7 @@ bool strength_hash(char *result, char* data, size_t len){
 	// }
 	/*weak hash*/
 
-	memcpy(result+16,data,16);
+	// memcpy(result+16,data,16);
 	MurmurHash3_x64_128(data, (int)len, 41, result);
 	
 	return true;
