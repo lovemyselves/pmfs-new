@@ -346,12 +346,12 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	if(tail != 0)
 		memcpy(hashing, xmem+tail, tail);
 
-	for(k=0;(k+sizeof(size_t))<len;){
-		c1 *= *(size_t*)(xmem + k + 4);
-		c2 *= *(size_t*)(xmem + k);
-		k += 128;
-	}
-	*hashing = c1 + c2;
+	// for(k=0;(k+sizeof(size_t))<len;){
+	// 	c1 *= *(size_t*)(xmem + k + 4);
+	// 	c2 *= *(size_t*)(xmem + k);
+	// 	k += 128;
+	// }
+	// *hashing = c1 + c2;
 
 	return true;
 }
