@@ -813,9 +813,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	// if((start_blk&63) && dnode_hit<=-32){
-	// 		goto sequential_nondup;
-	// }
+	if(!(start_blk&63) && dnode_hit<=-32){
+			goto sequential_nondup;
+	}
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
@@ -999,7 +999,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	}
 
 	// printk("pmfswrite 7");
-	// sequential_nondup:
+	// 
 	if(true){
 		written = count;
 		*ppos = pos + count;
@@ -1010,6 +1010,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		// printk("dedup system in work!");
 	}else{
+		sequential_nondup:
 		// printk("raw pmfs write");
 		/* We avoid zeroing the alloc'd range, which is going to be overwritten
 		 * by this system call anyway */
