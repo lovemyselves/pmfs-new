@@ -813,7 +813,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	if((dnode_hit)&127 && dnode_hit<=-32){
+	if(dnode_hit&127 && dnode_hit<=-32){
+			dnode_hit -= 32;
 			goto sequential_nondup;
 	}
 	for(j = 0; j < num_blocks; j++ ){
