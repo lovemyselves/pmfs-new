@@ -335,8 +335,8 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 
 	// MurmurHash3_x86_32(xmem, len, 12, hashing);
 
-	// u64 c1 = BIG_CONSTANT(0x87c37b91114253d5);
-  	// u64 c2 = BIG_CONSTANT(0x4cf5ad432745937f);
+	u64 c1 = BIG_CONSTANT(0x87c37b91114253d5);
+  	u64 c2 = BIG_CONSTANT(0x4cf5ad432745937f);
 	
 	size_t tail = len & (sizeof(size_t)-1);
 	size_t k;//,hash_offset=0;
@@ -347,11 +347,11 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 		memcpy(hashing, xmem+tail, tail);
 
 	for(k=0;(k+sizeof(size_t))<len;){
-		*hashing += *(size_t*)(xmem + k);
-		*hashing += (*hashing << 1);
-		*hashing ^= (*hashing >> 2);
-		k += 32;
+		c1 *= *(size_t*)(xmem + k + 4);
+		c2 *= *(size_t*)(xmem + k);
+		k += 128;
 	}
+	*hashing = c1 + c2;
 
 	return true;
 }
