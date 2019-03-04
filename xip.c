@@ -334,7 +334,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 		k += (thin_internal<<3);
 	}
 
-	MurmurHash3_x86_32(xmem, len, 12, hashing);
+	// MurmurHash3_x86_32(xmem, len, 12, hashing);
 
 	return true;
 }
