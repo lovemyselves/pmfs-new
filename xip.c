@@ -312,11 +312,31 @@ struct refnode *refnode_search(struct super_block *sb
 
 bool short_hash(size_t *hashing, char *xmem, size_t len)
 {
+	// size_t tail = len & (sizeof(size_t)-1);
+	// size_t k;//,hash_offset=0;
+
+	// size_t thin_internal = len >> 10;
+	// size_t thick_internal_count = (len&1023) >> 3;
+
+	// *hashing = 0;
+				 
+	// if(tail != 0)
+	// 	memcpy(hashing, xmem+tail, tail);
+
+	// for(k=0;(k+sizeof(size_t))<len;){
+	// 	*hashing += *(size_t*)(xmem + k);
+	// 	*hashing += (*hashing << 1);
+	// 	*hashing ^= (*hashing >> 2);
+	// 	if(thick_internal_count-->0){
+	// 		k += sizeof(size_t);
+	// 	}
+	// 	k += (thin_internal<<3);
+	// }
+
+	// MurmurHash3_x86_32(xmem, len, 12, hashing);
+	
 	size_t tail = len & (sizeof(size_t)-1);
 	size_t k;//,hash_offset=0;
-
-	size_t thin_internal = len >> 10;
-	size_t thick_internal_count = (len&1023) >> 3;
 
 	*hashing = 0;
 				 
@@ -327,14 +347,9 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 		*hashing += *(size_t*)(xmem + k);
 		*hashing += (*hashing << 1);
 		*hashing ^= (*hashing >> 2);
-		if(thick_internal_count>0){
-			k += sizeof(size_t);	
-			thick_internal_count--;
-		}
-		k += (thin_internal<<3);
+		k += sizeof(size_t);
+		
 	}
-
-	// MurmurHash3_x86_32(xmem, len, 12, hashing);
 
 	return true;
 }
