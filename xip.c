@@ -347,9 +347,9 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 		*hashing += *(size_t*)(xmem + k);
 		*hashing += (*hashing << 1);
 		*hashing ^= (*hashing >> 2);
-		k += sizeof(size_t);
-		
+		k += 128;
 	}
+	printk("sizeof(size_t):%lu",sizeof(size_t));
 
 	return true;
 }
