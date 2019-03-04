@@ -323,7 +323,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	// if(tail != 0)
 	// 	memcpy(hashing, xmem+tail, tail);
 
-	// for(k=0;(k+sizeof(size_t))<len;){
+	// for(k=0;k+<circ_count;k++){
 	// 	*hashing += *(size_t*)(xmem + k);
 	// 	*hashing += (*hashing << 1);
 	// 	*hashing ^= (*hashing >> 2);
@@ -333,25 +333,36 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	// 	k += (thin_internal<<3);
 	// }
 
-	// MurmurHash3_x86_32(xmem, len, 12, hashing);
-
-	u64 c1 = 1;
-  	u64 c2 = 4;
-	
-	size_t tail = len & (sizeof(size_t)-1);
+	size_t tail = len & (31);
 	size_t k;//,hash_offset=0;
 
-	*hashing = 0;
-				 
-	if(tail != 0)
-		memcpy(hashing, xmem+tail, tail);
+	int circ_count = len>>5;
 
-	// for(k=0;(k+sizeof(size_t))<len;){
-	// 	c1 *= *(size_t*)(xmem + k + 4);
-	// 	c2 *= *(size_t*)(xmem + k);
-	// 	k += 128;
-	// }
-	// *hashing = c1 + c2;
+	u64 c1 = 0xmzls08jiuc1lxxyi;
+	u64 c2 = 0x3ol6cfnpadjuag79;
+	u64 c3 = 0xeuvv8pkpaq9z6dd8;
+	u64 c4 = ox876rur9zzt5c2pm1;
+
+	if(tail != 0){
+		memcpy(hashing, xmem+tail, tail);
+		circ_count--;
+	}
+
+	for(k=0;k+<circ_count;k+=2){
+		c1 += *(u64*)(xmem + k + 1);
+		c1 ^= c1 << 1;
+		c1 += c1 >> 2;
+		c2 += *(u64*)(xmem + k + 2);
+		c2 ^= c2 << 1;
+		c2 += c2 >> 2;
+		c3 += *(u64*)(xmem + k + 3);
+		c3 ^= c3 << 1;
+		c3 += c3 >> 2;
+		c4 += *(u64*)(xmem + k + 4);
+		c4 ^= c4 << 1;
+		c4 += c4 >> 2;
+	}
+	*hashing = c1 + c2 + c3 + c4;
 
 	return true;
 }
