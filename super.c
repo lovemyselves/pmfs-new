@@ -689,15 +689,21 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	printk("pmfs mount");
 
 	if(data==NULL)
-		struct dedupnode *list = dindex->hma_head->next;
-		struct dedupnode *temp;
-		while(list!=dindex->hma_head && list!=NULL){
-			temp = list->list.next;
-			if(list->flag==0){
+		struct list_head *list = dindex->hma_head->next;
+		struct list_head *temp;
+		struct dedupnode *dnode;
+		list_for_each_entry(temp,list,list){
+			dnode = list_entry(list, struct dedupnode, list);
+			if(dnode->flag==0){
 				pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 				rb_erase(&dnode->node, droot);
 				list_move_tail(&dnode->list, &dindex->hma_unused);
 			} 
+		}
+		while(list!=dindex->hma_head && list!=NULL){
+			temp = list->list.next;
+			list_entry(list, struct dedupnode, list);
+			
 			list = temp;
 		}
 	/* deduplication copy end */
