@@ -748,6 +748,7 @@ static inline void pmfs_clear_edge_blk (struct super_block *sb, struct
 			} else
 				count = blk_off + (8 - (blk_off % 8));
 			pmfs_memunlock_range(sb, ptr,  pmfs_inode_blk_size(pi));
+			printk("memset this?");
 			memset_nt(ptr, 0, count);
 			pmfs_memlock_range(sb, ptr,  pmfs_inode_blk_size(pi));
 		}
