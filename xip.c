@@ -913,8 +913,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		__copy_from_user_inatomic_nocache(xmem + dedup_offset, buf+count-i, block_len);
 		dedup_offset = 0;
 		// dnode->hash_status = 0;
-		short_hash(&hashing, xmem, block_len);
-		dnode->hashval = hashing;
+		short_hash(&dnode->hashval, xmem, block_len);
+		// dnode->hashval = hashing;
 		// dnode->hash_status = 1;
 		// dnode->count = 1;
 		atomic_set(&dnode->atomic_ref_count, 1);
