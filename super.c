@@ -681,7 +681,8 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	size_t __size = sizeof(*rbtree_index);
 	struct dedup_index *dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
 	struct rb_root *droot = &dindex->dedupnode_root;
-	struct list_head *list;
+	struct dedupnode *dnode;
+	struct list_head *dlist;
 	struct list_head *temp;
 	rbtree_index = kmalloc(__size, GFP_KERNEL);
 	
@@ -692,9 +693,8 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	printk("pmfs mount");
 
 	if(data==NULL)
-		list = dindex->hma_head.next;
-		struct dedupnode *dnode;
-		list_for_each_entry(temp,list,list){
+		dlist = dindex->hma_head.next;
+		list_for_each_entry(temp,dlist,list){
 			dnode = list_entry(list, struct dedupnode, list);
 			if(dnode->flag==0){
 				pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
