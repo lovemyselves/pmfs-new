@@ -38,6 +38,7 @@ struct dedupnode{
     atomic_t atomic_ref_count;
     struct list_head list;
     struct rb_node node;
+    struct dedupnode *next;
 };
 
 struct refnode{
@@ -48,6 +49,7 @@ struct refnode{
     // unsigned int flag; //means the status of this struct node
     struct rb_node node;
     struct list_head list;
+    struct refnode *next;
 };
 
 struct dedup_index{

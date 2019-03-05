@@ -1118,8 +1118,16 @@ static struct dentry *pmfs_mount(struct file_system_type *fs_type,
 	printk("pmfs mount");
 
 	if(data==NULL)
-		while(){
-
+		struct dedupnode *list = dindex->hma_head->next;
+		struct dedupnode *temp;
+		while(list!=dindex->hma_head && list!=NULL){
+			temp = list->list.next;
+			if(list->flag==0){
+				pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
+				rb_erase(&dnode->node, droot);
+				list_move_tail(&dnode->list, &dindex->hma_unused);
+			} 
+			list = temp;
 		}
 
 	return mount_bdev(fs_type, flags, dev_name, data, pmfs_fill_super);
