@@ -333,7 +333,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	// 	k += (thin_internal<<3);
 	// }
 
-	size_t tail = len & (31);
+	size_t tail = len&31;
 	size_t k;//,hash_offset=0;
 
 	int circ_count = len>>5;
@@ -344,7 +344,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 	u64 c4 = 0xc84b2d41b45c8069;
 	
 	if(tail != 0){
-		memcpy(hashing, xmem+tail, tail);
+		*hashing = tail;
 		circ_count--;
 	}
 
