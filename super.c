@@ -693,7 +693,7 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	printk("pmfs mount");
 
 	if(data==NULL){
-		dlist = dindex->hma_head;
+		*dlist = dindex->hma_head;
 		list_for_each(temp, dlist){
 			dnode = list_entry(temp, struct dedupnode, list);
 			if(dnode->flag==0){
