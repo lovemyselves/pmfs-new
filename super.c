@@ -695,18 +695,12 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	if(data==NULL)
 		dlist = dindex->hma_head.next;
 		list_for_each_entry(temp,dlist,list){
-			dnode = list_entry(list, struct dedupnode, list);
+			dnode = list_entry(temp, struct dedupnode, list);
 			if(dnode->flag==0){
 				pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
 				rb_erase(&dnode->node, droot);
 				list_move_tail(&dnode->list, &dindex->hma_unused);
 			} 
-		}
-		while(list!=dindex->hma_head && list!=NULL){
-			temp = list->list.next;
-			list_entry(list, struct dedupnode, list);
-			
-			list = temp;
 		}
 	/* deduplication copy end */
 
