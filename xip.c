@@ -1111,6 +1111,7 @@ static int __pmfs_xip_file_fault(struct vm_area_struct *vma,
 	}
 	
 	//rnode search
+	printk("xip_file_fault");
 	if(rnode_hit){
 		rnode = list_entry(last_rnode_list->next, struct refnode, list);
 		// printk("xip file fault function try hit");
