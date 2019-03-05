@@ -693,7 +693,7 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 		pmfs_info("arch does not have CLWB support\n");
 	}
 	/* dedup system recover */
-	printk("recover start ...");
+	printk("build index start ...");
 	/* deduplication copy end */
 
 	sbi = kzalloc(sizeof(struct pmfs_sb_info), GFP_KERNEL);
@@ -1107,17 +1107,20 @@ static struct dentry *pmfs_mount(struct file_system_type *fs_type,
 				  int flags, const char *dev_name, void *data)
 {	
 	
-	struct dedup_rbtree_index *dindex;
-	size_t __size = sizeof(*dindex);
-	dindex = kmalloc(__size, GFP_KERNEL);
+	struct dedup_rbtree_index *rbtree_index;
+	size_t __size = sizeof(*rbtree_index);
+	struct dedup_index *dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
+	rbtree_index = kmalloc(__size, GFP_KERNEL);
 	
-	dindex->dnode_root = RB_ROOT;
-	dindex->ref_root = RB_ROOT;
+	rbtree_index->dnode_root = RB_ROOT;
+	rbtree_index->ref_root = RB_ROOT;
 	
 	printk("pmfs mount");
 
-	if(data!=NULL)
-		printk("mount data:%s", (char*)data);
+	if(data==NULL)
+		while(){
+
+		}
 
 	return mount_bdev(fs_type, flags, dev_name, data, pmfs_fill_super);
 }
