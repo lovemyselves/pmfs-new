@@ -680,6 +680,8 @@ static ssize_t pmfs_file_write_fast(struct super_block *sb, struct inode *inode,
 
 	offset = pos & (sb->s_blocksize - 1);
 
+	printk("error area!");
+
 	PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 	pmfs_xip_mem_protect(sb, xmem + offset, count, 1);
 	copied = memcpy_to_nvmm((char *)xmem, offset, buf, count);
