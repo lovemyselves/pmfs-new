@@ -362,7 +362,7 @@ bool short_hash(size_t *hashing, char *xmem, size_t len)
 		c4 ^= c4 << 1;
 		c4 += c4 >> 2;
 	}
-	*hashing = c1 + c2 + c3 + c4;
+	*hashing += c1 + c2 + c3 + c4;
 
 	return true;
 }

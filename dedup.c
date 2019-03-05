@@ -61,6 +61,15 @@ struct dedup_index{
     unsigned long update_flags;
 };
 
+struct dedup_btree_index{
+    struct rb_root ref_root;
+    struct rb_root dnode_root;
+}
+
+struct rbtree_node{
+    void *data;
+    struct rb_node node;
+}
 // struct dedupnode_onlydata{
 //     size_t hashval;
 //     unsigned long blocknr;
