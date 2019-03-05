@@ -932,7 +932,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	printk("Bypass the strength hashing compute!");
 		// }
 		// memset(dnode->strength_hashval, 0, 16); 
-
+		printk("start match fingerprint");
 		if(dnode_hit > 0){
 			// dnode_entry = dedupnode_low_overhead_check(dnode);
 			if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
@@ -998,6 +998,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode_entry = NULL;
 
 		strength_hashing_hit:
+		printk("end fingerprint match");
 		if(dnode_entry){
 			list_move_tail(&dnode->list, &dindex->hma_unused);
 			dnode = dnode_entry;
