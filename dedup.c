@@ -62,6 +62,7 @@ struct dedup_index{
 };
 
 struct dedup_btree_index{
+    void *next;
     struct rb_root ref_root;
     struct rb_root dnode_root;
 };
