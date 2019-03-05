@@ -61,7 +61,7 @@ struct dedup_index{
     unsigned long update_flags;
 };
 
-struct dedup_btree_index{
+struct dedup_rbtree_index{
     void *next;
     struct rb_root ref_root;
     struct rb_root dnode_root;
