@@ -679,8 +679,8 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	/* dedup system recover */	
 	struct dedup_rbtree_index *rbtree_index;
 	size_t __size = sizeof(*rbtree_index);
-	struct dedup_index *dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
-	struct rb_root *droot = &dindex->dedupnode_root;
+	struct dedup_index *dindex;
+	struct rb_root *droot;
 	struct dedupnode *dnode;
 	struct list_head *dlist;
 	struct list_head *temp;
@@ -694,6 +694,8 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 
 	if(data==NULL){
 		*dlist = dindex->hma_head;
+		dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
+		droot = &dindex->dedupnode_root;
 		list_for_each(temp, dlist){
 			dnode = list_entry(temp, struct dedupnode, list);
 			if(dnode->flag==0){
