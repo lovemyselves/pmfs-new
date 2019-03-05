@@ -1108,7 +1108,8 @@ static struct dentry *pmfs_mount(struct file_system_type *fs_type,
 {	
 	
 	struct dedup_rbtree_index *dindex;
-	dindex = kmalloc(sizeof(struct dedup_rbtree_index), GFP_KERNEL);
+	size_t __size = sizeof(struct dedup_rbtree_index);
+	dindex = kmalloc(__size, GFP_KERNEL);
 	
 	dindex->dnode_root = RB_ROOT;
 	dindex->ref_root = RB_ROOT;
