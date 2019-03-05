@@ -695,7 +695,7 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	if(data==NULL){
 		dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
 		droot = &dindex->dedupnode_root;
-		*dlist = dindex->hma_head;
+		dlist = &dindex->hma_head;
 		list_for_each(temp, dlist){
 			dnode = list_entry(temp, struct dedupnode, list);
 			if(dnode->flag==0){
