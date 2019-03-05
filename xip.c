@@ -854,7 +854,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct dedupnode *dnode;
 		struct refnode *rnode;
 		unsigned block_len;
-		void *xmem = NULL;
+		void *xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		size_t hashing = 0;
 		char strength_hashing[32];
 		// bool new_dnode_status = false;
@@ -871,7 +871,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		if(rnode->dnode){
 			dnode_entry = rnode->dnode;
-			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+			// xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			// memcpy(xmem, pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
 
 			atomic_dec(&dnode_entry->atomic_ref_count);
@@ -902,7 +902,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode->length = dedup_offset+block_len;
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
-			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+			// xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			//build a new dnode
 			// new_dnode_status = true;
 		}
