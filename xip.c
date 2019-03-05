@@ -909,7 +909,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pmfs write 1");
 
 		//alloc and init dnode
-		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
+		// copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
+		__copy_from_user_inatomic_nocache(xmem + dedup_offset, buf+count-i, block_len);
 		dedup_offset = 0;
 		// dnode->hash_status = 0;
 		short_hash(&hashing, xmem, block_len);
