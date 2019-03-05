@@ -676,6 +676,32 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	u32 random = 0;
 	int retval = -EINVAL;
 
+	/* dedup system recover */	
+	struct dedup_rbtree_index *rbtree_index;
+	size_t __size = sizeof(*rbtree_index);
+	struct dedup_index *dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
+	rbtree_index = kmalloc(__size, GFP_KERNEL);
+	
+	rbtree_index->dnode_root = RB_ROOT;
+	rbtree_index->ref_root = RB_ROOT;
+	
+	printk("build index start ...");
+	printk("pmfs mount");
+
+	if(data==NULL)
+		struct dedupnode *list = dindex->hma_head->next;
+		struct dedupnode *temp;
+		while(list!=dindex->hma_head && list!=NULL){
+			temp = list->list.next;
+			if(list->flag==0){
+				pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
+				rb_erase(&dnode->node, droot);
+				list_move_tail(&dnode->list, &dindex->hma_unused);
+			} 
+			list = temp;
+		}
+	/* deduplication copy end */
+
 	BUILD_BUG_ON(sizeof(struct pmfs_super_block) > PMFS_SB_SIZE);
 	BUILD_BUG_ON(sizeof(struct pmfs_inode) > PMFS_INODE_SIZE);
 
@@ -692,9 +718,6 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	} else {
 		pmfs_info("arch does not have CLWB support\n");
 	}
-	/* dedup system recover */
-	printk("build index start ...");
-	/* deduplication copy end */
 
 	sbi = kzalloc(sizeof(struct pmfs_sb_info), GFP_KERNEL);
 	if (!sbi)
@@ -1106,30 +1129,6 @@ static struct super_operations pmfs_sops = {
 static struct dentry *pmfs_mount(struct file_system_type *fs_type,
 				  int flags, const char *dev_name, void *data)
 {	
-	
-	struct dedup_rbtree_index *rbtree_index;
-	size_t __size = sizeof(*rbtree_index);
-	struct dedup_index *dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
-	rbtree_index = kmalloc(__size, GFP_KERNEL);
-	
-	rbtree_index->dnode_root = RB_ROOT;
-	rbtree_index->ref_root = RB_ROOT;
-	
-	printk("pmfs mount");
-
-	if(data==NULL)
-		struct dedupnode *list = dindex->hma_head->next;
-		struct dedupnode *temp;
-		while(list!=dindex->hma_head && list!=NULL){
-			temp = list->list.next;
-			if(list->flag==0){
-				pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
-				rb_erase(&dnode->node, droot);
-				list_move_tail(&dnode->list, &dindex->hma_unused);
-			} 
-			list = temp;
-		}
-
 	return mount_bdev(fs_type, flags, dev_name, data, pmfs_fill_super);
 }
 
