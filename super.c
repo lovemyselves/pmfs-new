@@ -677,34 +677,34 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	int retval = -EINVAL;
 
 	/* dedup system recover */	
-	struct dedup_rbtree_index *rbtree_index;
-	size_t __size = sizeof(*rbtree_index);
-	struct dedup_index *dindex;
-	struct rb_root *droot;
-	struct dedupnode *dnode;
-	struct list_head *dlist;
-	struct list_head *temp;
-	rbtree_index = kmalloc(__size, GFP_KERNEL);
+	// struct dedup_rbtree_index *rbtree_index;
+	// size_t __size = sizeof(*rbtree_index);
+	// struct dedup_index *dindex;
+	// struct rb_root *droot;
+	// struct dedupnode *dnode;
+	// struct list_head *dlist;
+	// struct list_head *temp;
+	// rbtree_index = kmalloc(__size, GFP_KERNEL);
 	
-	rbtree_index->dnode_root = RB_ROOT;
-	rbtree_index->ref_root = RB_ROOT;
+	// rbtree_index->dnode_root = RB_ROOT;
+	// rbtree_index->ref_root = RB_ROOT;
 	
-	printk("build index start ...");
-	printk("pmfs mount");
+	// printk("build index start ...");
+	// printk("pmfs mount");
 
-	if(data==NULL){
-		dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
-		droot = &dindex->dedupnode_root;
-		dlist = &dindex->hma_head;
-		list_for_each(temp, dlist){
-			dnode = list_entry(temp, struct dedupnode, list);
-			if(dnode->flag==0){
-				pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
-				rb_erase(&dnode->node, droot);
-				list_move_tail(&dnode->list, &dindex->hma_unused);
-			}
-		}
-	}	
+	// if(data==NULL){
+	// 	dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
+	// 	droot = &dindex->dedupnode_root;
+	// 	dlist = &dindex->hma_head;
+	// 	list_for_each(temp, dlist){
+	// 		dnode = list_entry(temp, struct dedupnode, list);
+	// 		if(dnode->flag==0){
+	// 			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
+	// 			rb_erase(&dnode->node, droot);
+	// 			list_move_tail(&dnode->list, &dindex->hma_unused);
+	// 		}
+	// 	}
+	// }	
 	/* deduplication copy end */
 
 	BUILD_BUG_ON(sizeof(struct pmfs_super_block) > PMFS_SB_SIZE);
