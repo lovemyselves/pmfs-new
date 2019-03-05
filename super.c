@@ -1115,6 +1115,8 @@ static struct dentry *pmfs_mount(struct file_system_type *fs_type,
 	dindex->ref_root = RB_ROOT;
 	
 	printk("pmfs mount");
+
+	printk("mount flag:%d",flag);
 	
 	return mount_bdev(fs_type, flags, dev_name, data, pmfs_fill_super);
 }
