@@ -928,7 +928,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// 	printk("Bypass the strength hashing compute!");
 		// }
 		// memset(dnode->strength_hashval, 0, 16); 
-		printk("start match fingerprint");
+		// printk("start match fingerprint");
 		if(dnode_hit > 0){
 			// dnode_entry = dedupnode_low_overhead_check(dnode);
 			if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
@@ -994,7 +994,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode_entry = NULL;
 
 		strength_hashing_hit:
-		printk("end fingerprint match");
+		// printk("end fingerprint match");
 		if(dnode_entry){
 			list_move_tail(&dnode->list, &dindex->hma_unused);
 			dnode = dnode_entry;
@@ -1009,6 +1009,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
 			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem, dnode->length);
+			/* delay part */
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
@@ -1019,6 +1020,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
+			/* delay part */
 		}
 		dnode->flag = 1;
 		// list_move_tail(&dnode->list, &dindex->hma_head);
