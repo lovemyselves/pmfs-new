@@ -458,7 +458,7 @@ do_xip_mapping_read(struct address_space *mapping,
 			nr = len - copied;
 
 		/* dedup new code start */
-		printk("xip_file_read");
+		// printk("xip_file_read");
 		if(rnode_hit){
 			rnode = list_entry(last_rnode_list->next, struct refnode, list);
 			if(inode->i_ino==rnode->ino && index==rnode->index){
@@ -747,7 +747,7 @@ static inline void pmfs_clear_edge_blk (struct super_block *sb, struct
 			} else
 				count = blk_off + (8 - (blk_off % 8));
 			pmfs_memunlock_range(sb, ptr,  pmfs_inode_blk_size(pi));
-			printk("memset this?");
+			// printk("memset this?");
 			memset_nt(ptr, 0, count);
 			pmfs_memlock_range(sb, ptr,  pmfs_inode_blk_size(pi));
 		}
@@ -779,7 +779,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	local_hit = false;
 
-	printk("general write");
+	// printk("general write");
 	// printk("pmfs xip file write start!");
 	//end
 
