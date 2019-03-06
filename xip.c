@@ -815,7 +815,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			pmfs_inode_blk_shift(pi)) == 0) ? 1 : 0;
 
 	/* close for the deduplication system test */
-	if (false && block && same_block) {
+	if (block && same_block) {
 		PMFS_START_TIMING(xip_write_fast_t, xip_write_fast_time);
 		ret = pmfs_file_write_fast(sb, inode, pi, buf, count, pos,
 			ppos, block);
@@ -847,10 +847,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	// if((!(start_blk&63)) && dnode_hit<=-32){
-	// 		// printk("skip:%d", dnode_hit);
-	// 		goto sequential_nondup;
-	// }
+	if((!(start_blk&63)) && dnode_hit<=-32){
+			// printk("skip:%d", dnode_hit);
+			goto sequential_nondup;
+	}
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
