@@ -53,7 +53,11 @@ bool filesystem_restart = true;
 bool local_hit = false;
 long circle_count = 0;
 
-size_t dedup_interval = 1;
+int i;
+char *temp_xmem[32];
+for(i=0;i<32;i++){
+	void *temp_xmem[i] = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+}
 /*
 	dedup rbtree function
 */
@@ -852,7 +856,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct dedupnode *dnode;
 		struct refnode *rnode;
 		unsigned block_len;
-		void *xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+		void *xmem = temp_xmem[j];
 		size_t hashing = 0;
 		char strength_hashing[32];
 		// bool new_dnode_status = false;
