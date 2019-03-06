@@ -814,13 +814,15 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	same_block = (((count + offset - 1) >>
 			pmfs_inode_blk_shift(pi)) == 0) ? 1 : 0;
 
-	if (block && same_block) {
-		PMFS_START_TIMING(xip_write_fast_t, xip_write_fast_time);
-		ret = pmfs_file_write_fast(sb, inode, pi, buf, count, pos,
-			ppos, block);
-		PMFS_END_TIMING(xip_write_fast_t, xip_write_fast_time);
-		goto out;
-	}
+	/* close for the deduplication system test */
+	// if (block && same_block) {
+	// 	PMFS_START_TIMING(xip_write_fast_t, xip_write_fast_time);
+	// 	ret = pmfs_file_write_fast(sb, inode, pi, buf, count, pos,
+	// 		ppos, block);
+	// 	PMFS_END_TIMING(xip_write_fast_t, xip_write_fast_time);
+	// 	goto out;
+	// }
+	/* close end */
 	max_logentries = num_blocks / MAX_PTRS_PER_LENTRY + 2;
 	if (max_logentries > MAX_METABLOCK_LENTRIES)
 		max_logentries = MAX_METABLOCK_LENTRIES;
