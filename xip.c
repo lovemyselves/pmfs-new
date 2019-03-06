@@ -679,6 +679,8 @@ static ssize_t pmfs_file_write_fast(struct super_block *sb, struct inode *inode,
 
 	offset = pos & (sb->s_blocksize - 1);
 
+	printk("write fast!");
+
 	PMFS_START_TIMING(memcpy_w_t, memcpy_time);
 	pmfs_xip_mem_protect(sb, xmem + offset, count, 1);
 	copied = memcpy_to_nvmm((char *)xmem, offset, buf, count);
@@ -777,6 +779,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	
 	local_hit = false;
 
+	printk("general write");
 	// printk("pmfs xip file write start!");
 	//end
 
