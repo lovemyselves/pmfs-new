@@ -850,7 +850,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct dedupnode *dnode;
 		struct refnode *rnode;
 		unsigned block_len;
-		void *xmem = kmalloc(4096, _GFP_FS);
+		void *xmem = kmalloc(4096, __GFP_FS);
 		size_t hashing = 0;
 		char strength_hashing[32];
 		// bool new_dnode_status = false;
