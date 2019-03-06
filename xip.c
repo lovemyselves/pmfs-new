@@ -847,10 +847,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	if((!(start_blk&63)) && dnode_hit<=-32){
-			// printk("skip:%d", dnode_hit);
-			goto sequential_nondup;
-	}
+	// if((!(start_blk&63)) && dnode_hit<=-32){
+	// 		// printk("skip:%d", dnode_hit);
+	// 		goto sequential_nondup;
+	// }
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
