@@ -913,8 +913,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// dnode->hash_status = 0;
 
 		printk("before memcpy");
-		// short_hash(&dnode->hashval, xmem, block_len);
-		dnode->hashval= (size_t)xmem;
+		if(xmem!=NULL)
+		short_hash(&dnode->hashval, xmem, block_len);
+		// dnode->hashval= (size_t)xmem;
 		printk("after memcpy");
 
 		// dnode->hashval = hashing;
