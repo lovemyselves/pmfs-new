@@ -901,7 +901,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pmfs write 1");
 
 		//alloc and init dnode
-		if((!(start_blk&63)) && dnode_hit<=-32){
+		if((!j&1) && dnode_hit<=-32){
 			// printk("skip:%d", dnode_hit);
 			dnode->strength_hash_status = 2;
 			goto strength_hashing_hit;
