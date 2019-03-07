@@ -851,7 +851,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct refnode *rnode;
 		unsigned block_len;
 		void *xmem = NULL;
-		size_t hashing = 0;
 		char strength_hashing[32];
 		// bool new_dnode_status = false;
 		//The following variable use in rbtree update and hashing
