@@ -932,7 +932,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
 				dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
 				if(dnode_entry->strength_hash_status==2)
-					short_hash(&dnode_entry->hashing
+					short_hash(&dnode_entry->hashval
 					,pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
 				result = dnode->hashval - dnode_entry->hashval;
 				if(result==0){
