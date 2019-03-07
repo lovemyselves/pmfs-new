@@ -1006,7 +1006,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode_hit--;
 			// printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
-			memcpy_to_nvmm(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), 0, xmem, dnode->length);
+			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
