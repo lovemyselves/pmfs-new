@@ -901,14 +901,14 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pmfs write 1");
 
 		//alloc and init dnode
+		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
+		dedup_offset = 0;
 		if((!j&1) && dnode_hit<=-32){
 			// printk("skip:%d", dnode_hit);
 			dnode->strength_hash_status = 2;
 			goto strength_hashing_hit;
 		}
-		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
-		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
-		dedup_offset = 0;
 		// dnode->hash_status = 0;
 		short_hash(&hashing, xmem, block_len);
 		dnode->hashval = hashing;
