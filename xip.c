@@ -918,7 +918,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->strength_hash_status = 0;
 		if(dnode_hit>-1){
 			strength_hash(strength_hashing, xmem, block_len);
-			memcpy(dnode->strength_hashval, strength_hashing, 32);
+			memcpy_to_nvmm(dnode->strength_hashval, 0, strength_hashing, 32);
 			dnode->strength_hash_status = 1;
 			// printk("Recover the strength hashing compute!");
 		}
@@ -1006,7 +1006,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode_hit--;
 			// printk("dnode is new!");
 			pmfs_new_block(sb, &dnode->blocknr, PMFS_BLOCK_TYPE_4K, 1);
-			memcpy(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), xmem, dnode->length);
+			memcpy_to_nvmm(pmfs_get_block(sb, dnode->blocknr<<PAGE_SHIFT), 0, xmem, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
 			memcpy_to_nvmm((char *)xmem, 0, buf, dnode->length);
