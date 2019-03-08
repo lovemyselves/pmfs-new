@@ -842,10 +842,10 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	if(!(start_blk&127) && dnode_hit<=-64){
-			// printk("skip:%d", dnode_hit);
-			goto sequential_nondup;
-	}
+	// if(!(start_blk&127) && dnode_hit<=-64){
+	// 		// printk("skip:%d", dnode_hit);
+	// 		goto sequential_nondup;
+	// }
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
@@ -884,7 +884,8 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 			dnode = alloc_dedupnode(sb);
 			// dnode->flag = 0;
-			dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
+			dnode->length = 4096;
+			// dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			// new_dnode_status = true;
