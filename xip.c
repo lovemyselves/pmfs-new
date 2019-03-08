@@ -36,7 +36,7 @@
 #define DEDUPNODE_SIZE sizeof(struct dedupnode)
 #define REFNODE_SIZE sizeof(struct refnode)
 #define DINDEX pmfs_get_block(sb, DEDUP_HEAD<<PAGE_SHIFT)
-// DEFINE_SPINLOCK(dedup_index_lock);
+DEFINE_SPINLOCK(dedup_index_lock);
 DEFINE_SPINLOCK(dnode_rbtree_lock);
 
 // static LIST_HEAD(hash_map_addr_list);
@@ -99,14 +99,14 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	struct dedupnode *dnode;
 	struct list_head *p;
 	struct dedup_index *dindex = DINDEX;
-	// unsigned long flags;
+	unsigned long flags;
 
 	// if(filesystem_restart){
 	// 	filesystem_restart = false;
 	// 	list_splice(&dindex->hma_writing, &dindex->hma_unused);
 	// }
 
-	// spin_lock_irqsave(&dedup_index_lock, flags);
+	spin_lock_irqsave(&dedup_index_lock, flags);
 
 	if(list_empty(&dindex->hma_unused))
 		new_unused_dedupnode(sb);
@@ -117,7 +117,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	list_move_tail(p, &dindex->hma_head);
 	// list_move_tail(p, &dindex->hma_writing);
 
-	// spin_unlock_irqrestore(&dedup_index_lock, flags);
+	spin_unlock_irqrestore(&dedup_index_lock, flags);
 	return dnode;
 }
 
@@ -842,22 +842,22 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 	i = count;
 	dedup_offset = offset;
 
-	if(!(start_blk&127) && dnode_hit<=-64){
-			// printk("skip:%d", dnode_hit);
-			goto sequential_nondup;
-	}
+	// if((!(start_blk&63)) && dnode_hit<=-32){
+	// 		// printk("skip:%d", dnode_hit);
+	// 		goto sequential_nondup;
+	// }
 	for(j = 0; j < num_blocks; j++ ){
 		struct dedupnode *dnode;
 		struct refnode *rnode;
 		unsigned block_len;
-		void *xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
+		void *xmem = NULL;
 		size_t hashing = 0;
 		char strength_hashing[32];
 		// bool new_dnode_status = false;
 		//The following variable use in rbtree update and hashing
 		struct rb_node **entry_node = &(droot->rb_node);
 		struct rb_node *parent = NULL;
-		struct dedupnode *dnode_entry = NULL;
+		struct dedupnode *dnode_entry;
 		struct dedupnode *dnode_obsolete=NULL;
 		long result;
 
@@ -867,8 +867,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		
 		if(rnode->dnode){
 			dnode_entry = rnode->dnode;
+			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			// memcpy(xmem, pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
+
 			atomic_dec(&dnode_entry->atomic_ref_count);
+			
 			if(atomic_read(&dnode_entry->atomic_ref_count)>1){
 			// 	//update with multi-version
 			// 	// overwrite_flag = 1;
@@ -884,8 +887,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 
 			dnode = alloc_dedupnode(sb);
 			// dnode->flag = 0;
-			dnode->length = 4096;
-			// dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
+			dnode->length = dnode_entry->length>(dedup_offset+block_len)?dnode_entry->length:(dedup_offset+block_len);
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
 			// new_dnode_status = true;
@@ -896,6 +898,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			dnode->length = dedup_offset+block_len;
 			// dnode->count = 1;
 			atomic_set(&dnode->atomic_ref_count, 1);
+			xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 			//build a new dnode
 			// new_dnode_status = true;
 		}
@@ -904,11 +907,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		//alloc and init dnode
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 		dedup_offset = 0;
-		// if( (start_blk&3 || j&31) && dnode_hit<=-32){
-		// 	// printk("skip:%d", dnode_hit);
-		// 	dnode->strength_hash_status = 2;
-		// 	goto strength_hashing_hit;
-		// }
 		// dnode->hash_status = 0;
 		short_hash(&hashing, xmem, block_len);
 		dnode->hashval = hashing;
@@ -918,7 +916,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->strength_hash_status = 0;
 		if(dnode_hit>-1){
 			strength_hash(strength_hashing, xmem, block_len);
-			memcpy_to_nvmm(dnode->strength_hashval, 0, strength_hashing, 32);
+			memcpy(dnode->strength_hashval, strength_hashing, 32);
 			dnode->strength_hash_status = 1;
 			// printk("Recover the strength hashing compute!");
 		}
@@ -931,11 +929,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// dnode_entry = dedupnode_low_overhead_check(dnode);
 			if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
 				dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
-				// if(dnode_entry->strength_hash_status==2){
-				// 	short_hash(&dnode_entry->hashval
-				// 	,pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
-				// 	dnode_entry->strength_hash_status=0;
-				// }
 				result = dnode->hashval - dnode_entry->hashval;
 				if(result==0){
 					// if(!dnode->strength_hash_status){
@@ -948,7 +941,9 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 						dnode_entry->strength_hash_status = 1;
 						// printk("add strength hashing of dnode_entry!");
 					}
+
 					result =  memcmp(dnode->strength_hashval, dnode_entry->strength_hashval, 16);
+					
 				}
 				if(result==0){
 					// printk("hit in low_overhead_check!");
@@ -1045,7 +1040,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		}
 		// printk("dedup system in work!");
 	}else{
-		sequential_nondup:
+		// sequential_nondup:
 		// printk("raw pmfs write");
 		/* We avoid zeroing the alloc'd range, which is going to be overwritten
 		 * by this system call anyway */
