@@ -850,7 +850,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		struct dedupnode *dnode;
 		struct refnode *rnode;
 		unsigned block_len;
-		void *xmem = NULL;
+		void *xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		size_t hashing = 0;
 		char strength_hashing[32];
 		// bool new_dnode_status = false;
@@ -901,7 +901,6 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		// printk("pmfs write 1");
 
 		//alloc and init dnode
-		xmem = kmalloc(pmfs_inode_blk_size(pi), GFP_KERNEL);
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 		dedup_offset = 0;
 		// if( (start_blk&3 || j&31) && dnode_hit<=-32){
