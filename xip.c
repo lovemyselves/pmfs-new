@@ -918,7 +918,7 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		dnode->strength_hash_status = 0;
 		if(dnode_hit>-1){
 			strength_hash(strength_hashing, xmem, block_len);
-			memcpy_to_nvmm(dnode->strength_hashval, 0, strength_hashing, 32);
+			memcpy(dnode->strength_hashval, strength_hashing, 32);
 			dnode->strength_hash_status = 1;
 			// printk("Recover the strength hashing compute!");
 		}
