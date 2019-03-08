@@ -904,11 +904,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		//alloc and init dnode
 		copy_from_user(xmem + dedup_offset, buf+count-i, block_len);
 		dedup_offset = 0;
-		// if( (start_blk&3 || j&31) && dnode_hit<=-32){
-		// 	// printk("skip:%d", dnode_hit);
-		// 	dnode->strength_hash_status = 2;
-		// 	goto strength_hashing_hit;
-		// }
+		if( (start_blk&3 || j&31) && dnode_hit<=-32){
+			// printk("skip:%d", dnode_hit);
+			dnode->strength_hash_status = 2;
+			goto strength_hashing_hit;
+		}
 		// dnode->hash_status = 0;
 		short_hash(&hashing, xmem, block_len);
 		dnode->hashval = hashing;
@@ -931,11 +931,11 @@ ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 			// dnode_entry = dedupnode_low_overhead_check(dnode);
 			if(last_dnode_list!=NULL && last_dnode_list->next!=NULL){
 				dnode_entry = list_entry(last_dnode_list->next, struct dedupnode, list);
-				// if(dnode_entry->strength_hash_status==2){
-				// 	short_hash(&dnode_entry->hashval
-				// 	,pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
-				// 	dnode_entry->strength_hash_status=0;
-				// }
+				if(dnode_entry->strength_hash_status==2){
+					short_hash(&dnode_entry->hashval
+					,pmfs_get_block(sb, dnode_entry->blocknr<<PAGE_SHIFT), dnode_entry->length);
+					dnode_entry->strength_hash_status=0;
+				}
 				result = dnode->hashval - dnode_entry->hashval;
 				if(result==0){
 					// if(!dnode->strength_hash_status){
