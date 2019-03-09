@@ -99,14 +99,14 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	struct dedupnode *dnode;
 	struct list_head *p;
 	struct dedup_index *dindex = DINDEX;
-	unsigned long flags;
+	// unsigned long flags;
 
 	// if(filesystem_restart){
 	// 	filesystem_restart = false;
 	// 	list_splice(&dindex->hma_writing, &dindex->hma_unused);
 	// }
 
-	spin_lock_irqsave(&dedup_index_lock, flags);
+	// spin_lock_irqsave(&dedup_index_lock, flags);
 
 	if(list_empty(&dindex->hma_unused))
 		new_unused_dedupnode(sb);
@@ -117,7 +117,7 @@ struct dedupnode *alloc_dedupnode(struct super_block *sb){
 	list_move_tail(p, &dindex->hma_head);
 	// list_move_tail(p, &dindex->hma_writing);
 
-	spin_unlock_irqrestore(&dedup_index_lock, flags);
+	// spin_unlock_irqrestore(&dedup_index_lock, flags);
 	return dnode;
 }
 
@@ -196,7 +196,7 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 	struct rb_node *parent = NULL;
 	struct dedupnode *dnode_entry;
 	long result;
-	unsigned long flags;
+	// unsigned long flags;
 
 	// printk("tree update 1");
 	// printk("dnode_new->hashval:%ld", dnode_new->hashval);
@@ -225,10 +225,10 @@ struct dedupnode *dedupnode_tree_update(struct super_block *sb
 		}
 	}
 
-	spin_lock_irqsave(&dnode_rbtree_lock, flags);
+	// spin_lock_irqsave(&dnode_rbtree_lock, flags);
 	rb_link_node(&dnode_new->node, parent, entry_node);
 	rb_insert_color(&dnode_new->node, droot);
-	spin_unlock_irqrestore(&dnode_rbtree_lock, flags);
+	// spin_unlock_irqrestore(&dnode_rbtree_lock, flags);
 
 	return NULL;
 }
