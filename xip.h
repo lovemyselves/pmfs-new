@@ -17,7 +17,13 @@ ssize_t pmfs_xip_file_read(struct file *filp, char __user *buf, size_t len,
 ssize_t pmfs_xip_file_write(struct file *filp, const char __user *buf,
 		size_t len, loff_t *ppos);
 int pmfs_xip_file_mmap(struct file *file, struct vm_area_struct *vma);
+//dedup part start
+struct refnode *refnode_search(struct super_block *sb
+,unsigned ino, unsigned long index);
+bool free_dedupnode(struct super_block *sb, void *dnode);
 
+bool free_refnode(struct super_block *sb, struct refnode *rnode);
+//dedup part end
 static inline int pmfs_use_xip(struct super_block *sb)
 {
 	struct pmfs_sb_info *sbi = PMFS_SB(sb);

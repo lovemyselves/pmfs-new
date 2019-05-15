@@ -24,6 +24,7 @@
 #include <linux/ratelimit.h>
 #include "pmfs.h"
 #include "xip.h"
+#include "dedup.c"
 
 unsigned int blk_type_to_shift[PMFS_BLOCK_TYPE_MAX] = {12, 21, 30};
 uint32_t blk_type_to_size[PMFS_BLOCK_TYPE_MAX] = {0x1000, 0x200000, 0x40000000};
@@ -925,6 +926,11 @@ static int pmfs_free_inode(struct inode *inode)
 	unsigned long inode_nr;
 	pmfs_transaction_t *trans;
 	int err = 0;
+	//dedup
+	unsigned i, blocknum;
+	struct refnode *rnode;
+	struct dedupnode *dnode;
+	//dedup
 
 	mutex_lock(&PMFS_SB(sb)->inode_table_mutex);
 
@@ -971,6 +977,35 @@ static int pmfs_free_inode(struct inode *inode)
 		   sbi->s_free_inode_hint);
 out:
 	mutex_unlock(&PMFS_SB(sb)->inode_table_mutex);
+
+	blocknum = (inode->i_size>>12) + ((inode->i_size&4096)?1:0);
+	// printk("blocknum:%u", blocknum);
+	for(i=0;i<blocknum;i++){
+		// printk("i:%u",i);
+		rnode = refnode_search(sb,inode->i_ino,i);
+		if(!rnode /*|| rnode->dnode==NULL*/){
+			// printk("error, cannot find this refnode!");
+			continue;
+		}
+		if(!rnode->dnode)
+			continue;
+		dnode = rnode->dnode;
+		// printk("count:%d", atomic_read(&dnode->atomic_ref_count));
+		atomic_dec(&dnode->atomic_ref_count);
+		if(!atomic_read(&dnode->atomic_ref_count)){
+			// pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);// printk("free block");
+			free_dedupnode(sb, rnode->dnode);// printk("free dnode");
+			// atomic_dec(&dnode->atomic_ref_count);
+			// printk("free dnode success!");
+		}
+		// else printk("dnode->count:%d", atomic_read(&dnode->atomic_ref_count));
+		// printk("free rnode");
+		// dnode_miss:
+		// if(free_refnode(sb, rnode))
+		// 	;
+			// printk("free rnode success!");
+	}
+	//dedup end
 	return err;
 }
 

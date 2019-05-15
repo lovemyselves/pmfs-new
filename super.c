@@ -33,7 +33,8 @@
 #include <linux/backing-dev.h>
 #include <linux/list.h>
 #include <linux/dax.h>
-#include "pmfs.h"
+#include "pmfs.h" 
+#include "dedup.c"
 
 int measure_timing = 0;
 int support_clwb = 0;
@@ -59,6 +60,71 @@ struct pmfs_super_block *get_pmfs_super(void)
 }
 EXPORT_SYMBOL(get_pmfs_super);
 #endif
+
+static bool init_dedup_module(struct super_block *sb){
+	unsigned long blocknr;
+	void *xmem;
+	struct dedup_index *dindex;
+	// struct dedupnode *dnode;
+	// struct refnode *rnode;
+	// unsigned offset;
+	// int i,dedupnode_size, refnode_size;
+	
+	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+	printk("dindex blocknr:%lu", blocknr);
+	
+	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
+
+	dindex = xmem;
+	INIT_LIST_HEAD(&dindex->hma_head);
+	INIT_LIST_HEAD(&dindex->hma_writing);
+	INIT_LIST_HEAD(&dindex->hma_unused);
+	dindex->dedupnode_root = RB_ROOT;
+	INIT_LIST_HEAD(&dindex->ref_head);
+	INIT_LIST_HEAD(&dindex->ref_unused);
+	dindex->refroot = RB_ROOT;
+
+	printk("init pmfs");
+
+	// printk("size of struct hash_map_addr:%lu", sizeof(struct hash_map_addr));
+	// printk("size of struct list_head:%lu", sizeof(struct list_head));
+	// printk("size of struct rb_node:%lu", sizeof(struct rb_node));
+	// printk("size of size_t:%lu", sizeof(size_t));
+	// printk("size of char:%lu", sizeof(char));
+	// printk("size of long:%lu", sizeof(long));
+	// printk("size of short:%lu", sizeof(short));
+	printk("size of struct refnode:%lu", sizeof(struct refnode));
+
+	// dedupnode_size = sizeof(struct dedupnode);
+	// refnode_size = sizeof(struct refnode);
+	// for(i=0;i<65536;i++){
+	// 	offset = 0;
+	// 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+	// 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
+	
+	// 	while(offset + dedupnode_size < 4096)
+	// 	{	
+	// 		dnode = xmem + offset;
+	// 		INIT_LIST_HEAD(&dnode->list);
+	// 		list_add_tail(&dnode->list, &dindex->hma_unused);
+	// 		offset += dedupnode_size;
+	// 	}
+
+	// 	offset = 0;
+	// 	pmfs_new_block(sb, &blocknr, PMFS_BLOCK_TYPE_4K, 1);
+	// 	xmem = pmfs_get_block(sb, blocknr<<PAGE_SHIFT);
+	
+	// 	while(offset + refnode_size < 4096)
+	// 	{	
+	// 		rnode = xmem + offset;
+	// 		INIT_LIST_HEAD(&rnode->list);
+	// 		list_add_tail(&rnode->list, &dindex->ref_unused);
+	// 		offset += refnode_size;
+	// 	}
+	// }
+
+	return true;
+}
 
 void pmfs_error_mng(struct super_block *sb, const char *fmt, ...)
 {
@@ -462,6 +528,11 @@ static struct pmfs_inode *pmfs_init(struct super_block *sb,
 	pmfs_flush_buffer(de, PMFS_DIR_REC_LEN(2), false);
 	PERSISTENT_MARK();
 	PERSISTENT_BARRIER();
+
+	//dedup init
+	init_dedup_module(sb);
+		
+	
 	return root_i;
 }
 
@@ -604,6 +675,37 @@ static int pmfs_fill_super(struct super_block *sb, void *data, int silent)
 	unsigned long blocksize;
 	u32 random = 0;
 	int retval = -EINVAL;
+
+	/* dedup system recover */	
+	// struct dedup_rbtree_index *rbtree_index;
+	// size_t __size = sizeof(*rbtree_index);
+	// struct dedup_index *dindex;
+	// struct rb_root *droot;
+	// struct dedupnode *dnode;
+	// struct list_head *dlist;
+	// struct list_head *temp;
+	// rbtree_index = kmalloc(__size, GFP_KERNEL);
+	
+	// rbtree_index->dnode_root = RB_ROOT;
+	// rbtree_index->ref_root = RB_ROOT;
+	
+	// printk("build index start ...");
+	// printk("pmfs mount");
+
+	// if(data==NULL){
+	// 	dindex = pmfs_get_block(sb, 1026<<PAGE_SHIFT);
+	// 	droot = &dindex->dedupnode_root;
+	// 	dlist = &dindex->hma_head;
+	// 	list_for_each(temp, dlist){
+	// 		dnode = list_entry(temp, struct dedupnode, list);
+	// 		if(dnode->flag==0){
+	// 			pmfs_free_block(sb, dnode->blocknr, PMFS_BLOCK_TYPE_4K);
+	// 			rb_erase(&dnode->node, droot);
+	// 			list_move_tail(&dnode->list, &dindex->hma_unused);
+	// 		}
+	// 	}
+	// }	
+	/* deduplication copy end */
 
 	BUILD_BUG_ON(sizeof(struct pmfs_super_block) > PMFS_SB_SIZE);
 	BUILD_BUG_ON(sizeof(struct pmfs_inode) > PMFS_INODE_SIZE);
@@ -1031,7 +1133,7 @@ static struct super_operations pmfs_sops = {
 
 static struct dentry *pmfs_mount(struct file_system_type *fs_type,
 				  int flags, const char *dev_name, void *data)
-{
+{	
 	return mount_bdev(fs_type, flags, dev_name, data, pmfs_fill_super);
 }
 
