@@ -111,10 +111,10 @@ struct rnode{
 };
 
 struct dedupsystem_head{
-    struct rnode ds_rnode_list;
+    struct rnode *ds_rnode_list;
     int ds_nr_rnode_unused;
-    struct rnode ds_rnode_unused_list;
-    struct dbnode ds_dbnode_list;
+    struct rnode *ds_rnode_unused_list;
+    struct dbnode *ds_dbnode_list;
     int ds_nr_dbnode_unused;
-    struct dbnode ds_dbnode_unused_list;
+    struct dbnode *ds_dbnode_unused_list;
 };

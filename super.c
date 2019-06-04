@@ -122,9 +122,11 @@ static bool init_dedup_module(struct super_block *sb){
 	// 		offset += refnode_size;
 	// 	}
 	// }
-	printk("sizeof(rnode):%d",sizeof(struct rnode));
-	printk("sizeof(dbnode):%d",sizeof(struct dbnode));
-	printk("sizeof(struct dedupsystem_head):%d",sizeof(struct dedupsystem_head));
+	printk("sizeof(rnode):%lu",sizeof(struct rnode));
+	printk("sizeof(dbnode):%lu",sizeof(struct dbnode));
+	printk("sizeof(struct dedupsystem_head):%lu",sizeof(struct dedupsystem_head));
+
+	
 
 	return true;
 }
