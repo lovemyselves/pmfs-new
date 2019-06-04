@@ -89,3 +89,32 @@ struct rbtree_node{
 //     struct rb_node node;
 //     struct list_head list;
 // };
+
+struct dbnode{
+    long hashval;
+    unsigned long blocknr;
+    u8 strength_hash_status;
+    u8 flag;
+    char strength_hashval[32];
+    atomic_t ref_count1;
+    atomic_t ref_count2;
+    struct dbnode *next;
+};
+
+struct rnode{
+    unsigned long ino;
+    unsigned long index;
+    struct dbnode *source_dbnode1;
+    struct dbnode *source_dbnode2;
+    u8 status;
+    struct rnode *next;
+};
+
+struct dedupsystem_head{
+    struct rnode ds_rnode_list;
+    int ds_nr_rnode_unused;
+    struct rnode ds_rnode_unused_list;
+    struct dbnode ds_dbnode_list;
+    int ds_nr_dbnode_unused;
+    struct dbnode ds_dbnode_unused_list;
+};

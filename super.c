@@ -14,8 +14,8 @@
  */
 
 #include <linux/module.h>
-#include <linux/string.h>
-#include <linux/slab.h>
+// #include <linux/string.h>
+// #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/parser.h>
 #include <linux/vfs.h>
@@ -122,6 +122,9 @@ static bool init_dedup_module(struct super_block *sb){
 	// 		offset += refnode_size;
 	// 	}
 	// }
+	printk("sizeof(rnode):%d",sizeof(struct rnode));
+	printk("sizeof(dbnode):%d",sizeof(struct dbnode));
+	printk("sizeof(struct dedupsystem_head):%d",sizeof(struct dedupsystem_head));
 
 	return true;
 }

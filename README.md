@@ -1,5 +1,5 @@
 
-##New feature from SCNU
+## New feature from SCNU
 SCNU add a online-dedup system on PMFS, though it's performance barely satisfactory, it can work transparently.
 
 # Porting PMFS to the latest Linux kernel
